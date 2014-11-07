@@ -70,6 +70,8 @@ class ImagenNavLeftBox(component.CtxComponent):
         w(u'</div>')
 
         w(u'<div id="genetic_buttons" class="collapse">')
+        w(u'<div class="panel panel-info">')
+        w(u'<div class="panel-body">')
         #button 1: raw
         w(u'<div class="btn-toolbar">')
         w(u'<div class="btn-group-vertical btn-block">')
@@ -77,7 +79,7 @@ class ImagenNavLeftBox(component.CtxComponent):
                                        ' G type "raw"'))
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
         w(u'Raw data</a>')
-        w(u'</div></div>')
+        w(u'</div></div><br/>')
         #button 2: QC
         w(u'<div class="btn-toolbar">')
         w(u'<div class="btn-group-vertical btn-block">')
@@ -85,7 +87,7 @@ class ImagenNavLeftBox(component.CtxComponent):
                                        ' G type "qc"'))
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
         w(u'QC data</a>')
-        w(u'</div></div>')
+        w(u'</div></div><br/>')
         #button 3: imputed
         w(u'<div class="btn-toolbar">')
         w(u'<div class="btn-group-vertical btn-block">')
@@ -93,6 +95,7 @@ class ImagenNavLeftBox(component.CtxComponent):
                                        ' G type "imput"'))
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
         w(u'Imputed data</a>')
+        w(u'</div></div>')
         w(u'</div></div>')
         w(u'</div><br/>')
         
