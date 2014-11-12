@@ -62,10 +62,10 @@ class ImagenResourcePoweredByAction(Action):
     __select__ = yes()
     category = 'footer'
     order = 3
-    title = _('&#169 2014, Neurospin Analysis Platform developers <br/>')
+    title = _('&#169; 2014 CEA<br/>')
 
     def url(self):
-        return 'http://www-centre-saclay.cea.fr/fr/NeuroSpin'
+        return 'http://www-dsv.cea.fr/neurospin'
 
 
 ###############################################################################
