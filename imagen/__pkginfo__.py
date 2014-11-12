@@ -9,7 +9,7 @@ version = '.'.join(str(num) for num in numversion)
 
 license = 'LGPL'
 author = 'CEA (Saclay, FRANCE)'
-author_email = 'imagen.database@cea.fr'
+author_email = 'imagendatabase@cea.fr'
 description = 'Imagen V2'
 web = 'https://imagen2.cea.fr'
 
