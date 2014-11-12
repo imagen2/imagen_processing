@@ -56,7 +56,7 @@ class ImagenCardView(PrimaryView):
             "license-url": self._cw.build_url("license"),
             "connect-image": self._cw.data_url("images/connect.jpg"),
             "database-image": self._cw.data_url("images/database.jpg"),
-            "nsap-image": self._cw.data_url("images/nsap.jpg"),
+            "nsap-image": self._cw.data_url("images/neurospin.jpg"),
             "imagen-image": self._cw.data_url("images/imagen.jpg"),
             "nsap-url": ("http://www-dsv.cea.fr/neurospin"),
             "imagen-url": "http://www.imagen-europe.com/",
