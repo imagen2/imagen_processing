@@ -58,9 +58,7 @@ class ImagenCardView(PrimaryView):
             "database-image": self._cw.data_url("images/database.jpg"),
             "nsap-image": self._cw.data_url("images/nsap.jpg"),
             "imagen-image": self._cw.data_url("images/imagen.jpg"),
-            "nsap-url": ("http://www-dsv.cea.fr/en/institutes/"
-                         "institute-of-biomedical-imaging-i2bm/departments/"
-                         "neurospin-neurospin"),
+            "nsap-url": ("http://www-dsv.cea.fr/neurospin"),
             "imagen-url": "http://www.imagen-europe.com/",
         }
 
