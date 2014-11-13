@@ -258,8 +258,8 @@ class ImagenQuestionnaireRunOutOfContextView(EntityView):
         entity = self.cw_rset.get_entity(row, col)
 
         # Get the subject/study/center related entities
-        subject = entity.concerns[0]
-        questionnaire = entity.instance_of[0]
+        subject = entity.r_concerns[0]
+        questionnaire = entity.r_instance_of[0]
 
         # Get the subject gender image url
         image = u'<img alt="" src="%s">' %  self._cw.data_url(entity.symbol)
@@ -372,7 +372,8 @@ def registration_callback(vreg):
     vreg.register_and_replace(
         ImagenAssessmentOutOfContextView, AssessmentOutOfContextView)
     vreg.register_and_replace(ImagenScanOutOfContextView, ScanOutOfContextView)
-    vreg.register(ImagenQuestionnaireRunOutOfContextView)
+    vreg.register_and_replace(
+        ImagenQuestionnaireRunOutOfContextView, QuestionnaireRunOutOfContextView)
     vreg.register_and_replace(
         ImagenSubjectOutOfContextView, SubjectOutOfContextView)
     vreg.register_and_replace(ImagenGenomicMeasureRunOutOfContextView,

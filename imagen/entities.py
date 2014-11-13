@@ -78,7 +78,11 @@ class QuestionnaireRun(AnyEntity):
     def dc_title(self):
         """ Method the defined the questionnaire run entity title
         """
-        return "{0}".format(self.user_ident.replace("_", " - "))
+        subject = self.r_concerns[0]
+        questionnaire = self.r_instance_of[0]
+        assessment = self.reverse_uses[0]
+        return "{0} - {1} - {2}".format(
+            subject.code_in_study, questionnaire.name, assessment.timepoint)
 
     @property
     def symbol(self):
