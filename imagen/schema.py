@@ -153,7 +153,8 @@ class in_assessment(RelationDefinition):
 
 ENTITIES = [
     Scan, FMRIData, DMRIData, PETData, MRIData, PROCESSINGData, ExternalResource,
-    QuestionnaireRun, Questionnaire, Question, OpenAnswer, ScoreValue]
+    QuestionnaireRun, Questionnaire, Question, OpenAnswer, ScoreValue,
+    GenomicMeasure]
 
 
 DEFAULT_PERMISSIONS = {
