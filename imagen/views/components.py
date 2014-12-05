@@ -25,6 +25,16 @@ from cubicweb.predicates import (none_rset, one_line_rset, is_instance, nonempty
                                  anonymous_user, relation_possible)
 from cubicweb.web.views.facets import FilterBox
 
+from cubes.rql_download.views.components import HelpCWSearchBox
+
+###############################################################################
+# Tune cw search help message 
+###############################################################################
+
+HelpCWSearchBox._message = (
+    u"This is a search result, you can download it via sftp using FileZilla. "
+     "The host is 'imagen2.cea.fr' and the default port used is '22'.")
+
 
 ###############################################################################
 # Navigation Box 
