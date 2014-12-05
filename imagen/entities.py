@@ -180,3 +180,14 @@ class PROCESSINGData(AnyEntity):
 
     def dc_title(self):
         return self.__class__.__name__
+
+
+class GenomicMeasure(AnyEntity):
+    __regid__ = 'GenomicMeasure'
+
+    def dc_title(self):
+        return self.chromset
+
+    @property
+    def symbol(self):
+        return "48x48/genetics.png"
