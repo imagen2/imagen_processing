@@ -313,7 +313,7 @@ class ImagenGenomicMeasureRunOutOfContextView(EntityView):
         platform = entity.platform[0]
 
         # Get the subject gender image url
-        image = u'<img alt="" src="%s">' % entity.image_url
+        image = u'<img alt="" src="%s">' % self._cw.data_url(entity.symbol)
 
         # Create the div that will contain the list item
         self.w(u'<div class="ooview">')
