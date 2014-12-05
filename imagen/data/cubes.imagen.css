@@ -55,4 +55,101 @@ ul.list-striped li {
 
 .bg-info {
     background-color: #5BC0DE;
-} 
+}
+
+#images-box {
+    /* The total width of the image-box, mainly for centering */
+    width: 850px;
+    margin: 0px auto;
+    position: relative;
+    top: 1px;
+}
+
+.image-lightbox img {
+    /* Inherit the width and height from the parent element */
+    width: inherit;
+    height: inherit;
+}
+
+.holder {
+    /* The width and height, you can change these */
+    width: 250px;
+    height: 166px;
+    /* Float left, so everything aligns right */
+    float: right;
+    margin: 0 0 0 0;
+}
+
+.image-lightbox {
+    /* Inherit width and height from the .holder */
+    width: inherit;
+    height: inherit;
+    padding: 10px;
+    /* Box shadow */
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    background: #fff;
+    border-radius: 5px;
+    /* Position absolutely so we can zoom it out later */
+    position: absolute;
+    top: 0;
+    font-family: Arial, sans-serif;
+    /* Transitions to provide some eye candy */
+    -webkit-transition: all ease-in 0.5s;
+    -moz-transition: all ease-in 0.5s;
+    -ms-transition: all ease-in 0.5s;
+    -o-transition: all ease-in 0.5s;
+}
+
+.image-lightbox span {
+    display: none;
+}
+
+.image-lightbox .expand {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.image-lightbox .close {
+    position: absolute;
+    width: 20px; height: 20px;
+    right: 20px; top: 20px;
+}
+
+.image-lightbox .close a {
+    height: auto; width: auto;
+    padding: 5px 10px;
+    color: #fff;
+    text-decoration: none;
+    background: #22272c;
+    box-shadow: inset 0px 24px 20px -15px rgba(255, 255, 255, 0.1), inset 0px 0px 10px rgba(0,0,0,0.4), 0px 0px 30px rgba(255,255,255,0.4);
+    border-radius: 5px;
+    font-weight: bold;
+    float: right;
+}
+
+.close a:hover {
+    box-shadow: inset 0px -24px 20px -15px rgba(255, 255, 255, 0.01), inset 0px 0px 10px rgba(0,0,0,0.4), 0px 0px 20px rgba(255,255,255,0.4);
+}
+
+div[id^=image]:target {
+    width: 1125px;
+    height: 750px;
+    z-index: 500;
+    top: -300px;
+    left: -50px;
+}
+div[id^=image]:target .close {
+    display: block;
+}
+
+div[id^=image]:target .expand {
+    display: none;
+}
+
+div#image-1:target, div#image-2:target{ left: -200px; }
+
+div#image-1 { left: 0; }
+div#image-2 { left: 290px; }
