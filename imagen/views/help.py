@@ -15,7 +15,7 @@ class HelpPage(NullView):
     __regid__ = "help"
 
     def call(self, **kwargs):
-    
+
         content = u"""
             <div class="container">
                 <div class="span7">
@@ -51,16 +51,16 @@ class HelpPage(NullView):
                 <div class="span7">
                   <p>The current site and the data it serves are in version 0.1.
                   It comprises raw images for BL and FU2.
-                  BL raw images are the ones currently available from the Imagen XNAT serveur. 
+                  BL raw images are the ones currently available from the Imagen XNAT serveur.
                   FU2 raw images are the ones that successfully flew to NeurSpin during the second
                   follow-up; some more FU2 raw images are to come soon as they will be available.</p>
-                  
+
                   <p>In version 0.1, no DICOM images, no questionnaires, nor scores are available.
                   Questionnaires and scores will be released in the following versions.</p>
-                  
-                  <p>All known subjects in the study (enrollment of subjects only occurs 
+
+                  <p>All known subjects in the study (enrollment of subjects only occurs
                   during BL) are indexed in version 0.1.</p>
-                  
+
                   <p>This version 0.1. exhibits some capabilities of the final renovated version.
                   In particular :
                     <ul>
@@ -71,7 +71,7 @@ class HelpPage(NullView):
                         <li>&bull; access rights are operating and enforced,</li>
                     </ul>
                   </p>
-                  
+
                   <p><strong>Please use Chrome and Firefox to browse ImagenV2 server</strong></p>
                   <p><strong>and FileZilla to retrieve requested data.</strong></p>
                 </div>
@@ -94,13 +94,10 @@ class HelpPage(NullView):
             <div class="panel-body">
             <div id="download" class="collapse">
             <div class="container">
-                <div class="span7">
-                  <p>This is one of the most innovative contributions in the version 
+                  <p>This is one of the most innovative contributions in the version
                   of the server. The download request is processed so that it results
                   in an easy-to-fetch item on a sftp file server. Common acces-rights
                   are used for this sftp server and the ImagenV2 server.</p>
-                </div>
-                <div class="span7">
                     <p><strong>"I want to retrieve all ADNI_MPRAGE data from the project"</strong></p>
                     <p>Use your browser to connect the ImagenV2 server:</p>
                     <ul>
@@ -108,35 +105,56 @@ class HelpPage(NullView):
                         <li>&bull; use faceting to select ADNI_MPRAGE (refine with the
                         time tag if you wish with BL or FU2),</li>
                         <li>&bull; push the "Save search" button,</li>
-                        <li>&bull; you will be directed towards a rather technical 
+                        <li>&bull; you will be directed towards a rather technical
                         page (we will refine it later). Just enter the name of your
-                        request in the name box and leave the remaing alone. 
+                        request in the name box and leave the remaing alone.
                         Press validate. That's it!</li>
                         <li>&bull; the server processed your download request and
                         return to the page your were previously navigating,</li>
                     </ul>
-                    <p>Use your FileZilla client to connect the sftp server. 
-                    Parmeters are: </p>
-                    <ul>
-                        <li>&bull; host: imagen2.cea.fr,</li>
-                        <li>&bull; protocol: SFTP - SSH File Transfer Protocol,</li>
-                        <li>&bull; authentication: regular,</li>
-                        <li>&bull; id/pwd: the same id and passwd you use for the
-                        ImagenV2 server,</li>
-                        <li>&bull; then push connect,</li>
-                    </ul>
+                    <br>
+                    <p><strong>Use your FileZilla client to connect the sftp server.<br>
+                    <div class="panel-body">
+                        Configuration: </p></strong>
+                        <dl class="dl-horizontal">
+                            <dt>host</dt><dd>imagen2.cea.fr</dd>
+                            <dt>protocol</dt><dd>SFTP - SSH File Transfer Protocol</dd>
+                            <dt>authentication</dt><dd>regular</dd>
+                            <dt>id/pwd</dt><dd>the same id and passwd you use for the
+                            ImagenV2 server</dd><br>
+                        </dl>
+                        <div id="images-box">
+                            <div class="holder">
+                                <div id="image-1" class="image-lightbox">
+                                    <span class="close"><a href="#">X</a></span>
+                                    <img src="{0}" alt="Configure FileZilla">
+                                    <a class="expand" href="#image-1"></a>
+                                </div>
+                            </div>
+                            <div class="holder">
+                                <div id="image-2" class="image-lightbox">
+                                    <span class="close"><a href="#">X</a></span>
+                                    <img src="{1}" alt="Navigate with FileZilla">
+                                    <a class="expand" href="#image-2"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                        <center><strong>then push "connect"</strong></center>
+                    <br>
+                    <br>
                     <p>You are connected to your user specific area where your request
-                    are stored for two weeks. You can navigate and select whole or
-                    part of the available data following the path "/home/user/rql_download/imagen". 
-                    You should find one entry for each request in this directory. 
+                    are stored for <strong>two weeks</strong>.<br> You can navigate and select whole or
+                    part of the available data following the path "/home/user/rql_download/imagen".
+                    You should find one entry for each request in this directory.
                     Each request/entry contains a file named RESULT_REQUEST.json or
                     RESULT_REQUEST.csv and the data itself.</p>
-                    <p>Then as usual for an sftp site, select the local directory 
+                    <p>Then as usual for an sftp site, select the local directory
                     where you will receive the data and start the transfer. If you
                     made a very general request, you may be rapidly flooded with data.</p>
                     <p>In the current version, the structure of the received data may seem a bit messy.
                     This should be fixed in future version.</p>
-                </div>
             </div>
             </div>
             </div>
@@ -188,7 +206,7 @@ class HelpPage(NullView):
                     </div>
                     <p>You may now press the "Save Search" button and save this specific download request.</p>
                 </div>
-             
+
                 <!-- About acquisition centre and data type-->
                 <div class="span7">
                   <p><strong>"All DTI scans from Nottingham"</strong></p>
@@ -203,7 +221,7 @@ class HelpPage(NullView):
             </div>
             </div>
             </div>
-                  
+
 
             <div class="panel panel-info">
             <div class="panel-heading">
@@ -222,7 +240,7 @@ class HelpPage(NullView):
                     <ul>
                         <li>&bull; 0.1: this version</li>
                         <li>&bull; 0.2: introduction of new raw data with restricted
-                        access policies (genetics, imputed genetics, 
+                        access policies (genetics, imputed genetics,
                         gene-expresssion, methylation). Helpers to customize the download mechanisms,</li>
                         <li>&bull; 0.3: questionnaires and score,</li>
                         <li>&bull; 0.4: (to be defined),</li>
@@ -232,8 +250,12 @@ class HelpPage(NullView):
             </div>
             </div>
             </div>
-            </div>"""
+            </div>
+""".format(self._cw.data_url("images/SetupFZ.png"),
+           self._cw.data_url("images/NavFZ.png"))
         self.w(content)
+
+
 
 
 def registration_callback(vreg):
