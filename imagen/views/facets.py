@@ -121,6 +121,15 @@ class GMSubjectFacet(facet.RQLPathFacet):
     title = _("Subjects")
 
 
+class GMPlatformFacet(facet.RQLPathFacet):
+    __regid__ = "genomicmeasure-platform-facet"
+    __select__ = is_instance("GenomicMeasure")
+    path = ["X platform P", "P identifier N"]
+    order = 5
+    filter_variable = "N"
+    title = _("Platform")
+
+
 ##############################################################################
 # Factory
 ##############################################################################
@@ -140,6 +149,7 @@ def registration_callback(vreg):
     vreg.register(GMQCFacet)
     vreg.register(GMformatFacet)
     vreg.register(GMSubjectFacet)
+    vreg.register(GMPlatformFacet)
 
     vreg.unregister(ScanLabelFacet)
     vreg.unregister(MeasureAgeFacet)
