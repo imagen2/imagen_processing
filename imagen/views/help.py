@@ -19,13 +19,13 @@ class HelpPage(NullView):
         content = u"""
             <div class="container">
                 <div class="span7">
-                  <p>This website and data served are still in beta (V0.1).</p>
-                  <p>Comments are welcome (imagendatabase&#64;cea.fr)</p>
-                  <p>The core of our system is based on the <a href="http://www.cubicweb.org/">CubicWeb</a> framework. We chose it because it brings:
+                  <p>This website and data served are still in beta (V0.2).</p>
+                  <p>Comments are welcome (<a href="mailto:imagendatabase@cea.fr">imagendatabase@cea.fr</a>).</p>
+                  <p>The core of our system is based on the <a href="http://www.cubicweb.org/">CubicWeb</a> framework chosen because it brings:
                   <ul>
 	                <li>&bull; tools to hold together complex/heterogeneous data,</li>
                     <li>&bull; a versatile engine driven by the data model,</li>
-                    <li>&bull; a semantic query language RQl (similar to W3C's <a href="http://www.w3.org/standards/techs/sparql#w3c_all">SPARQL</a>)</li>
+                    <li>&bull; a semantic query language RQL (equivalent to but simpler than W3C's <a href="http://www.w3.org/standards/techs/sparql#w3c_all">SPARQL</a>)</li>
                     <li>&bull; a common mechanism for visualising/exporting data</li>
                   </ul>
                   </p>
@@ -49,11 +49,11 @@ class HelpPage(NullView):
             <div id="about_data" class="collapse">
             <div class="container">
                 <div class="span7">
-                  <p>The current site and the data it serves are in version 0.1.
+                  <p>The current site and the data it serves are in version 0.2.
                   It comprises raw images for BL and FU2.
                   BL raw images are the ones currently available from the Imagen XNAT serveur.
-                  FU2 raw images are the ones that successfully flew to NeurSpin during the second
-                  follow-up; some more FU2 raw images are to come soon as they will be available.</p>
+                  FU2 raw images are the ones that successfully sent to NeuroSpin during the second
+                  follow-up; more FU2 raw images are to come soon as they will be available.</p>
 
                   <p>In version 0.1, no DICOM images, no questionnaires, nor scores are available.
                   Questionnaires and scores will be released in the following versions.</p>
@@ -72,8 +72,8 @@ class HelpPage(NullView):
                     </ul>
                   </p>
 
-                  <p><strong>Please use Chrome and Firefox to browse ImagenV2 server</strong></p>
-                  <p><strong>and FileZilla to retrieve requested data.</strong></p>
+                  <p><strong>Please use Chrome or Firefox to browse Imagen&nbsp;V2 server</strong></p>
+                  <p><strong>and SFTP clients such as WinSCP or FileZilla to retrieve requested data.</strong></p>
                 </div>
             </div>
             </div>
@@ -96,10 +96,10 @@ class HelpPage(NullView):
             <div class="container">
                   <p>This is one of the most innovative contributions in the version
                   of the server. The download request is processed so that it results
-                  in an easy-to-fetch item on a sftp file server. Common acces-rights
-                  are used for this sftp server and the ImagenV2 server.</p>
+                  in an easy-to-fetch item on an SFTP file server. Common acces-rights
+                  are used for this SFTP server and the Imagen&nbsp;V2 server.</p>
                     <p><strong>"I want to retrieve all ADNI_MPRAGE data from the project"</strong></p>
-                    <p>Use your browser to connect the ImagenV2 server:</p>
+                    <p>Use your browser to connect the Imagen&nbsp;V2 server:</p>
                     <ul>
                         <li>&bull; push the Scans button,</li>
                         <li>&bull; use faceting to select ADNI_MPRAGE (refine with the
@@ -113,7 +113,7 @@ class HelpPage(NullView):
                         return to the page your were previously navigating,</li>
                     </ul>
                     <br>
-                    <p><strong>Use your FileZilla client to connect the sftp server.<br>
+                    <p><strong>Use your FileZilla client to connect the SFTP server.<br>
                     <div class="panel-body">
                         Configuration: </p></strong>
                         <dl class="dl-horizontal">
@@ -121,7 +121,7 @@ class HelpPage(NullView):
                             <dt>protocol</dt><dd>SFTP - SSH File Transfer Protocol</dd>
                             <dt>authentication</dt><dd>regular</dd>
                             <dt>id/pwd</dt><dd>the same id and passwd you use for the
-                            ImagenV2 server</dd><br>
+                            Imagen&nbsp;V2 server</dd><br>
                         </dl>
                         <div id="images-box">
                             <div class="holder">
@@ -212,7 +212,7 @@ class HelpPage(NullView):
                   <p><strong>"All DTI scans from Nottingham"</strong></p>
                     <div class="panel panel-info">
                     <div class="panel-heading">
-                    <p>Any  S, P, C WHERE P is Subject, S is Scan, A is Assessment,  P concerned_by A, C holds A, C name 'NOTTINGHAM', A uses S, S type 'DTI'</p>
+                    <p>Any S, P, C WHERE P is Subject, S is Scan, A is Assessment, P concerned_by A, C holds A, C name 'NOTTINGHAM', A uses S, S type 'DTI'</p>
                     </div>
                     </div>
                     <p>You may now press the "Save Search" button and save this specific download request.</p>
@@ -254,8 +254,6 @@ class HelpPage(NullView):
 """.format(self._cw.data_url("images/SetupFZ.png"),
            self._cw.data_url("images/NavFZ.png"))
         self.w(content)
-
-
 
 
 def registration_callback(vreg):
