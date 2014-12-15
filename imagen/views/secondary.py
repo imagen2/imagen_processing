@@ -48,7 +48,7 @@ class ImagenScanOutOfContextView(EntityView):
         self.w(u'<div class="col-md-2"><p class="text-center">{0}</p></div>'.format(image))
         # > second element: the scan description + link
         self.w(u'<div class="col-md-10"><h4>{0}</h4>'.format(entity.view("incontext")))
-        self.w(u'Type <em>{0}</em> - Fromat <em>{1}</em></div>'.format(entity.type, entity.format))
+        self.w(u'Type <em>{0}</em> - Format <em>{1}</em></div>'.format(entity.type, entity.format))
         self.w(u'</div>')
         # > third element: the see more button
         self.w(u'<div class="col-md-4">')
