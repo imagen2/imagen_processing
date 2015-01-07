@@ -25,7 +25,7 @@ class HelpPage(NullView):
                   <ul>
 	                <li>&bull; tools to hold together complex/heterogeneous data,</li>
                     <li>&bull; a versatile engine driven by the data model,</li>
-                    <li>&bull; a semantic query language RQL (equivalent to but simpler than W3C's <a href="http://www.w3.org/standards/techs/sparql#w3c_all">SPARQL</a>)</li>
+                    <li>&bull; a semantic query language <a href="http://docs.cubicweb.org/annexes/rql/language">RQL</a> (equivalent to but simpler than W3C's <a href="http://www.w3.org/standards/techs/sparql#w3c_all">SPARQL</a>)</li>
                     <li>&bull; a common mechanism for visualising/exporting data</li>
                   </ul>
                   </p>
@@ -49,31 +49,32 @@ class HelpPage(NullView):
             <div id="about_data" class="collapse">
             <div class="container">
                 <div class="span7">
-                  <p>The current site and the data it serves are in version 0.2.
+                  <p>The current site and the data it serves are still in beta version 0.2.
                   It comprises raw images for BL and FU2.
                   BL raw images are the ones currently available from the Imagen XNAT serveur.
-                  FU2 raw images are the ones that successfully sent to NeuroSpin during the second
+                  FU2 raw images are the ones that were successfully sent to NeuroSpin during the second
                   follow-up; more FU2 raw images are to come soon as they will be available.</p>
 
-                  <p>In version 0.1, no DICOM images, no questionnaires, nor scores are available.
-                  Questionnaires and scores will be released in the following versions.</p>
+                  <p>In version 0.1, all known subjects in the study (enrollment of subjects only occurs
+                  during BL) are indexed, but no DICOM images, questionnaires or scores are available.
+                  Questionnaires and scores will be released in upcoming versions.</p>
 
-                  <p>All known subjects in the study (enrollment of subjects only occurs
-                  during BL) are indexed in version 0.1.</p>
+                  <p>In version 0.2, genetics have been added. Questionnaires and scores will
+                  be released in upcoming versions.</p>
 
-                  <p>This version 0.1. exhibits some capabilities of the final renovated version.
+                  <p>This beta version exhibits some capabilities of the final renovated version.
                   In particular :
                     <ul>
                         <li>&bull; navigation according to natural pivotal concepts (subjects, exams),</li>
                         <li>&bull; faceting functions that enables to refine intuitively the current request,</li>
                         <li>&bull; statistics functions in the context of the view,</li>
                         <li>&bull; access to the <strong>data download</strong> mechanisms,</li>
-                        <li>&bull; access rights are operating and enforced,</li>
+                        <li>&bull; access rights are operating and enforced.</li>
                     </ul>
                   </p>
 
-                  <p><strong>Please use Chrome or Firefox to browse Imagen&nbsp;V2 server</strong></p>
-                  <p><strong>and SFTP clients such as WinSCP or FileZilla to retrieve requested data.</strong></p>
+                  <p><strong>Please use Chrome or Firefox to browse Imagen&nbsp;V2 server
+                  and SFTP clients such as WinSCP or FileZilla to retrieve requested data.</strong></p>
                 </div>
             </div>
             </div>
@@ -176,12 +177,12 @@ class HelpPage(NullView):
                 <div class="span7">
                   <p>One of the reasons we choose CubicWeb is its semantic query
                   language. The following examples may appear frustrating, because
-                  they require to understand some syntax (see <a href=http://docs.cubicweb.org/annexes/rql/language">RQL language</a>)
+                  they require to understand some syntax (see <a href="http://docs.cubicweb.org/annexes/rql/language">RQL language</a>)
                   and the model of the data. Nevertheless, you should be able to feel
                   its interest through the following.
                   </p>
                   <p>Find the research box in the bar at the top of the page,
-                  Cut and paste the query examples thereafter (the part in the blue frames)
+                  cut and paste the query examples thereafter (the part in the blue frames)
                   </p>
                 </div>
 
@@ -238,7 +239,7 @@ class HelpPage(NullView):
                 <div class="span7">
                 <p>Provisional roadmap:
                     <ul>
-                        <li>&bull; 0.1: this version</li>
+                        <li>&bull; 0.1: initial version</li>
                         <li>&bull; 0.2: introduction of new raw data with restricted
                         access policies (genetics, imputed genetics,
                         gene-expresssion, methylation). Helpers to customize the download mechanisms,</li>
