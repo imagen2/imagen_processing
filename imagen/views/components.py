@@ -120,7 +120,7 @@ class ImagenNavLeftBox(component.CtxComponent):
         # Questionnaire Runs
         w(u'<div class="btn-toolbar">')
         w(u'<div class="btn-group-vertical btn-block">')
-        href = self._cw.build_url(rql='Any Q Where Q is QuestionnaireRun')
+        href = self._cw.build_url(vid='questionnaires_view')
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
         w(u'Questionnaires</a>')
         w(u'</div></div><br/>')
