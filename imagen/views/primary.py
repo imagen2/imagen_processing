@@ -9,93 +9,144 @@
 
 from cubicweb.view import EntityStartupView
 from cubicweb.web.views.ajaxcontroller import ajaxfunc
-import cubes.imagen as cube
-import os
+from collections import OrderedDict
+from cubicweb.web.views import csvexport
+from cubicweb.view import View
+import json
+import time
+
+class CSVRsetView(csvexport.CSVMixIn, View):
+    """dumps raw result set in CSV"""
+    __regid__ = 'csvexport-jtable'
+    title = _('csv export')
+
+    def call(self):
+
+        qname = self._cw.form['qname']
+        timepoint = self._cw.form['timepoint']
+
+        rql_questions_text = "DISTINCT Any QUT ORDERBY QUT WHERE Q is Questionnaire, " \
+                     "QU r_questionnaire Q, QU text QUT, " \
+                     "Q name '{0}'".format(qname)
+        questions_text_rset = self._cw.execute(rql_questions_text)
+
+        questions = []
+        header = ["ID"]
+        for question in questions_text_rset:
+            questions.append(question[0])
+        header += questions
+
+        rql = "Any QR, C ORDERBY C WHERE QR is QuestionnaireRun, QR r_concerns S, " \
+              "S code_in_study C, QR r_instance_of Q, Q name '{0}', " \
+              "QR in_assessment A, A timepoint '{1}'".format(qname, timepoint)
+        rset = self._cw.execute(rql)
+
+        # Build the dict that will be dumped in the jtable
+        records = []
+
+        for row_nb in range(len(rset)):
+            eid = rset[row_nb][0]
+            cis = rset[row_nb][1]
+            # Start filling the datatable dataset
+            dstruct = [cis] + [''] * len(questions_text_rset)
+
+
+            rql = "Any QN, V Where QR eid '{0}', A is OpenAnswer, " \
+                  "A r_questionnaire_run QR, A r_question Q, Q text QN, " \
+                  "A value V".format(eid)
+            answer_rset = self._cw.execute(rql)
+
+            for qname, answer in answer_rset:
+
+            # Go through all answers
+                index = questions.index(qname)
+                dstruct[index+1] = answer
+
+            # Store the jtabel formated row
+            records.append(dstruct)
+
+        buff = []
+        buff.append(header)
+        for record in records:
+            buff.append(record)
+
+        writer = self.csvwriter()
+
+        for subject_data in buff:
+            writer.writerow(subject_data)
 
 
 @ajaxfunc(output_type='json')
-def csv_download(self, qname, timepoint, headers_str):
+def csv_download(self, qname, timepoint):
 
-    rql_all = ("Any SID, QUT, OAV WHERE QR is QuestionnaireRun, "
-               "OA r_questionnaire_run QR, OA r_question QU, OA value OAV, "
-               "QU r_questionnaire Q, QU text QUT, QR r_concerns S, "
-               "S code_in_study SID,QR r_instance_of Q, Q name '{0}', "
-               "QR in_assessment A, A timepoint '{1}'".format(qname, timepoint))
-    rset_all = self._cw.execute(rql_all)
+    url = self._cw.build_url(vid='csvexport-jtable', qname = qname, timepoint =  timepoint)
 
-    subject_rset = {}
-    for line in rset_all:
-        patient_id = line[0]
-        question_text = line[1]
-        answer_value = line[2]
-        if patient_id not in subject_rset.keys():
-            subject_rset[patient_id] = {}
-        subject_rset[patient_id][question_text] = answer_value
-
-    buff = ""
-    for head in headers_str.split():
-            buff += "{0}, ".format(head)
-    buff += "\n"
-
-    for subject, value in sorted(subject_rset.iteritems()):
-        buff += "{0}, ".format(subject)
-        for question, answer in sorted(value.iteritems()):
-            if answer and len(str(answer)):
-                buff += "{0}, ".format(answer)
-            else:
-                buff += "-, "
-        buff += "\n"
-
-    login = self._cw.session.login
-    path = os.path.join(cube.__path__[0], "data", "tmp", '{0}_table_{1}_{2}.csv'
-                        .format(login, qname, timepoint))
-    _csvFile = open(path, 'wb')
-    _csvFile.write(buff)
-    _csvFile.close()
-
-    url = self._cw.data_url(path)
     link = {"dl_url": url}
 
     return link
 
 
 @ajaxfunc(output_type='json')
-def get_db_data(self, jtstartindex, jtpagesize,
-                nb_subjects, nb_questions, qname, timepoint):
+def get_db_data(self):
+    """
+    sEcho: Internal variable.
+    iColumns: Number of columns being displayed.
+    sColumns: List of column names.
+    iDisplayStart: Where to paginate from.
+    iDisplayLength: Number of rows that are visible.
+    sSearch: String to search globally for.
+    bEscapeRegex: Whether search is a regular expression.
+    sSearch_(int) : Column-specific search (one each for each column).
+    bEscapeRegex_(int) : Whether or not the column-specific searches are regular expression objects.
+    iSortingCols: Number of columns to sort by.
+    iSortDir: Direction to sort in.
+    """
 
-    rql_all = ("Any SID, QUT, OAV ORDERBY SID LIMIT {2} OFFSET {3} "
-               "WHERE QR is QuestionnaireRun, OA r_questionnaire_run QR, "
-               "OA r_question QU, OA value OAV, QU r_questionnaire Q, "
-               "QU text QUT, QR r_concerns S, S code_in_study SID, "
-               "QR r_instance_of Q, Q name '{0}', QR in_assessment A, "
-               "A timepoint '{1}'".format(qname, timepoint,
-                                          jtpagesize*nb_questions,
-                                          jtstartindex*nb_questions))
-    rset_all = self._cw.execute(rql_all)
+    iDisplayStart = int(self._cw.form['iDisplayStart'])
+    iDisplayLength = int(self._cw.form['iDisplayLength'])
+    sSearch = self._cw.form['sSearch']
+    qname = self._cw.form['qname']
+    timepoint = self._cw.form['timepoint']
+    sSortDir_0 = self._cw.form['sSortDir_0']
+    nb_subjects = int(self._cw.form['nb_subjects'])
+    questions = json.loads(self._cw.form['questions'])
 
-    subject_rset = {}
-    for line in rset_all:
-        patient_id = line[0]
-        question_text = line[1]
-        answer_value = line[2]
-        if patient_id not in subject_rset.keys():
-            subject_rset[patient_id] = {}
-        subject_rset[patient_id][question_text] = answer_value
+    rql = "Any QR, C ORDERBY C {0} WHERE QR is QuestionnaireRun, QR r_concerns S, " \
+          "S code_in_study C, S code_in_study ILIKE '%{1}%', QR r_instance_of Q, Q name '{2}', " \
+          "QR in_assessment A, A timepoint '{3}'".format(sSortDir_0, sSearch, qname, timepoint)
+    rset = self._cw.execute(rql)
 
+    # Build the dict that will be dumped in the datatable
     records = []
-    cnt = jtstartindex + 1
-    for key, value in sorted(subject_rset.iteritems()):
-        subject_dict = {'PatientID': key, 'row': cnt}
-        for key1, value1 in value.iteritems():
-            subject_dict[key1] = value1
-        records.append(subject_dict)
-        cnt += 1
+    if (iDisplayLength > len(rset)) or (iDisplayLength == -1):
+        result_range = range(len(rset))
+    else:
+        result_range = range(iDisplayStart, min((iDisplayStart + iDisplayLength),len(rset)))
 
-    data = {"Result": "OK",
-            "Records": records,
-            "TotalRecordCount": nb_subjects}
+    for row_nb in result_range:
+        eid = rset[row_nb][0]
+        cis = rset[row_nb][1]
+        # Start filling the datatable dataset
+        dstruct = [cis] + [''] * len(questions)
 
-    return data
+
+        rql = "Any QN, V Where QR eid '{0}', A is OpenAnswer, " \
+              "A r_questionnaire_run QR, A r_question Q, Q text QN, " \
+              "A value V".format(eid)
+        answer_rset = self._cw.execute(rql)
+
+        for qname, answer in answer_rset:
+            index = questions.index(qname)
+            dstruct[index+1] = answer
+
+        # Store the jtabel formated row
+        records.append(dstruct)
+
+    return {
+  "iTotalRecords":nb_subjects,
+  "iTotalDisplayRecords":len(rset),
+  "aaData":records
+}
 
 
 class QuestionnaireRunsView(EntityStartupView):
@@ -107,120 +158,111 @@ class QuestionnaireRunsView(EntityStartupView):
         qname = self._cw.form['qname']
         timepoint = self._cw.form['timepoint']
 
-        rql_nb_subjects = "Any COUNT(SID) WHERE QR is QuestionnaireRun, " \
+        rql_nb_subjects = "DISTINCT Any COUNT(SID) WHERE QR is QuestionnaireRun, " \
                           "QR r_concerns S, S code_in_study SID, " \
                           "QR r_instance_of Q, Q name '{0}', QR in_assessment A," \
                           " A timepoint '{1}'".format(qname, timepoint)
-        nb_subjects_rset = self._cw.execute(rql_nb_subjects)
-        nb_subjects = int(nb_subjects_rset[0][0])
+        nb_subjects = self._cw.execute(rql_nb_subjects)[0][0]
 
-        rql_nb_questions = "Any COUNT(QU) WHERE Q is Questionnaire, " \
-                           "Q name '{0}', QU r_questionnaire Q".format(qname)
-        nb_questions_rset = self._cw.execute(rql_nb_questions)
-        nb_questions = int(nb_questions_rset[0][0])
-
-        rql_questions_text = "Any QUT ORDERBY QUT WHERE Q is Questionnaire, " \
+        rql_questions_text = "DISTINCT Any QUT ORDERBY QUT WHERE Q is Questionnaire, " \
                              "QU r_questionnaire Q, QU text QUT, " \
                              "Q name '{0}'".format(qname)
         questions_text_rset = self._cw.execute(rql_questions_text)
 
-        headers_str = ""
-        fields_str = "{"
-        fields_str += "row:{key:true,title:'row'},"
-        fields_str += "PatientID:{title:'PatientID'},"
-        headers_str += "PatientID "
-        for question_text in questions_text_rset:
-                fields_str += "%s:{title:'%s'},"\
-                              % (question_text[0], question_text[0])
-                headers_str += "%s " % (question_text[0])
-        fields_str += "}"
+        questions = []
+        for question in questions_text_rset:
+            questions.append(question[0])
 
-        self._cw.add_js('jtable.2.4.0/jquery.jtable.min.js')
-        self._cw.add_css('jtable.2.4.0/themes/lightcolor/blue/jtable.css')
-        wait_image_path = os.path.join(cube.__path__[0], "data",
-                                       "images", 'please_wait2.gif')
-        image_url = self._cw.data_url(wait_image_path)
-        html = """<div id='loadingmessage' style='display:none' align="center">
-  <img src='""" + image_url + """'/>
-</div>"""
-        html += '<div style="overflow:auto;height: 100%; width: 140%;">'
-        html += """<div id="PatientTableContainer"></div>"""
-        html += """<script type="text/javascript">
+        aoColumns = [{ "sTitle": "Subject ID" }]
+        for question_text in questions:
+            aoColumns += [{ "sTitle": question_text }]
 
-    $(document).ready(function () {
+        self._cw.add_css('jquery.dataTables.min.css')
 
-        $('#PatientTableContainer').jtable({
-            title: '""" + str(qname).upper() + """ """ + str(timepoint).upper()\
-                + """',
-            paging: true,
-            pageSize: 10,
-            selecting: true,
-            multiselect: true,
-            toolbar: {
-                hoverAnimation: true,
-                hoverAnimationDuration: 5,
-                hoverAnimationEasing: undefined,
-                items: [{
-                    icon: '/images/excel.png',
-                    text: 'Export to Excel',
-                    click: function() {
-    $('#loadingmessage').show();
-    var post = $.ajax({
-    url: 'json?fname=csv_download&arg=' + """ + """'"{0}"'"""\
-            .format(str(qname)) + """ + '&arg=' + """ + """'"{0}"'"""\
-            .format(str(timepoint)) + """ + '&arg=' + """ + """'"{0}"'"""\
-            .format(str(headers_str)) + """,
-    data: {json: JSON.stringify({dl_url: "Jose"})} ,
-    type: "POST"
-});
-
-post.done(function(p){
-    window.location = p.dl_url
-    $('#loadingmessage').hide();
-});
-
-post.fail(function(){
-    alert("Error : Download Failed!");
-});
-}
-                }]
-            },
-            actions: {
-                listAction: function (postData, jtParams) {
-                    return $.Deferred(function ($dfd) {
-                        $.ajax({
-                            url: 'json?fname=get_db_data&arg=' + jtParams.jtStartIndex + '&arg=' + jtParams.jtPageSize + '&arg=' + """\
-                + str(nb_subjects) + """ + '&arg=' + """ \
-                + str(nb_questions) + """ + '&arg=' + """ + """'"{0}"'"""\
-            .format(str(qname)) + """ + '&arg=' + """ + """'"{0}"'"""\
-            .format(str(timepoint)) + """,
-                            type: 'POST',
-                            dataType: 'json',
-                            data: postData,
-                            success: function (data) {
-                                $dfd.resolve(data);
-                            },
-                            error: function () {
-                                $dfd.reject();
-                            }
-                        });
-                    });
-                },
-            },
-            fields: """
-
-        html += fields_str
-
-        html += """
-        });
-
-        $('#PatientTableContainer').jtable('load');
-    });
-
-</script>"""
+        html = "<html>"
+        html += "<head>"
+        html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.datatables.net/release-datatables/extensions/TableTools/css/dataTables.tableTools.css\">"
+        html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://datatables.net/release-datatables/extensions/FixedColumns/css/dataTables.fixedColumns.css\">"
+        html += "<script type=\"text/javascript\" charset=\"utf8\" src=\"http://code.jquery.com/jquery-1.11.2.min.js\"></script>"
+        html += "<script type=\"text/javascript\" charset=\"utf8\" src=\"http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js\"></script>"
+        html += "<script type=\"text/javascript\" charset=\"utf8\" src=\"http://www.datatables.net/release-datatables/extensions/TableTools/js/dataTables.tableTools.js\"></script>"
+        html += "<script type=\"text/javascript\" charset=\"utf8\" src=\"http://datatables.net/release-datatables/extensions/FixedColumns/js/dataTables.fixedColumns.js\"></script>"
+        html += "<script type=\"text/javascript\" charset=\"utf8\" src=\"http://cdn.datatables.net/plug-ins/f2c75b7247b/api/fnSetFilteringDelay.js\"></script>"
+        html += "<style>"
+        html += "th, td { white-space: nowrap; }"
+        html += "div.dataTables_wrapper {"
+        html += "width: 800px;"
+        html += "margin: 0 auto;"
+        html += "}"
+        html += "</style>"
+        html += "</head>"
+        html += "<script>"
+        html += "$(document).ready(function() {"
+        html += "var table = $('#the_table').dataTable( {"
+        html += "\"aoColumnDefs\": ["
+        html += "{{ 'bSortable': false, 'aTargets': {0} }}".format(str(range(len(aoColumns))[1:]))
+        html += "],"
+        html += "\"lengthMenu\": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, \"All\"] ],"
+        html += "\"scrollX\": true,"
+        html += "\"scrollY\": \"600px\","
+        html += "\"scrollCollapse\": true,"
+        html += "\"dom\": 'T<\"clear\">lfrtip',"
+        html += "\"tableTools\": {"
+        html += "\"sRowSelect\": \"multi\","
+        html += "\"sSwfPath\": \"http://cdn.datatables.net/tabletools/2.2.2/swf/copy_csv_xls_pdf.swf\","
+        html += "\"aButtons\": [ \"copy\", \"print\", \"csv\", {"
+        html += "\"sExtends\": \"ajax\", \"sButtonText\": \"CSV - All results\",\"fnAjaxComplete\": function ( XMLHttpRequest, textStatus ) {"
+        html += "window.location = XMLHttpRequest.dl_url;"
+        html += "},"
+        html += "\"sAjaxUrl\": 'ajax?fname=csv_download&arg=' + '\"{0}\"' + '&arg=' + '\"{1}\"'".format(qname, timepoint)
+        html += "} ]"
+        html += "},"
+        html += "\"sServerMethod\": \"POST\","
+        html += "\"oLanguage\": {"
+        html += "\"sSearch\": \"Subject ID search\""
+        html += "},"
+        html += "\"pagingType\": \"full_numbers\","
+        html += "\"aoColumns\": {0},".format(json.dumps(aoColumns))
+        html += "'bProcessing':true,"
+        html += "'bServerSide':true,"
+        html += "'sAjaxSource':'ajax?fname=get_db_data',"
+        html += "\"fnServerParams\": function (aoData) {"
+        html += "aoData.push({"
+        html += "name: \"qname\","
+        html += "value: \"{0}\"".format(qname)
+        html += "}, {"
+        html += "name: \"timepoint\","
+        html += "value: \"{0}\"".format(timepoint)
+        html += "}, {"
+        html += "name: \"nb_questions\","
+        html += "value: \"{0}\"".format(len(questions))
+        html += "},{"
+        html += "name: \"nb_subjects\","
+        html += "value: \"{0}\"".format(nb_subjects)
+        html += "}, {"
+        html += "name: \"questions\","
+        html += "value: '{0}'".format(json.dumps(questions))
+        html += "});"
+        html += "},"
+        html += "} );"
+        html += "new $.fn.dataTable.FixedColumns( table );"
+        html += "table.fnSetFilteringDelay(2000);"
+        html += "} );"
+        html += "</script>"
+        html += "</head>"
+        html += "<body>"
+        html += "<div style=\"width:500px\">"
+        html += "<table id=\"the_table\">"
+        html += "<thead></thead>"
+        html += "<tbody>"
+        html += "</tbody>"
+        html += "</table>"
         html += "</div>"
+        html += "</body>"
+        html += "</html>"
 
-        self.w(u'{0}'.format(html))
+        # Creat the corrsponding html page
+        self.w(unicode(html))
 
 
 class QuestionnairesView(EntityStartupView):
@@ -229,11 +271,13 @@ class QuestionnairesView(EntityStartupView):
 
     def call(self, **kwargs):
 
-        rql = " Any QN WHERE Q is Questionnaire, Q name QN"
+        rql = "DISTINCT Any QN ORDERBY QN ASC WHERE Q is Questionnaire, Q name QN"
         qname_rset = self._cw.execute(rql)
-        sorted_qname = sorted(qname_rset)
+
+        rql = "DISTINCT Any TP ORDERBY TP ASC WHERE A is Assessment, A timepoint TP"
+        timepoints_rset =self._cw.execute(rql)
+
         headers = ["Questionnaire"]
-        timepoints = ["BL", "FU1", "FU2"]
         cell_size = 300
         html = '<div style="height: 400px; width: 100%;">'
         max_size = (len(headers) + 1) * cell_size
@@ -250,15 +294,15 @@ class QuestionnairesView(EntityStartupView):
                  '300px; width: {0}px;">'.format(max_size))
         html += ('<table class="table table-bordered" '
                  'style="width: 100%;">')
-        for qname in sorted_qname:
+        for qname in qname_rset:
             html += ('<tr><td style="width:{1}px"><strong>{0}</strong></a>'
                      '</td>'.format(qname[0], cell_size))
-            for timepoint in timepoints:
+            for timepoint in timepoints_rset:
                 html += '<td style="width:{1}px"><a href="{2}">{0}</td>'.format(
-                        timepoint, cell_size,
+                        timepoint[0], cell_size,
                         self._cw.build_url(vid='questionnaireruns_view',
                                            qname=qname[0],
-                                           timepoint=timepoint))
+                                           timepoint=timepoint[0]))
         html += "</table>"
         html += "</div>"
         html += '</div>'
@@ -273,3 +317,4 @@ def registration_callback(vreg):
     vreg.register(QuestionnaireRunsView)
     vreg.register(get_db_data)
     vreg.register(csv_download)
+    vreg.register(CSVRsetView)
