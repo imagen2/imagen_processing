@@ -186,7 +186,10 @@ class GenomicMeasure(AnyEntity):
     __regid__ = 'GenomicMeasure'
 
     def dc_title(self):
-        return self.chromset
+        if self.type == "imput":
+            return self.chromset
+        else:
+            return self.identifier
 
     @property
     def symbol(self):
