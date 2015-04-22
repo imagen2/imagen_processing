@@ -1,0 +1,78 @@
+.facet{
+ max-width: 100%;
+ }
+
+#focusLink{
+ color: #FFFFFF;
+}
+
+.facetBody {
+ border-style: none !important;
+}
+
+.facetBody .ui-slider{
+ width: 100%;
+ margin-left: 10%;
+ }
+
+.btn-facet{
+ margin-bottom: 10px !important;
+}
+
+.progress {
+    margin-bottom: 0px;
+}
+
+.form-control {
+	display: inline;
+	width: 85%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857;
+    color: #555;
+    vertical-align: middle;
+    background-color: #FFF;
+    background-image: none;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+
+select[size] {
+    height: auto;
+    width: auto;
+}
+
+#sliding-table {
+	width:100%;
+	overflow:auto;
+}
+
+.col-md-3 {
+}
+
+.bg-warning {
+    background-color: #FCF8E3;
+}
+
+.bg-success {
+    background-color: #DFF0D8;
+}
+
+.bg-info {
+    background-color: #D9EDF7;
+}
+
+.bg-danger {
+    background-color: #F2DEDE;
+}
+
+.subject_cell{
+    width: "10%";
+}
+
+.span8 {
+    width: 40%;
+}
