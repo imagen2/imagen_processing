@@ -24,6 +24,12 @@ You could setup site properties or a workflow here for example.
 # Example of site property change
 set_property('ui.site-title', "Imagen Database")
 
+
+# Set cards
+from cubes.imagen_expo.migration.cards import create_or_update_static_cards
+create_or_update_static_cards(session)
+
+
 _LDAP_CONFIGURATION_DETAILS = {
     'synchronization-interval': '1min',
     'data-cnx-dn': u'***REMOVED***',
