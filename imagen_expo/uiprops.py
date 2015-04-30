@@ -23,6 +23,11 @@ STYLESHEETS += [
     data('fullcalendar-2.0.1/fullcalendar.css')]
 #STYLESHEETS_PRINT += [
 #   data('fullcalendar-2.0.1/fullcalendar.print.css')]
+
+
+JAVASCRIPTS += [
+    data('pdfobject.js')]
+
 #JAVASCRIPTS += [
 #    data('fullcalendar-2.0.1/lib/moment.min.js'),
 #    data('fullcalendar-2.0.1/lib/jquery.min.js'),

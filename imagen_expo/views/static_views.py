@@ -27,6 +27,9 @@ class QC_central(EntityStartupView):
     title = "QC central"
 
     def call(self, **kwargs):
+
+        self._cw.add_js("pdfobject.js")
+
         self.w(u'<div class="panel panel-warning">')
         self.w(u'<div class="panel-heading">')
         self.w(u'<h2 class="panel-title">WORK IN PROGRESS</h2>')
@@ -72,10 +75,11 @@ class QC_central(EntityStartupView):
         self.w(u'<h3>fMRI pre-processings</h3>')
         self.w(u'The pre-processing of the EPI data are done within SPM8 '
                '(Statistical Parametric Mapping, <a href="url">http://www.fil.'
-               'ion.ucl.ac.uk/spm/</a>). Time series data are first <b>corrected '
-               'for slice-timin'
-               'g</b>, then corrected for movement (spatial <b>realignment</b>), non-line'
-               'arly warped on the <b>MNI space</b> (using a <b>custom EPI template</b>), an'
+               'ion.ucl.ac.uk/spm/</a>). Time series data are first <b>correct'
+               'ed for slice-timin'
+               'g</b>, then corrected for movement (spatial <b>realignment</b>'
+               '), non-linearly warped on the <b>MNI space</b> (using a <b>cus'
+               'tom EPI template</b>), an'
                'd gaussian-<b>smoothed at 5mm-FWHM</b>.')
 
         self.w(u'<h3>fMRI first level analyses</h3>')
@@ -149,7 +153,8 @@ class QC_central(EntityStartupView):
         # GCA subtitle
         self.w(u'<div data-toggle="collapse" data-target="#doc_EPI_GCA">')
         self.w(u'<button type="button" class="btn btn-link">')
-        self.w(u'<center><h2><strong>GCA – Global Cognitive Assessment</strong></h2></center>')
+        self.w(u'<center><h2><strong>GCA – Global Cognitive Assessment'
+               '</strong></h2></center>')
         self.w(u'</button>')
         self.w(u'<span class="caret"></span>')
         self.w(u'</div>')
@@ -527,12 +532,51 @@ class QC_central(EntityStartupView):
         # FACE block
         # INTRO BLOCK
         self.w(u'<div id="doc_EPI_FACE" class="collapse">')
-        self.w(u'bla')
+
+        self.w(u'<div id="doc_EPI_FACE_pdf" style="height:800px;">')
+        self.w(u'<script type="text/javascript">')
+        self.w(u'window.onload = function (){')
+        self.w(u'var doc_epi = new PDFObject({{url:"{0}", '
+               'pdfOpenParams: {{view: "FitH", page: 20, '
+               'pagemode: "bookmarks"}}}}).embed("doc_EPI_FACE_pdf")'
+               ';}};'.format(self._cw.data_url('EPI_doc.pdf')))
+        self.w(u'</script>')
+        self.w(u"<p>It appears you don't have Adobe Reader or PDF support in t"
+               'his web browser. <a href="{0}">Click here to download t'
+               'he PDF</a></p>'.format(self._cw.data_url('EPI_doc.pdf')))
+        self.w(u'</div>')
 
         self.w(u'</div>')
         # end of FACE block
+        self.w(u'</div>')
+        self.w(u'</div>')
 
+        # DTI
+        self.w(u'<div class="panel panel-info">')
+        self.w(u'<div class="panel-heading">')
+        self.w(u'<div class="panel-title" ')
+        self.w(u'<h1><strong>Diffusion sequence</strong></h1>')
+        self.w(u'</div>')
+        # add download link
+        self.w(u'<a href="{0}"><button type="button">Download reference file ('
+               'pdf)</button></a>'.format(
+                   self._cw.data_url('diffusion_doc.pdf'),))
+        self.w(u'</div>')
+        self.w(u'<div class="panel-body">')
+#        self.w(u'<div id="doc_DTI_pdf" style="height:500px;">')
+#        self.w(u'<script type="text/javascript">')
+#        self.w(u'window.onload = function (){')
+#        self.w(u'var doc_diff = new PDFObject({{url:"{0}", '
+#               'pdfOpenParams: {{view: "FitH", page: 1, '
+#               'pagemode: "bookmarks"}}}}).embed("doc_DTI_pdf")'
+#               ';}};'.format(self._cw.data_url('diffusion_doc.pdf')))
+#        self.w(u'</script>')
+#        self.w(u"<p>It appears you don't have Adobe Reader or PDF support in t"
+#               'his web browser. <a href="{0}">Click here to download t'
+#               'he PDF</a></p>'.format(self._cw.data_url('diffusion_doc.pdf')))
+#        self.w(u'</div>')
 
+        self.w(u'</div>')
         self.w(u'</div>')
         self.w(u'</div>')
 
