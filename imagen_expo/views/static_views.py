@@ -504,7 +504,7 @@ class QC_central(EntityStartupView):
         # end of SST block
 
         # MID subtitle
-        self.w(u'<div data-toggle="collapse" data-target="#doc_EPI_MID">')
+        self.w(u'<div data-toggle="collapse" data-target="#doc_MID">')
         self.w(u'<button type="button" class="btn btn-link">')
         self.w(u'<center><h2><strong>MID – Modified Incentive Delay</strong>'
                '</h2></center>')
@@ -514,8 +514,13 @@ class QC_central(EntityStartupView):
 
         # MID block
         # INTRO BLOCK
-        self.w(u'<div id="doc_EPI_MID" class="collapse">')
-        self.w(u'bla')
+        self.w(u'<div id="doc_MID" class="collapse">')
+
+        self.w(u'<div id="doc_MID_pdf" style="height:800px;">')
+        self.w(u"<p>It appears you don't have Adobe Reader or PDF support in t"
+               'his web browser. <a href="{0}">Click here to download t'
+               'he PDF</a></p>'.format(self._cw.data_url('EPI_doc.pdf')))
+        self.w(u'</div>')
 
         self.w(u'</div>')
         # end of MID block
@@ -534,13 +539,6 @@ class QC_central(EntityStartupView):
         self.w(u'<div id="doc_EPI_FACE" class="collapse">')
 
         self.w(u'<div id="doc_EPI_FACE_pdf" style="height:800px;">')
-        self.w(u'<script type="text/javascript">')
-        self.w(u'window.onload = function (){')
-        self.w(u'var doc_epi = new PDFObject({{url:"{0}", '
-               'pdfOpenParams: {{view: "FitH", page: 20, '
-               'pagemode: "bookmarks"}}}}).embed("doc_EPI_FACE_pdf")'
-               ';}};'.format(self._cw.data_url('EPI_doc.pdf')))
-        self.w(u'</script>')
         self.w(u"<p>It appears you don't have Adobe Reader or PDF support in t"
                'his web browser. <a href="{0}">Click here to download t'
                'he PDF</a></p>'.format(self._cw.data_url('EPI_doc.pdf')))
@@ -548,6 +546,7 @@ class QC_central(EntityStartupView):
 
         self.w(u'</div>')
         # end of FACE block
+
         self.w(u'</div>')
         self.w(u'</div>')
 
@@ -563,22 +562,71 @@ class QC_central(EntityStartupView):
                    self._cw.data_url('diffusion_doc.pdf'),))
         self.w(u'</div>')
         self.w(u'<div class="panel-body">')
-#        self.w(u'<div id="doc_DTI_pdf" style="height:500px;">')
-#        self.w(u'<script type="text/javascript">')
-#        self.w(u'window.onload = function (){')
-#        self.w(u'var doc_diff = new PDFObject({{url:"{0}", '
-#               'pdfOpenParams: {{view: "FitH", page: 1, '
-#               'pagemode: "bookmarks"}}}}).embed("doc_DTI_pdf")'
-#               ';}};'.format(self._cw.data_url('diffusion_doc.pdf')))
-#        self.w(u'</script>')
-#        self.w(u"<p>It appears you don't have Adobe Reader or PDF support in t"
-#               'his web browser. <a href="{0}">Click here to download t'
-#               'he PDF</a></p>'.format(self._cw.data_url('diffusion_doc.pdf')))
-#        self.w(u'</div>')
+        self.w(u'<div id="doc_DTI_pdf" style="height:500px;">')
+        self.w(u"<p>It appears you don't have Adobe Reader or PDF support in t"
+               'his web browser. <a href="{0}">Click here to download t'
+               'he PDF</a></p>'.format(self._cw.data_url('diffusion_doc.pdf')))
+        self.w(u'</div>')
+
+        self.w(u'</div>')
 
         self.w(u'</div>')
         self.w(u'</div>')
-        self.w(u'</div>')
+
+        # JAVASCRIPTS
+        self.w(u'<script type="text/javascript">')
+
+        # DTI
+        self.w(u'var pdfOpen_params_dti = {'
+               'navpanes: 1,'
+               'view: "FitH",'
+               'pagemode: "thumbs",'
+               'page: 1'
+               '};')
+        # EPI MID
+        self.w(u'var pdfOpen_params_mid = {'
+               'navpanes: 1,'
+               'view: "FitH",'
+               'pagemode: "thumbs",'
+               'page: 11'
+               '};')
+        # EPI FACE
+        self.w(u'var pdfOpen_params_face = {'
+               'navpanes: 1,'
+               'view: "FitH",'
+               'pagemode: "thumbs",'
+               'page: 20'
+               '};')
+
+        # DTI
+        self.w(u'var pdfAttributes_dti = {{'
+               'url: "{0}",'
+               'pdfOpenParams: pdfOpen_params_dti'
+               '}};'.format(self._cw.data_url('diffusion_doc.pdf')))
+        # EPI MID
+        self.w(u'var pdfAttributes_mid = {{'
+               'url: "{0}",'
+               'pdfOpenParams: pdfOpen_params_mid'
+               '}};'.format(self._cw.data_url('EPI_doc.pdf')))
+        # EPI FACE
+        self.w(u'var pdfAttributes_face = {{'
+               'url: "{0}",'
+               'pdfOpenParams: pdfOpen_params_face'
+               '}};'.format(self._cw.data_url('EPI_doc.pdf')))
+
+        self.w(u'window.onload = function (){')
+        # DTI
+        self.w(u'var doc_dti = new PDFObject(pdfAttributes_dti);'
+               'doc_dti.embed("doc_DTI_pdf");')
+        # EPI MID
+        self.w(u'var doc_epi_mid = new PDFObject(pdfAttributes_mid);'
+               'doc_epi_mid.embed("doc_MID_pdf");')
+        # EPI FACE
+        self.w(u'var doc_epi_face = new PDFObject(pdfAttributes_face);'
+               'doc_epi_face.embed("doc_EPI_FACE_pdf");'
+               '};')
+
+        self.w(u'</script>')
 
 
 class Doc_smri(EntityStartupView):
