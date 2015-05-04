@@ -20,6 +20,7 @@
 
 
 from cubicweb.view import EntityStartupView
+from cubicweb.web.views.baseviews import NullView
 
 
 class QC_central(EntityStartupView):
@@ -624,6 +625,7 @@ class QC_central(EntityStartupView):
         # EPI FACE
         self.w(u'var doc_epi_face = new PDFObject(pdfAttributes_face);'
                'doc_epi_face.embed("doc_EPI_FACE_pdf");'
+
                '};')
 
         self.w(u'</script>')
@@ -645,33 +647,59 @@ class Doc_smri(EntityStartupView):
                "senatus.")
 
 
-class Doc_fmri(EntityStartupView):
+class Doc_fmri(NullView):
     __regid__ = "doc_FMRIData"
     title = "fMRI documentation"
+    templatable = False
 
     def call(self, **kwargs):
-        self.w(u"<h1> functional MRI documentaion</h1>")
-        self.w(u"<h2>  EPI MID </h2>")
-        self.w(u"Sed fruatur sane hoc solacio atque hanc insignem ignominiam, "
-               "quoniam uni praeter se inusta sit, putet esse leviorem, dum "
-               "modo, cuius exemplo se consolatur, eius exitum expectet, "
-               "praesertim cum in Albucio nec Pisonis libidines nec audacia "
-               "Gabini fuerit ac tamen hac una plaga conciderit, ignominia "
-               "senatus.")
-        self.w(u"<h2>  EPI FACES </h2>")
-        self.w(u"Quanta autem vis amicitiae sit, ex hoc intellegi maxime "
-               "potest, quod ex infinita societate generis humani, quam "
-               "conciliavit ipsa natura, ita contracta res est et adducta in "
-               "angustum ut omnis caritas aut inter duos aut inter paucos "
-               "iungeretur.")
-        self.w(u"<h2>  EPI REST </h2>")
-        self.w(u"Mox dicta finierat, multitudo omnis ad, quae imperator "
-               "voluit, promptior laudato consilio consensit in pacem ea "
-               "ratione maxime percita, quod norat expeditionibus crebris "
-               "fortunam eius in malis tantum civilibus vigilasse, cum autem "
-               "bella moverentur externa, accidisse plerumque luctuosa, icto "
-               "post haec foedere gentium ritu perfectaque sollemnitate "
-               "imperator Mediolanum ad hiberna discessit.")
+
+        page = u"""
+        <!DOCTYPE html>
+        <html xmlns:cubicweb="http://www.cubicweb.org" lang="en">
+        <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=8" />
+        """
+
+        page += '<link rel="shortcut icon" href="{0}"/>'.format(
+            self._cw.data_url("favicon.ico"))
+        page += '<title>fMRI documentation (Imagen Database)</title>'
+        page += '<script type="text/javascript" src="{0}"></script>'.format(
+            self._cw.data_url("pdfobject.js"))
+        page += "</head><body>"
+
+        self.w(page)
+        self.w(u"<p>It appears you don't have Adobe Reader or PDF support in t"
+               'his web browser. <a href="{0}">Click here to download t'
+               'he PDF</a></p>'.format(self._cw.data_url('EPI_doc.pdf')))
+        self.w(u"</body>")
+        self.w(u'<footer id="pagefooter" role="contentinfo">'
+               '<a href="http://is222243.intra.cea.fr:8989/license">'
+               'License</a> | <a href="http://is222243.intra.cea.fr:8989/'
+               'legal">Legal</a> | <a href="http://i2bm.cea.fr/dsv/i2bm/'
+               'Pages/NeuroSpin/UNATI/unati.aspx">&#169 2014, Neurospin '
+               'Analysis Platform developers</a></footer>')
+        self.w(u'</html>')
+
+        # JAVASCRIPTS
+        self.w(u'<script type="text/javascript">')
+
+        self.w(u'var pdfOpen_params_popup = {'
+               'navpanes: 1,'
+               'page: 1'
+               '};')
+
+        self.w(u'var pdfAttributes_popup = {{'
+               'url: "{0}",'
+               'pdfOpenParams: pdfOpen_params_popup'
+               '}};'.format(self._cw.data_url('EPI_doc.pdf')))
+
+        self.w(u'window.onload = function (){')
+        self.w(u'var doc_popup = new PDFObject(pdfAttributes_popup);'
+               'doc_popup.embed();'
+               '};')
+        self.w(u'</script>')
 
 
 def registration_callback(vreg):

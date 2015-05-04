@@ -88,10 +88,16 @@ class EuaimsScanOutOfContextView(EntityView):
         self.w(u'See more')
         self.w(u'</button></div>')
         # > fourth element: the documentation button
-        href = self._cw.build_url("view", vid="doc_{0}".format(entity.type))
-        self.w(u'<a class="btn btn-warning" style="margin-top: 10px" '
-               'href="{0}">'.format(href))
-        self.w(u'Documentation</a>')
+        if "EPI" in entity.type:
+            href = self._cw.build_url("view", _notemplate=True,
+                                      vid="doc_FMRIData")
+            self.w(u'<a class="btn btn-warning" style="margin-top: 10px" '
+                   'href="javascript:open_popup('
+                   "'{0}'"
+                   ')">documentation</a>'.format(href))
+#        self.w(u'<a class="btn btn-warning" style="margin-top: 10px" '
+#               'href="{0}">'.format(href))
+#        self.w(u'Documentation</a>')
         self.w(u'<br/>')
         # Close row item
         self.w(u'</div>')
@@ -135,6 +141,13 @@ class EuaimsScanOutOfContextView(EntityView):
 
         # Close list item
         self.w(u'</div></div>')
+
+        self.w(u'<script language="javascript">'
+               'function open_popup(page) {'
+               'window.open(page,"documentation","menubar=no, '
+               'status=no, scrollbars=no, menubar=no, width=600, height=450");'
+               '}'
+               '</script>')
 
 
 def registration_callback(vreg):

@@ -16,6 +16,7 @@ from cubes.rql_upload.views.components import CWUploadBox
 # Navigation Box
 ###############################################################################
 
+
 class ImagenNSNavigationtBox(NSNavigationtBox):
     """ Display a box containing navigation shortcuts.
     """
@@ -84,4 +85,5 @@ def registration_callback(vreg):
 
     # Update components
     vreg.unregister(CWUploadBox)
-    vreg.register_and_replace(ImagenNSNavigationtBox, NSNavigationtBox)
+    vreg.register(ImagenNSNavigationtBox)
+    vreg.unregister(NSNavigationtBox)
