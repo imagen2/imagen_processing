@@ -12,13 +12,17 @@
 # FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 # details.
 #
-# You should have received a copy of the GNU Lesser General Public License along
+# You should have received a copy of the GNU Lesser General Public License
+# along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """cubicweb-neurospinweb views/forms/actions/components for web ui"""
 
+from cubes.piws.views.startup import NSIndexView
 from cubicweb.web.views.startup import IndexView
-from cubes.brainomics.views.startup import BrainomicsIndexView
+from cubes.piws.views.actions import NSPoweredByAction
+from cubes.piws.views.startup import NSCardView
+
 from cubicweb.predicates import is_instance
 from cubicweb.web.views.primary import PrimaryView
 
@@ -52,6 +56,7 @@ class ImagenCardView(PrimaryView):
 
         # Get additional resources links
         resources = {
+            "demo-url": "",
             "welcome-url": self._cw.build_url("view", vid="welcome"),
             "license-url": self._cw.build_url("license"),
             "connect-image": self._cw.data_url("images/connect.jpg"),
@@ -68,9 +73,15 @@ class ImagenCardView(PrimaryView):
         self.w(content)
 
 
+class ImagenNSPoweredByAction(NSPoweredByAction):
+    def url(self):
+        return "http://i2bm.cea.fr/dsv/i2bm/Pages/NeuroSpin/UNATI/unati.aspx"
+
+
 ###############################################################################
 # Registry
 ###############################################################################
 def registration_callback(vreg):
-    vreg.register_and_replace(ImagenIndexView, BrainomicsIndexView)
-    vreg.register(ImagenCardView)
+    vreg.register_and_replace(ImagenIndexView, NSIndexView)
+    vreg.register_and_replace(ImagenCardView, NSCardView)
+    vreg.register_and_replace(ImagenNSPoweredByAction, NSPoweredByAction)

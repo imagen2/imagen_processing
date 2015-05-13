@@ -1,155 +1,77 @@
+.facet{
+ max-width: 100%;
+ }
 
-ul.list-striped li.even {
-    background-color: white;
+#focusLink{
+ color: #FFFFFF;
 }
 
-ul.list-striped li {
-    border-bottom: 0px dotted #cccccc;
-    border-top: 0px dotted #cccccc;
-    padding: 0px;
+.facetBody {
+ border-style: none !important;
 }
 
-.hero-unit {
-    background-color: #eee;
-    border-radius: 6px;
-    color: inherit;
-    font-size: 18px;
-    font-weight: 200;
-    line-height: 30px;
-    margin-bottom: 30px;
-    padding: 60px;
+.facetBody .ui-slider{
+ width: 100%;
+ margin-left: 10%;
+ }
+
+.btn-facet{
+ margin-bottom: 10px !important;
 }
 
-.span7 {
-    float: left;
-    width: 450px;
-    margin-right: 30px;
+.progress {
+    margin-bottom: 0px;
 }
 
-.span4 {
-    float: left;
-    width: 264px;
-}
-
-.thumbnails {
-    list-style: none outside none;
-    margin-left: -20px;
-}
-
-.thumbnail {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    display: block;
+.form-control {
+	display: inline;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
     line-height: 1.42857;
-    margin-bottom: 20px;
-    padding: 4px;
-    transition: all 0.2s ease-in-out 0s;
-    margin-right: 30px;
+    color: #555;
+    vertical-align: middle;
+    background-color: #FFF;
+    background-image: none;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
 }
 
-.search-query {
-    margin-top: 10px;
-    width: 100%;
+select[size] {
+    height: auto;
+    width: auto;
+}
+
+#sliding-table {
+	width:100%;
+	overflow:auto;
+}
+
+.col-md-3 {
+}
+
+.bg-warning {
+    background-color: #FCF8E3;
+}
+
+.bg-success {
+    background-color: #DFF0D8;
 }
 
 .bg-info {
-    background-color: #5BC0DE;
+    background-color: #D9EDF7;
 }
 
-#images-box {
-    /* The total width of the image-box, mainly for centering */
-    width: 850px;
-    margin: 0px auto;
-    position: relative;
-    top: 1px;
+.bg-danger {
+    background-color: #F2DEDE;
 }
 
-.image-lightbox img {
-    /* Inherit the width and height from the parent element */
-    width: inherit;
-    height: inherit;
+.subject_cell{
+    width: "10%";
 }
 
-.holder {
-    /* The width and height, you can change these */
-    width: 250px;
-    height: 166px;
-    /* Float left, so everything aligns right */
-    float: right;
-    margin: 0 0 0 0;
+.span8 {
+    width: 40%;
 }
-
-.image-lightbox {
-    /* Inherit width and height from the .holder */
-    width: inherit;
-    height: inherit;
-    padding: 10px;
-    /* Box shadow */
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-    background: #fff;
-    border-radius: 5px;
-    /* Position absolutely so we can zoom it out later */
-    position: absolute;
-    top: 0;
-    font-family: Arial, sans-serif;
-    /* Transitions to provide some eye candy */
-    -webkit-transition: all ease-in 0.5s;
-    -moz-transition: all ease-in 0.5s;
-    -ms-transition: all ease-in 0.5s;
-    -o-transition: all ease-in 0.5s;
-}
-
-.image-lightbox span {
-    display: none;
-}
-
-.image-lightbox .expand {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.image-lightbox .close {
-    position: absolute;
-    width: 20px; height: 20px;
-    right: 20px; top: 20px;
-}
-
-.image-lightbox .close a {
-    height: auto; width: auto;
-    padding: 5px 10px;
-    color: #fff;
-    text-decoration: none;
-    background: #22272c;
-    box-shadow: inset 0px 24px 20px -15px rgba(255, 255, 255, 0.1), inset 0px 0px 10px rgba(0,0,0,0.4), 0px 0px 30px rgba(255,255,255,0.4);
-    border-radius: 5px;
-    font-weight: bold;
-    float: right;
-}
-
-.close a:hover {
-    box-shadow: inset 0px -24px 20px -15px rgba(255, 255, 255, 0.01), inset 0px 0px 10px rgba(0,0,0,0.4), 0px 0px 20px rgba(255,255,255,0.4);
-}
-
-div[id^=image]:target {
-    width: 1125px;
-    height: 750px;
-    z-index: 500;
-    top: -300px;
-    left: -50px;
-}
-div[id^=image]:target .close {
-    display: block;
-}
-
-div[id^=image]:target .expand {
-    display: none;
-}
-
-div#image-1:target, div#image-2:target{ left: -200px; }
-
-div#image-1 { left: 0; }
-div#image-2 { left: 290px; }

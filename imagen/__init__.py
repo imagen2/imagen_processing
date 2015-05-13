@@ -1,4 +1,4 @@
 """cubicweb-imagen application package
 
-Brainomics/Imagen
+cubicweb cube for the Imagen project
 """

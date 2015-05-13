@@ -1,4 +1,3 @@
 Summary
 -------
-Cube for the Imagen project, see https://bioproj.extra.cea.fr/redmine/projects/imagen.
-Attempt to replace the Imagen XNAT server with a CubicWeb server. 
+cubicweb cube for the Imagen project

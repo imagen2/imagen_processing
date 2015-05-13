@@ -13,17 +13,22 @@ HERE = osp.abspath(osp.dirname(__file__))
 
 
 ###############################################################################
-# CARDS AND IMAGES DEFINITIONS 
+# CARDS AND IMAGES DEFINITIONS
 ###############################################################################
+
 HTMLS = {
-    u"index": open(osp.join(HERE, "static_pages/index.html")).read().decode("utf8"),
-    u"license": open(osp.join(HERE, "static_pages/license.html")).read().decode("utf8"),
-    u"legal": open(osp.join(HERE, "static_pages/legal.html")).read().decode("utf8")
+    u"index": unicode(open(osp.join(HERE, "static_pages/index.html")).read(),
+                      "utf-8").encode('ascii', 'xmlcharrefreplace'),
+    u"license": unicode(open(osp.join(HERE,
+                                      "static_pages/license.html")).read(),
+                        "utf8").encode('ascii', 'xmlcharrefreplace'),
+    u"legal": unicode(open(osp.join(HERE, "static_pages/legal.html")).read(),
+                      "utf-8").encode('ascii', 'xmlcharrefreplace')
 }
 
 
 ###############################################################################
-# CREATE OR UPDATE FUNCTION 
+# CREATE OR UPDATE FUNCTION
 ###############################################################################
 def create_or_update_static_cards(session):
     """ Create or update the cards for static pages

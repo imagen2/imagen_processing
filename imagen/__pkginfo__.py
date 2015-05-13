@@ -8,17 +8,14 @@ numversion = (0, 1, 0)
 version = '.'.join(str(num) for num in numversion)
 
 license = 'LGPL'
-author = 'CEA (Saclay, FRANCE)'
-author_email = 'imagendatabase@cea.fr'
-description = 'Imagen V2'
-web = 'https://imagen2.cea.fr'
+author = 'NeuroSpin'
+author_email = 'imagenimagedb@cea.fr'
+description = 'cubicweb cube for the Imagen project'
+web = 'http://www.cubicweb.org/project/%s' % distname
 
-__depends__ =  {
-    'cubicweb': '>= 3.17.0',
-    'cubicweb-brainomics': '>= 0.7.1',
-    'cubicweb-trustedauth': None,
-    'cubicweb-rql_download': '>= 0.1.0',
-}
+__depends__ =  {'cubicweb': '>= 3.19.6',
+                'cubicweb-trustedauth': None,
+                'cubicweb-piws': None}
 __recommends__ = {}
 
 classifiers = [

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# copyright 2013 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
-# contact http://www.logilab.fr -- mailto:contact@logilab.fr
+# copyright 2014 CEA (Saclay, FRANCE), all rights reserved.
+# contact http://www.cea.fr -- mailto:imagen.neurospin@cea.fr
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free
@@ -22,17 +22,16 @@ You could setup site properties or a workflow here for example.
 """
 
 # Example of site property change
-set_property('ui.site-title', "Imagen V2")
+set_property('ui.site-title', "Imagen Database")
 
 
 # Set cards
-from cubes.imagen.migration.cards import create_or_update_static_cards
+from cubes.imagen_expo.migration.cards import create_or_update_static_cards
 create_or_update_static_cards(session)
 
 
-# Ldapfeed create resource
 _LDAP_CONFIGURATION_DETAILS = {
-    'synchronization-interval': u'1min',
+    'synchronization-interval': '1min',
     'data-cnx-dn': u'***REMOVED***',
     'data-cnx-password': u'***REMOVED***',
     'user-base-dn': u'ou=People,dc=imagen2,dc=cea,dc=fr',
@@ -138,7 +137,7 @@ _LDAP_ATTRIBUTES = {
 
 def _create_or_update_ldap_data_source(session):
     """Create or update the LDAP data source
-    """
+"""
     name = _LDAP_ATTRIBUTES[u'name']
     req = "Any X WHERE X is CWSource, X name '%(name)s'" % {'name': name}
     rset = session.execute(req)
@@ -154,6 +153,7 @@ def _create_or_update_ldap_data_source(session):
             req += " X %(attribute)s '%(value)s'," % {'attribute': attribute, 'value': value}
         req = req[:-1]
     rset = session.execute(req)
+    session.commit()
 
 
 if __name__ == '__main__':
