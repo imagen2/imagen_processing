@@ -26,7 +26,7 @@ set_property('ui.site-title', "Imagen Database")
 
 
 # Set cards
-from cubes.imagen_expo.migration.cards import create_or_update_static_cards
+from cubes.imagen.migration.cards import create_or_update_static_cards
 create_or_update_static_cards(session)
 
 
