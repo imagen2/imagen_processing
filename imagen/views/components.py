@@ -33,12 +33,12 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
         w(u'</div></div><br/>')
 
         # Exams
-        w(u'<div class="btn-toolbar">')
-        w(u'<div class="btn-group-vertical btn-block">')
-        href = self._cw.build_url(rql="Any A Where A is Assessment")
-        w(u'<a class="btn btn-primary" href="{0}">'.format(href))
-        w(u'Exams</a>')
-        w(u'</div></div><br/>')
+#        w(u'<div class="btn-toolbar">')
+#        w(u'<div class="btn-group-vertical btn-block">')
+#        href = self._cw.build_url(rql="Any A Where A is Assessment")
+#        w(u'<a class="btn btn-primary" href="{0}">'.format(href))
+#        w(u'Exams</a>')
+#        w(u'</div></div><br/>')
 
         # Scan
         w(u'<div class="btn-toolbar">')
@@ -51,7 +51,7 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
         # QuestionnaireRun
         w(u'<div class="btn-toolbar">')
         w(u'<div class="btn-group-vertical btn-block">')
-        ajaxcallback = "EuAims_get_questionnaires_data"
+        ajaxcallback = "get_questionnaires_data"
         rql_labels = ("DISTINCT Any T ORDERBY T WHERE A is Assessment, "
                       "A timepoint T")
         href = self._cw.build_url(
@@ -60,6 +60,14 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
             title="All Questionnaires", elts_to_sort=["ID"])
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
         w(u'Questionaires</a>')
+        w(u'</div></div><br/>')
+
+        # GenomicMeasures
+        w(u'<div class="btn-toolbar">')
+        w(u'<div class="btn-group-vertical btn-block">')
+        href = self._cw.build_url(rql="Any GM Where GM is GenomicMeasure")
+        w(u'<a class="btn btn-primary" href="{0}">'.format(href))
+        w(u'Genomic measures</a>')
         w(u'</div></div><br/>')
 
         # CWSearch
