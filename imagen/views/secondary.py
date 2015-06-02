@@ -10,14 +10,14 @@
 # Cubicweb import
 from cubicweb.predicates import is_instance
 from cubicweb.view import EntityView
-from cubes.piws.views.secondary import NSScanOutOfContextView
+from cubes.piws.views.secondary import OutOfContextScanView
 
 
 ###############################################################################
 # Scans
 ###############################################################################
 
-class EuaimsScanOutOfContextView(EntityView):
+class ImagenScanOutOfContextView(EntityView):
     __regid__ = "outofcontext"
     __select__ = EntityView.__select__ & is_instance("Scan")
 
@@ -154,4 +154,4 @@ def registration_callback(vreg):
     """ Update outofcontext views
     """
     vreg.register_and_replace(
-        EuaimsScanOutOfContextView, NSScanOutOfContextView)
+        ImagenScanOutOfContextView, OutOfContextScanView)

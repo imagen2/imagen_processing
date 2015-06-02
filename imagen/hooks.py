@@ -11,6 +11,7 @@
 
 from cubicweb.server.hook import Hook
 
+
 class ServerStartupHook(Hook):
     """
         Update repository cache with groups from indexation to ease LDAP
@@ -23,7 +24,6 @@ class ServerStartupHook(Hook):
         # get session
 
         # update repository cache
-        print(self.repo._extid_cache)
         with self.repo.internal_cnx() as cnx:
             rset = cnx.execute("Any X WHERE X is CWGroup")
             for egroup in rset.entities():
@@ -32,5 +32,3 @@ class ServerStartupHook(Hook):
                 self.repo._extid_cache[
                     'cn={0},ou=Groups,dc=imagen2,dc=cea,dc=fr'.format(
                         egroup.name)] = egroup.eid
-        print(self.repo._extid_cache)
-
