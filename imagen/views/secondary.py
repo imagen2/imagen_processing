@@ -10,8 +10,8 @@
 # Cubicweb import
 from cubicweb.predicates import is_instance
 from cubicweb.view import EntityView
-from cubes.piws.views.secondary import OutOfContextScanView
-
+from cubes.piws.views.secondary import OutOfContextScanView, BaseOutOfContextView
+from cubes.brainomics.views.outofcontext import GenomicMeasureOutOfContextView
 
 ###############################################################################
 # Scans
@@ -150,8 +150,15 @@ class ImagenScanOutOfContextView(EntityView):
                '</script>')
 
 
+class GeneticOutOfContextView(BaseOutOfContextView):
+    __regid__ = "outofcontext"
+    __select__ = EntityView.__select__ & is_instance("GenomicMeasure")
+
+
 def registration_callback(vreg):
     """ Update outofcontext views
     """
     vreg.register_and_replace(
         ImagenScanOutOfContextView, OutOfContextScanView)
+    vreg.register_and_replace(GeneticOutOfContextView,
+                              GenomicMeasureOutOfContextView)
