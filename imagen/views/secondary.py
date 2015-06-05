@@ -10,8 +10,10 @@
 # Cubicweb import
 from cubicweb.predicates import is_instance
 from cubicweb.view import EntityView
-from cubes.piws.views.secondary import OutOfContextScanView, BaseOutOfContextView
+from cubes.piws.views.secondary import (OutOfContextScanView,
+                                        BaseOutOfContextView)
 from cubes.brainomics.views.outofcontext import GenomicMeasureOutOfContextView
+
 
 ###############################################################################
 # Scans
@@ -153,6 +155,24 @@ class ImagenScanOutOfContextView(EntityView):
 class GeneticOutOfContextView(BaseOutOfContextView):
     __regid__ = "outofcontext"
     __select__ = EntityView.__select__ & is_instance("GenomicMeasure")
+
+    def entity_description(self, entity):
+        """ Generate a dictionary with the entity description.
+        """
+        out = {}
+        try:
+            eGenPlat = entity.platform[0]
+            out["Platform"] = eGenPlat.name
+            out["Chromosom set"] = entity.chromset
+            eassessment = entity.in_assessment[0]
+            if 'RESTRICTED' in eassessment.identifier:
+                out["Access"] = 'RESTRICTED'
+            else:
+                out["Access"] = 'PUBLIC'
+            out["Timepoint"] = eassessment.timepoint
+        except:
+            pass
+        return out
 
 
 def registration_callback(vreg):
