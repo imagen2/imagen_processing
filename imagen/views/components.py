@@ -63,6 +63,14 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
         w(u'Questionaires</a>')
         w(u'</div></div><br/>')
 
+        # ProcessingRun
+        w(u'<div class="btn-toolbar">')
+        w(u'<div class="btn-group-vertical btn-block">')
+        href = self._cw.build_url(rql="Any PR Where PR is ProcessingRun")
+        w(u'<a class="btn btn-primary" href="{0}">'.format(href))
+        w(u'Processings</a>')
+        w(u'</div></div><br/>')
+
         # GenomicMeasures
         w(u'<div class="btn-toolbar">')
         w(u'<div class="btn-group-vertical btn-block">')
