@@ -89,14 +89,14 @@ class ImagenScanOutOfContextView(EntityView):
                'data-target="#info-%s">' % row)
         self.w(u'See more')
         self.w(u'</button></div>')
-        # > fourth element: the documentation button
-        if "EPI" in entity.type:
-            href = self._cw.build_url("view", _notemplate=True,
-                                      vid="doc_FMRIData")
-            self.w(u'<a class="btn btn-warning" style="margin-top: 10px" '
-                   'href="javascript:open_popup('
-                   "'{0}'"
-                   ')">documentation</a>'.format(href))
+#        # > fourth element: the documentation button
+#        if "EPI" in entity.type:
+#            href = self._cw.build_url("view", _notemplate=True,
+#                                      vid="doc_FMRIData")
+#            self.w(u'<a class="btn btn-warning" style="margin-top: 10px" '
+#                   'href="javascript:open_popup('
+#                   "'{0}'"
+#                   ')">documentation</a>'.format(href))
 #        self.w(u'<a class="btn btn-warning" style="margin-top: 10px" '
 #               'href="{0}">'.format(href))
 #        self.w(u'Documentation</a>')
