@@ -11,7 +11,12 @@
 from cubes.piws.views.components import NSNavigationtBox
 from cubes.rql_upload.views.components import CWUploadBox
 
+# Cubicweb import
+from cubicweb.web import component
+from cubicweb.predicates import match_view
 
+
+import json
 ###############################################################################
 # Navigation Box
 ###############################################################################
@@ -119,6 +124,28 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
         w(u'QC central</a>')
         w(u'</div></div><br/>')
+
+
+class StatisticBox(component.CtxComponent):
+    """
+    parse a json file and generate a box displaying the content of the database
+    """
+
+    __regid__ = "stat_box"
+    context = "right"
+    title = unicode("Database status")
+    order = 0
+    __select__ = match_view("index_view")
+
+    def render_body(self, w):
+        """
+        parse the file, return nothing if file is not found
+        """
+
+        try:
+            stat_file = self.repo.vreg.config["stat_file"]
+            with open(stat_file, "r") as stat:
+                stat_dict = json.load(stat)
 
 
 def registration_callback(vreg):
