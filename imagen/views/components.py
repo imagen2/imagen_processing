@@ -114,7 +114,7 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
         href = self._cw.build_url(rql="Any S Where S is CWSearch")
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
         w(u'My searches</a>')
-        w(u'</div></div><br/>')
+        w(u'</div></div>')
 
         # QC central
         w(u'<hr>')
@@ -123,6 +123,20 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
         href = self._cw.build_url("view", vid="QC_central")
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
         w(u'QC central</a>')
+        w(u'</div></div>')
+
+        # Help
+        w(u'<hr>')
+        tiphref = self._cw.build_url("view", vid="piws-documentation",
+                                     tooltip_name='help',
+                                     _notemplate=True)
+        w(u'<div class="btn-toolbar">')
+        w(u'<div class="btn-group-vertical btn-block">')
+        href = self._cw.build_url("view", vid="help")
+        w(u'<a href="{0}" class="btn btn-primary" target=_blank '
+          'type="button">'.format(tiphref))
+        w(u"Help &#9735")
+        w(u"</a>")
         w(u'</div></div><br/>')
 
 
@@ -132,25 +146,56 @@ class StatisticBox(component.CtxComponent):
     """
 
     __regid__ = "stat_box"
-    context = "right"
+    contextual = True
+    context = 'right'
     title = unicode("Database status")
     order = 0
-    __select__ = match_view("index_view")
+    __select__ = match_view("index")
 
     def render_body(self, w):
         """
         parse the file, return nothing if file is not found
         """
-
+        rset = self._cw.execute("Any S WHERE S is Subject")
+        tot = len(rset)
         try:
-            stat_file = self.repo.vreg.config["stat_file"]
+            stat_file = self._cw.vreg.config["stat_file"]
             with open(stat_file, "r") as stat:
                 stat_dict = json.load(stat)
+
+            w(u"<h2>Number of subjects: {0}<h2>".format(tot))
+            w(u"<hr>")
+
+            w(u"<ul>")
+            for item, dic in stat_dict.iteritems():
+                w(u"<li>{0}".format(item))
+                w(u"<ul>")
+                for timepoint in dic:
+                    if tot == 0:
+                        value = 0
+                    else:
+                        value = round((dic[timepoint] / float(tot)) * 100, 1)
+                    w(u"<li>{0}:<br>".format(timepoint))
+                    w(u'<div class="progress">')
+                    w(u'<div class="progress-bar" role="progressbar"'
+                      ' aria-valuenow="{0}" aria-valuemin="0" '
+                      'aria-valuemax="100" '
+                      'style="width: {0}%;";">'.format(value))
+                    w(u'{0}%'.format(value))
+                    w(u'</div>')
+                    w(u'</div>')
+                    w(u'</li>')
+                w(u'</ul>')
+                w(u'</li>')
+            w(u'</ul>')
+        except:
+            pass
 
 
 def registration_callback(vreg):
 
     # Update components
+    vreg.register(StatisticBox)
     vreg.unregister(CWUploadBox)
     vreg.register(ImagenNSNavigationtBox)
     vreg.unregister(NSNavigationtBox)
