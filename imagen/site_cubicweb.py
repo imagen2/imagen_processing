@@ -17,3 +17,12 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
+options = (
+    ("stat_file", {
+        "type": "string",
+        "default": "",
+        "help": "the file containing the information about the database status",
+        "group": "imagen",
+        "level": 1,
+    }),
+)

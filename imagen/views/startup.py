@@ -32,11 +32,13 @@ from cubicweb.web.views.primary import PrimaryView
 ###############################################################################
 class ImagenIndexView(IndexView):
 
+    __regid__ = 'index'
+
     def call(self, **kwargs):
         """ Class that defines the imagen index view.
         """
-        # Get the card that contains some text description about this site
-        rset = self._cw.execute("Any X WHERE X is Card, X title 'index'")
+#        # Get the card that contains some text description about this site
+#        self._cw.execute("Any X WHERE X is Card, X title 'index'")
         # self.wview("primary", rset=rset)
 
         resources = {
@@ -62,39 +64,6 @@ class ImagenIndexView(IndexView):
         self.w(html % resources)
 
 
-###############################################################################
-# Card View
-###############################################################################
-class ImagenCardView(PrimaryView):
-    """ Class that that defines how we print card entities.
-    """
-    __select__ = PrimaryView.__select__ & is_instance("Card")
-
-    def call(self, rset=None, **kwargs):
-        """ Format the card entity content.
-        """
-        # Get the rset
-        rset = self.cw_rset or rset
-
-        # Get additional resources links
-        resources = {
-            "demo-url": "",
-            "welcome-url": self._cw.build_url("view", vid="welcome"),
-            "license-url": self._cw.build_url("license"),
-            "connect-image": self._cw.data_url("images/connect.jpg"),
-            "database-image": self._cw.data_url("images/database.jpg"),
-            "nsap-image": self._cw.data_url("images/neurospin.jpg"),
-            "imagen-image": self._cw.data_url("images/imagen.jpg"),
-            "nsap-url": ("http://www-dsv.cea.fr/neurospin"),
-            "imagen-url": "http://www.imagen-europe.com/",
-        }
-
-        # Update card links links to content
-        content = rset.get_entity(0, 0).content
-        content = content % resources
-        self.w(content)
-
-
 class ImagenNSPoweredByAction(NSPoweredByAction):
     def url(self):
         return "http://i2bm.cea.fr/dsv/i2bm/Pages/NeuroSpin/UNATI/unati.aspx"
@@ -104,6 +73,8 @@ class ImagenNSPoweredByAction(NSPoweredByAction):
 # Registry
 ###############################################################################
 def registration_callback(vreg):
-    vreg.register_and_replace(ImagenIndexView, NSIndexView)
-    vreg.register_and_replace(ImagenCardView, NSCardView)
+    vreg.register(ImagenIndexView)
+    vreg.unregister(NSIndexView)
+#    vreg.register_and_replace(ImagenIndexView, NSIndexView)
+    vreg.unregister(NSCardView)
     vreg.register_and_replace(ImagenNSPoweredByAction, NSPoweredByAction)
