@@ -32,3 +32,10 @@ class ServerStartupHook(Hook):
                 self.repo._extid_cache[
                     'cn={0},ou=Groups,dc=imagen2,dc=cea,dc=fr'.format(
                         egroup.name)] = egroup.eid
+
+            rset = cnx.execute("Any XEID Where X is CWProperty, X pkey 'ctxcomponents.userstatus.visible', X eid XEID")
+            for item in rset:
+                cnx.execute("SET X value '0' WHERE X eid {0}".format(item[0]))
+
+
+
