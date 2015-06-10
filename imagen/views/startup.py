@@ -17,7 +17,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """cubicweb-neurospinweb views/forms/actions/components for web ui"""
-
+import  os
 from cubes.piws.views.startup import NSIndexView
 from cubicweb.web.views.startup import IndexView
 from cubes.piws.views.actions import NSPoweredByAction
@@ -37,7 +37,29 @@ class ImagenIndexView(IndexView):
         """
         # Get the card that contains some text description about this site
         rset = self._cw.execute("Any X WHERE X is Card, X title 'index'")
-        self.wview("primary", rset=rset)
+        # self.wview("primary", rset=rset)
+
+        resources = {
+            "demo-url": "",
+            "welcome-url": self._cw.build_url("view", vid="welcome"),
+            "license-url": self._cw.build_url("license"),
+            "connect-image": self._cw.data_url("images/connect.jpg"),
+            "database-image": self._cw.data_url("images/database.jpg"),
+            "nsap-image": self._cw.data_url("images/neurospin.jpg"),
+            "imagen-image": self._cw.data_url("images/imagen.jpg"),
+            "nsap-url": ("http://www-dsv.cea.fr/neurospin"),
+            "imagen-url": "http://www.imagen-europe.com/",
+        }
+        views_path = os.path.dirname(os.path.realpath(__file__))
+        imagen_cube_path = os.path.split(views_path)[0]
+        index_html_path = os.path.join(imagen_cube_path,
+                                       'migration',
+                                       'static_pages',
+                                       'index.html')
+        with open(index_html_path) as f:
+            html = f.read()
+
+        self.w(html % resources)
 
 
 ###############################################################################
