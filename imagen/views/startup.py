@@ -43,7 +43,8 @@ class ImagenIndexView(IndexView):
 
         resources = {
             "demo-url": "",
-            "welcome-url": self._cw.build_url("view", vid="welcome"),
+            "welcome-url": self._cw.build_url("view",
+                                              rql="Any S Where S is Subject"),
             "license-url": self._cw.build_url("license"),
             "connect-image": self._cw.data_url("images/connect.jpg"),
             "database-image": self._cw.data_url("images/database.jpg"),
