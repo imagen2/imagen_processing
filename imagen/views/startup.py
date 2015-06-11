@@ -64,9 +64,9 @@ class ImagenIndexView(IndexView):
         self.w(html % resources)
 
 
-class ImagenNSPoweredByAction(NSPoweredByAction):
-    def url(self):
-        return "http://i2bm.cea.fr/dsv/i2bm/Pages/NeuroSpin/UNATI/unati.aspx"
+# class ImagenNSPoweredByAction(NSPoweredByAction):
+#     def url(self):
+#         return "http://i2bm.cea.fr/dsv/i2bm/Pages/NeuroSpin/UNATI/unati.aspx"
 
 
 ###############################################################################
@@ -77,4 +77,4 @@ def registration_callback(vreg):
     vreg.unregister(NSIndexView)
 #    vreg.register_and_replace(ImagenIndexView, NSIndexView)
     vreg.unregister(NSCardView)
-    vreg.register_and_replace(ImagenNSPoweredByAction, NSPoweredByAction)
+    # vreg.register_and_replace(ImagenNSPoweredByAction, NSPoweredByAction)
