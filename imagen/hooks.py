@@ -35,16 +35,16 @@ class ServerStartupHook(Hook):
 
 
 class ImagenSessionOpenHook(Hook):
-    __regid__ = "imagen.remove_user_menu"
+    __regid__ = "imagen.remove_userstatus"
     __select__ = Hook.__select__
     events = ("session_open",)
 
     def __call__(self):
-#        rset = self._cw.execute("Any XEID Where X is CWProperty, X pkey "
-#                                "'ctxcomponents.userstatus.visible', "
-#                                "X eid XEID")
-        rset = self._cw.execute("Any X Where X is CWProperty")
-        print rset
-        for item in rset.entities():
-            print item.pkey
-#            self._cw.execute("SET X value '0' WHERE X eid {0}".format(item[0]))
+        rql = "SET X value NULL WHERE X is CWProperty, " \
+              "X pkey 'ctxcomponents.userstatus.visible'"
+        rset = self._cw.execute(rql)
+        if len(rset) == 0:
+            rql = "INSERT CWProperty X: " \
+                  "X pkey 'ctxcomponents.userstatus.visible', " \
+                  "X value NULL"
+            self._cw.execute(rql)
