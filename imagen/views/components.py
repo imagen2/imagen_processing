@@ -163,7 +163,7 @@ class StatisticBox(component.CtxComponent):
             with open(stat_file, "r") as stat:
                 stat_dict = json.load(stat)
 
-            w(u"<h2>Number of subjects: {0}<h2>".format(tot))
+            w(u"<h2>Number of subjects: {0}</h2>".format(tot))
             w(u"<hr>")
 
             w(u"<ul>")
