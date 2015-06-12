@@ -153,6 +153,7 @@ class StatisticBox(component.CtxComponent):
     __select__ = match_view("index")
 
     def render_body(self, w):
+        get_timepoint_label = self.match_timepoint_label()
         """
         parse the file, return nothing if file is not found
         """
@@ -163,26 +164,74 @@ class StatisticBox(component.CtxComponent):
             w(u"<hr>")
             w(u"<ul>")
             for item, dic in percentages.iteritems():
-                w(u"<li>{0}".format(item))
-                w(u"<ul>")
+                n_timepoint = len(dic)
+                v_timepoint = []
+                for timepoint in dic:
+                    if dic[timepoint] == 0:
+                        n_timepoint -= 1
+                    else:
+                        v_timepoint.append(timepoint)
+                w(u'<li>')
+                w(u'{0}'.format(item))
+
+                # build a small table
+                w(u'<table class="table" style="margin: 0px; font-size: 10px;'
+                  'line-height: 11px;">')
+                w(u'<tr>')
+                for value in v_timepoint:
+                    w(u'<td style="border-top: none;">{0}</td>'.format(
+                        get_timepoint_label[value]))
+                w(u"</tr>")
+
+                w(u'<tr>')
                 for timepoint in dic:
                     value = dic[timepoint]
-                    if value > 0:
-                        w(u"<li>{0}:<br>".format(timepoint))
-                        w(u'<div class="progress">')
-                        w(u'<div class="progress-bar" role="progressbar"'
-                          ' aria-valuenow="{0}" aria-valuemin="0" '
-                          'aria-valuemax="100" '
-                          'style="width: {0}%;";">'.format(value))
-                        w(u'{0}%'.format(value))
-                        w(u'</div>')
-                        w(u'</div>')
-                        w(u'</li>')
-                w(u'</ul>')
+                    if value == 0:
+                        continue
+                    w(u'<td style="border-top: none;">')
+                    w(u'<div class="progress">')
+                    w(u'<div class="progress-bar" role="progressbar" '
+                      'aria-valuenow="{0}" aria-valuemin="0" aria-valuemax='
+                      '"100" style="width:{0}%">'.format(value))
+                    w(u'{0}%'.format(value))
+                    w(u'</div>')
+                    w(u"</div>")
+                    w(u'</td>')
+                w(u'</tr>')
+
+                w(u'</table>')
                 w(u'</li>')
-            w(u'</ul>')
+            w(u'</li>')
+#                w(u"<li>{0}".format(item))
+#                w(u"<ul>")
+#                for timepoint in dic:
+#                    value = dic[timepoint]
+#                    if value > 0:
+#                        w(u"<li>{0}:<br>".format(timepoint))
+#                        w(u'<div class="progress">')
+#                        w(u'<div class="progress-bar" role="progressbar"'
+#                          ' aria-valuenow="{0}" aria-valuemin="0" '
+#                          'aria-valuemax="100" '
+#                          'style="width: {0}%;";">'.format(value))
+#                        w(u'{0}%'.format(value))
+#                        w(u'</div>')
+#                        w(u'</div>')
+#                        w(u'</li>')
+#                w(u'</ul>')
+#                w(u'</li>')
+#            w(u'</ul>')
+
         except:
             pass
+
+    def match_timepoint_label(self):
+        """
+        return the label-abreviation tables for the timepoints
+        """
+
+        return {"BL": "Baseline", "FU1": "Follow-Up 1", "FU2": "Follow-Up 2"}
+
+
 
     def get_stats(self):
 
