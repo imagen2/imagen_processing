@@ -148,7 +148,7 @@ class StatisticBox(component.CtxComponent):
     __regid__ = "stat_box"
     contextual = True
     context = 'right'
-    title = unicode("Database status")
+    title = unicode("Database content")
     order = 0
     __select__ = match_view("index")
 
