@@ -20,11 +20,7 @@
 import  os
 from cubes.piws.views.startup import NSIndexView
 from cubicweb.web.views.startup import IndexView
-from cubes.piws.views.actions import NSPoweredByAction
 from cubes.piws.views.startup import NSCardView
-
-from cubicweb.predicates import is_instance
-from cubicweb.web.views.primary import PrimaryView
 
 
 ###############################################################################
@@ -37,9 +33,9 @@ class ImagenIndexView(IndexView):
     def call(self, **kwargs):
         """ Class that defines the imagen index view.
         """
-#        # Get the card that contains some text description about this site
-#        self._cw.execute("Any X WHERE X is Card, X title 'index'")
-        # self.wview("primary", rset=rset)
+
+        # Must execute an rql to display index properly
+        self._cw.execute('Any S Where S is Subject')
 
         resources = {
             "demo-url": "",
@@ -50,7 +46,7 @@ class ImagenIndexView(IndexView):
             "database-image": self._cw.data_url("images/database.jpg"),
             "nsap-image": self._cw.data_url("images/neurospin.jpg"),
             "imagen-image": self._cw.data_url("images/imagen.jpg"),
-            "nsap-url": ("http://www-dsv.cea.fr/neurospin"),
+            "nsap-url": "http://www-dsv.cea.fr/neurospin",
             "imagen-url": "http://www.imagen-europe.com/",
         }
         views_path = os.path.dirname(os.path.realpath(__file__))
@@ -64,18 +60,10 @@ class ImagenIndexView(IndexView):
 
         self.w(html % resources)
 
-
-# class ImagenNSPoweredByAction(NSPoweredByAction):
-#     def url(self):
-#         return "http://i2bm.cea.fr/dsv/i2bm/Pages/NeuroSpin/UNATI/unati.aspx"
-
-
 ###############################################################################
 # Registry
 ###############################################################################
 def registration_callback(vreg):
     vreg.register(ImagenIndexView)
     vreg.unregister(NSIndexView)
-#    vreg.register_and_replace(ImagenIndexView, NSIndexView)
     vreg.unregister(NSCardView)
-    # vreg.register_and_replace(ImagenNSPoweredByAction, NSPoweredByAction)
