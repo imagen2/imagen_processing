@@ -103,3 +103,15 @@ input#rql, input#norql {
     margin-right: auto;
     width: 55vw;
 }
+
+.hero-unit {
+    background-color: #969696;
+}
+
+.panel-default > .panel-heading {
+    background-color: #969696;
+}
+
+.panel {
+    background-color: #F5F5F5;
+}
