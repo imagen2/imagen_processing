@@ -100,7 +100,6 @@ input#rql, input#norql {
 
 .search-query {
     margin-top: 10px;
-    margin-left: 17%;
     margin-right: auto;
-    width: 80em;
+    width: 55vw;
 }

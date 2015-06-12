@@ -17,8 +17,6 @@ from cubicweb.predicates import match_view, is_instance
 from cubes.piws.views.components import (NSSubjectStatistics,
                                          NSAssessmentStatistics)
 
-
-import json
 ###############################################################################
 # Navigation Box
 ###############################################################################
@@ -65,7 +63,7 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
             "view", vid="jtable-table",
             rql_labels=rql_labels, ajaxcallback=ajaxcallback,
             title="All Questionnaires", elts_to_sort=["ID"],
-            tooltip="Questionnaire_general_doc")
+            tooltip="general_questionnaires_doc")
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
         w(u'Questionaires</a>')
         w(u'</div></div><br/>')
@@ -160,7 +158,7 @@ class StatisticBox(component.CtxComponent):
         """
         tot, percentages = self.get_stats()
 
-        w(u"<h2>Number of subjects: {0}</h2>".format(tot))
+        w(u"<strong>Number of subjects: {0}</strong>".format(tot))
         w(u"<hr>")
 
         w(u"<ul>")
@@ -188,7 +186,7 @@ class StatisticBox(component.CtxComponent):
         timepoints = ['BL', 'FU1', 'FU2']
         scan_labels = ['ADNI_MPRAGE', 'B0', 'DTI', 'EPI', 'FLAIR', 'T2']
 
-        rql_nb_subjects  = 'DISTINCT Any COUNT(S) WHERE S is Subject'
+        rql_nb_subjects = 'DISTINCT Any COUNT(S) WHERE S is Subject'
         rset_nb_subjects = self._cw.execute(rql_nb_subjects)
         assert len(rset_nb_subjects) == 1
         nb_subjects = rset_nb_subjects[0][0]
@@ -228,16 +226,18 @@ class StatisticBox(component.CtxComponent):
         for scan_label, timepoint_data in totals.iteritems():
             percentages[scan_label] = {}
             for timepoint, number in timepoint_data.iteritems():
-                percentages[scan_label][timepoint] = round(float(number)/float(nb_subjects)*100, 1)
+                percentages[scan_label][timepoint] = \
+                    round(float(number) / nb_subjects * 100, 1)
 
         return nb_subjects, percentages
+
 
 class ImagenSubjectStatistics(component.CtxComponent):
     """ Display a box containing links to statistics on the cw entities.
     """
     __regid__ = "subject_statistics"
     context = "left"
-    title = _("Statistics")
+    title = unicode("Statistics")
     order = 1
     __select__ = is_instance("Subject")
 
@@ -264,6 +264,7 @@ class ImagenSubjectStatistics(component.CtxComponent):
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
         w(u'Subject handedness repartition</a>')
         w(u'</div></div><br/>')
+
 
 def registration_callback(vreg):
 
