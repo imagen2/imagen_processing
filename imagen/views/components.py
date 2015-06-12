@@ -158,30 +158,34 @@ class StatisticBox(component.CtxComponent):
         """
         parse the file, return nothing if file is not found
         """
-        tot, percentages = self.get_stats()
+        try:
+            tot, percentages = self.get_stats()
 
-        w(u"<h2>Number of subjects: {0}</h2>".format(tot))
-        w(u"<hr>")
+            w(u"<h2>Number of subjects: {0}</h2>".format(tot))
+            w(u"<hr>")
 
-        w(u"<ul>")
-        for item, dic in percentages.iteritems():
-            w(u"<li>{0}".format(item))
             w(u"<ul>")
-            for timepoint in dic:
-                value = dic[timepoint]
-                w(u"<li>{0}:<br>".format(timepoint))
-                w(u'<div class="progress">')
-                w(u'<div class="progress-bar" role="progressbar"'
-                  ' aria-valuenow="{0}" aria-valuemin="0" '
-                  'aria-valuemax="100" '
-                  'style="width: {0}%;";">'.format(value))
-                w(u'{0}%'.format(value))
-                w(u'</div>')
-                w(u'</div>')
+            for item, dic in percentages.iteritems():
+                w(u"<li>{0}".format(item))
+                w(u"<ul>")
+                for timepoint in dic:
+                    value = dic[timepoint]
+                    if value > 0:
+                        w(u"<li>{0}:<br>".format(timepoint))
+                        w(u'<div class="progress">')
+                        w(u'<div class="progress-bar" role="progressbar"'
+                          ' aria-valuenow="{0}" aria-valuemin="0" '
+                          'aria-valuemax="100" '
+                          'style="width: {0}%;";">'.format(value))
+                        w(u'{0}%'.format(value))
+                        w(u'</div>')
+                        w(u'</div>')
+                        w(u'</li>')
+                w(u'</ul>')
                 w(u'</li>')
             w(u'</ul>')
-            w(u'</li>')
-        w(u'</ul>')
+        except:
+            pass
 
     def get_stats(self):
 
