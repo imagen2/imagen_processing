@@ -179,8 +179,10 @@ class StatisticBox(component.CtxComponent):
                   'line-height: 11px;">')
                 w(u'<tr>')
                 for value in v_timepoint:
-                    w(u'<td style="border-top: none;">{0}</td>'.format(
-                        get_timepoint_label[value]))
+                    w(u'<td style="border-top: none; width: {1}%">'
+                      '{0}</td>'.format(
+                        get_timepoint_label[value],
+                        100. / n_timepoint))
                 w(u"</tr>")
 
                 w(u'<tr>')
@@ -202,24 +204,6 @@ class StatisticBox(component.CtxComponent):
                 w(u'</table>')
                 w(u'</li>')
             w(u'</li>')
-#                w(u"<li>{0}".format(item))
-#                w(u"<ul>")
-#                for timepoint in dic:
-#                    value = dic[timepoint]
-#                    if value > 0:
-#                        w(u"<li>{0}:<br>".format(timepoint))
-#                        w(u'<div class="progress">')
-#                        w(u'<div class="progress-bar" role="progressbar"'
-#                          ' aria-valuenow="{0}" aria-valuemin="0" '
-#                          'aria-valuemax="100" '
-#                          'style="width: {0}%;";">'.format(value))
-#                        w(u'{0}%'.format(value))
-#                        w(u'</div>')
-#                        w(u'</div>')
-#                        w(u'</li>')
-#                w(u'</ul>')
-#                w(u'</li>')
-#            w(u'</ul>')
 
         except:
             pass
@@ -230,8 +214,6 @@ class StatisticBox(component.CtxComponent):
         """
 
         return {"BL": "Baseline", "FU1": "Follow-Up 1", "FU2": "Follow-Up 2"}
-
-
 
     def get_stats(self):
 
