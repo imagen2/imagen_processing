@@ -15,3 +15,15 @@
 #
 # You should have received a copy of the GNU Lesser General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+options = (
+    ("sidebox_configuration", {
+        "type": "string",
+        "default": "",
+        "help": "the json file used to configure the sideboxes on "
+                "primary views",
+        "group": "imagen",
+        "level": 1,
+    }),
+)

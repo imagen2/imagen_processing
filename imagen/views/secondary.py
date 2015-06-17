@@ -165,10 +165,6 @@ class GeneticOutOfContextView(BaseOutOfContextView):
             out["Platform"] = eGenPlat.name
             out["Chromosom set"] = entity.chromset
             eassessment = entity.in_assessment[0]
-            if 'RESTRICTED' in eassessment.identifier:
-                out["Access"] = 'RESTRICTED'
-            else:
-                out["Access"] = 'PUBLIC'
             out["Timepoint"] = eassessment.timepoint
         except:
             pass

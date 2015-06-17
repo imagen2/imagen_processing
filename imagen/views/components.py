@@ -10,12 +10,15 @@
 # Piws import
 from cubes.piws.views.components import NSNavigationtBox
 from cubes.rql_upload.views.components import CWUploadBox
+from cubes.piws.views.components import (NSSubjectStatistics,
+                                         NSAssessmentStatistics,
+                                         RelationBox)
 
 # Cubicweb import
 from cubicweb.web import component
 from cubicweb.predicates import match_view, is_instance
-from cubes.piws.views.components import (NSSubjectStatistics,
-                                         NSAssessmentStatistics)
+from cubicweb.predicates import nonempty_rset
+from cubicweb.predicates import match_kwargs
 
 ###############################################################################
 # Navigation Box
@@ -97,13 +100,13 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
         w(u'</div></div><br/>')
 
         # button 2: Scans
-        w(u'<div class="btn-toolbar">')
-        w(u'<div class="btn-group-vertical btn-block">')
-        href = self._cw.build_url(rql=('Any G Where G is GenomicMeasure,'
-                                       ' G type "qc"'))
-        w(u'<a class="btn btn-primary" href="">')
-        w(u'Scans</a>')
-        w(u'</div></div><br/>')
+#        w(u'<div class="btn-toolbar">')
+#        w(u'<div class="btn-group-vertical btn-block">')
+#        href = self._cw.build_url(rql=('Any G Where G is GenomicMeasure,'
+#                                       ' G type "qc"'))
+#        w(u'<a class="btn btn-primary" href="">')
+#        w(u'Scans</a>')
+#        w(u'</div></div><br/>')
 
         w(u'</div></div></div><br>')
 
@@ -310,3 +313,5 @@ def registration_callback(vreg):
     vreg.unregister(NSSubjectStatistics)
     vreg.register(ImagenSubjectStatistics)
     vreg.unregister(NSAssessmentStatistics)
+#    vreg.unregister(RelationBox)
+#    vreg.register(ImagenRelationBox)
