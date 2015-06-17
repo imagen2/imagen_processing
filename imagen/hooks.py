@@ -44,8 +44,7 @@ class ImagenSessionOpenHook(Hook):
               "X pkey 'ctxcomponents.userstatus.visible'"
         rset = self._cw.execute(rql)
         if len(rset) == 0:
-            # rql = "INSERT CWProperty X: " \
-            #       "X pkey 'ctxcomponents.userstatus.visible', " \
-            #       "X value NULL"
-            # self._cw.execute(rql)
-            pass
+            rql = "INSERT CWProperty X: " \
+                  "X pkey 'ctxcomponents.userstatus.visible', " \
+                  "X value NULL"
+            self._cw.execute(rql)
