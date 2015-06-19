@@ -129,3 +129,7 @@ input#rql, input#norql {
 .progress {
     background-color: #252525;
 }
+
+body {
+background-color: #FDFDFD;
+}
