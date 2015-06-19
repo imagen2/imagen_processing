@@ -112,13 +112,20 @@ input#rql, input#norql {
 }
 
 .hero-unit {
-    background-color: #969696;
+    background-color: #CBCBCB;
 }
 
+.panel-default {
+    border-color : #BABABA;
+}
 .panel-default > .panel-heading {
-    background-color: #969696;
+    background-color: #BABABA;
 }
 
 .panel {
-    background-color: #F5F5F5;
+    background-color: #E8E8E8;
+}
+
+.progress {
+    background-color: #252525;
 }
