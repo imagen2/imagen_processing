@@ -11,7 +11,6 @@
 
 from cubicweb.server.hook import Hook
 
-
 class ServerStartupHook(Hook):
     """
         Update repository cache with groups from indexation to ease LDAP
@@ -37,14 +36,32 @@ class ServerStartupHook(Hook):
 class ImagenSessionOpenHook(Hook):
     __regid__ = "imagen.remove_userstatus"
     __select__ = Hook.__select__
-    events = ("session_open",)
+    events = ('server_startup', 'server_maintenance')
 
     def __call__(self):
-        rql = "SET X value NULL WHERE X is CWProperty, " \
-              "X pkey 'ctxcomponents.userstatus.visible'"
-        rset = self._cw.execute(rql)
-        if len(rset) == 0:
-            rql = "INSERT CWProperty X: " \
-                  "X pkey 'ctxcomponents.userstatus.visible', " \
-                  "X value NULL"
-            self._cw.execute(rql)
+
+        with self.repo.internal_cnx() as cnx:
+
+            if 'ctxcomponents' in cnx.vreg:
+
+                cw_properties_list = [
+                    {'pkey': u'ctxcomponents.userstatus.visible',
+                     'value': 'NULL'},
+                    {'pkey': u'ctxcomponents.userstatus.order',
+                     'value': u'5'},
+                    {'pkey': u'ctxcomponents.userstatus.context',
+                     'value': u'header-right'}
+                ]
+
+                for item in cw_properties_list:
+                    cnx.execute(u"DELETE Any X WHERE X is CWProperty, "
+                                u"X pkey '%(pkey)s'" % item)
+
+                cnx.execute(u"INSERT CWProperty X: X value %(value)s, "
+                            u"X pkey '%(pkey)s'" % cw_properties_list[0])
+                cnx.execute(u"INSERT CWProperty X: X value '%(value)s', "
+                            u"X pkey '%(pkey)s'" % cw_properties_list[1])
+                cnx.execute(u"INSERT CWProperty X: X value '%(value)s', "
+                            u"X pkey '%(pkey)s'" % cw_properties_list[2])
+
+                cnx.commit()
