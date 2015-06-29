@@ -66,7 +66,7 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
             "view", vid="jtable-table",
             rql_labels=rql_labels, ajaxcallback=ajaxcallback,
             title="All Questionnaires", elts_to_sort=["ID"],
-            tooltip="general_questionnaires_doc")
+            tooltip_name="general_questionnaires_doc")
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
         w(u'Questionaires</a>')
         w(u'</div></div><br/>')
