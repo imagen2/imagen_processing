@@ -60,7 +60,8 @@ class ImagenPrimaryView(PiwsPrimaryView):
 
 
 def registration_callback(vreg):
+    pass
 
     # Update components
-    vreg.unregister(PiwsPrimaryView)
-    vreg.register(ImagenPrimaryView)
+    #vreg.unregister(PiwsPrimaryView)
+    #vreg.register(ImagenPrimaryView)
