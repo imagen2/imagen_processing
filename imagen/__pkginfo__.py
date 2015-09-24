@@ -9,7 +9,7 @@ version = '.'.join(str(num) for num in numversion)
 
 license = 'LGPL'
 author = 'NeuroSpin'
-author_email = 'imagenimagedb@cea.fr'
+author_email = 'imagendatabase@cea.fr'
 description = 'cubicweb cube for the Imagen project'
 web = 'http://www.cubicweb.org/project/%s' % distname
 
