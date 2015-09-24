@@ -24,7 +24,7 @@ class NeurospinAction(Action):
     title = _("Neurospin")
 
     def url(self):
-        return 'http://dsv.cea.fr/dsv/english/Pages/Welcome.aspx'
+        return 'http://dsv.cea.fr/dsv/i2bm/NeuroSpin'
 
 
 class ImagenAction(Action):
