@@ -11,6 +11,7 @@
 
 from cubicweb.server.hook import Hook
 
+
 class ServerStartupHook(Hook):
     """
         Update repository cache with groups from indexation to ease LDAP

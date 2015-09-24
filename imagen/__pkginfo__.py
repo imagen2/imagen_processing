@@ -13,9 +13,9 @@ author_email = 'imagendatabase@cea.fr'
 description = 'cubicweb cube for the Imagen project'
 web = 'http://www.cubicweb.org/project/%s' % distname
 
-__depends__ =  {'cubicweb': '>= 3.19.6',
-                'cubicweb-trustedauth': None,
-                'cubicweb-piws': None}
+__depends__ = {'cubicweb': '>= 3.19.6',
+               'cubicweb-trustedauth': None,
+               'cubicweb-piws': None}
 __recommends__ = {}
 
 classifiers = [
@@ -30,6 +30,7 @@ from os.path import join, isdir
 from glob import glob
 
 THIS_CUBE_DIR = join('share', 'cubicweb', 'cubes', modname)
+
 
 def listdir(dirpath):
     return [join(dirpath, fname) for fname in _listdir(dirpath)
@@ -47,4 +48,3 @@ for dname in ('entities', 'views', 'sobjects', 'hooks', 'schema', 'data', 'wdoc'
         data_files.append([join(THIS_CUBE_DIR, dname), listdir(dname)])
 # Note: here, you'll need to add subdirectories if you want
 # them to be included in the debian package
-

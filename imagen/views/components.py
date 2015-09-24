@@ -183,9 +183,8 @@ class StatisticBox(component.CtxComponent):
                 w(u'<tr>')
                 for value in v_timepoint:
                     w(u'<td style="border-top: none; width: {1}%">'
-                      '{0}</td>'.format(
-                        get_timepoint_label[value],
-                        100. / n_timepoint))
+                      '{0}</td>'.format(get_timepoint_label[value],
+                                        100. / n_timepoint))
                 w(u"</tr>")
 
                 w(u'<tr>')

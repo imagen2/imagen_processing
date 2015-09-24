@@ -17,7 +17,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """cubicweb-neurospinweb views/forms/actions/components for web ui"""
-import  os
+import os
 from cubes.piws.views.startup import NSIndexView
 from cubicweb.web.views.startup import IndexView
 from cubes.piws.views.startup import NSCardView
@@ -59,6 +59,7 @@ class ImagenIndexView(IndexView):
             html = f.read()
 
         self.w(html % resources)
+
 
 ###############################################################################
 # Registry

@@ -26,6 +26,7 @@ class NeurospinAction(Action):
     def url(self):
         return 'http://dsv.cea.fr/dsv/english/Pages/Welcome.aspx'
 
+
 class ImagenAction(Action):
     __regid__ = "imagen"
     __select__ = yes()
@@ -35,6 +36,7 @@ class ImagenAction(Action):
 
     def url(self):
         return 'http://www.imagen-europe.com/'
+
 
 class ImagenLicenseAction(Action):
     __regid__ = "license"
