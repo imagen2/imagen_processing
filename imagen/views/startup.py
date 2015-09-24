@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# copyright 2013 =AGrigis, all rights reserved.
-# contact http://www.logilab.fr -- mailto:=antoine.grigis@cea.fr
+# copyright 2013-2015 CEA (Saclay, FRANCE), all rights reserved.
+# contact http://www.cea.fr -- mailto:=imagendatabase@cea.fr
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free
