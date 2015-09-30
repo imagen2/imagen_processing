@@ -116,8 +116,8 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
         w(u'<div class="btn-group-vertical btn-block">')
         href = self._cw.build_url(rql="Any S Where S is CWSearch")
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
-        w(u'<span class="glyphicon glyphicon-shopping-cart" '
-          u'style="width: 25px;"></span> My cart</a>')
+        w(u'<span class="glyphicon glyphicon-shopping-cart"></span> '
+          u'My cart</a>')
         w(u'</div></div><br/>')
 
         # QC central
