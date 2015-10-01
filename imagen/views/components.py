@@ -61,7 +61,7 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
         w(u'<div class="btn-group-vertical btn-block">')
         ajaxcallback = "get_questionnaires_data"
         rql_labels = ("DISTINCT Any T ORDERBY T WHERE A is Assessment, "
-                      "A timepoint T")
+                      "A time point T")
         href = self._cw.build_url(
             "view", vid="jtable-table",
             rql_labels=rql_labels, ajaxcallback=ajaxcallback,
