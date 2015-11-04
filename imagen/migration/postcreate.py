@@ -31,7 +31,7 @@ create_or_update_static_cards(session)
 
 
 _LDAP_CONFIGURATION_DETAILS = {
-    'synchronization-interval': '1min',
+    'synchronization-interval': '30min',
     'data-cnx-dn': u'***REMOVED***',
     'data-cnx-password': u'***REMOVED***',
     'user-base-dn': u'ou=People,dc=imagen2,dc=cea,dc=fr',
