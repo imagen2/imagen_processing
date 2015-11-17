@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 @author: Benjamin Thyreau, Vincent Frouin, Dimitri Papadopoulos
-Copyright (C) 2011-2015 CEA NeuroSpin
+Copyright (C) 2011-2015 CEA
 """
 import mid_generate_onsets
 
