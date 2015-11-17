@@ -1,12 +1,13 @@
-# Short documentaion 
-# on onset/contrast generation to build the spm batch file
+########################################################################
+# Short documentation 
+# on onset/contrast generation to build the SPM batch file
 ########################################################################
 
 # This python script are extracted from the general pipelines in NS
 
 
-Content : mid.py and helper (mid_generate_onsets.py)
-          mid_000055417875.csv is an actual behavioural file from BL
+Contents: mid.py and helper mid_generate_onsets.py
+          example/mid_000055417875.csv is an actual behavioural file from BL
           
 
 Syntax 
