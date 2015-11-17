@@ -6,19 +6,21 @@ Copyright (C) 2011-2015 CEA NeuroSpin
 """
 import mid_generate_onsets
 
+
 def generate_spm_model_intra_EPImid(in_fn, out_fn):
 
     s = 'EPImid'
     behav = in_fn
+
     # Ancillary funcs....
     # Pareille que les autres, sauf duration a 4...
     def onsets_to_matlabstring(factorlist, namelist):
-        onsetlist = [ ('[' + " ".join(['%4.4f' % x for x in vec]) + ']' if len(vec) else 'nan') for vec in factorlist ]
-        #durationlist =  [('[4.0]' if len(vec) else 'nan') for vec in factorlist]
-        durationlist =  [((('[1.45]' if nam.startswith('feedback') else '[4.0]') if 'press' not in nam else '[0.]') if len(vec) else 'nan') for nam, vec in zip(namelist, factorlist)]
+        onsetlist = [('[' + " ".join(['%4.4f' % x for x in vec]) + ']' if len(vec) else 'nan') for vec in factorlist]
+        #durationlist = [('[4.0]' if len(vec) else 'nan') for vec in factorlist]
+        durationlist = [((('[1.45]' if nam.startswith('feedback') else '[4.0]') if 'press' not in nam else '[0.]') if len(vec) else 'nan') for nam, vec in zip(namelist, factorlist)]
         print durationlist
         S = "%% Onsets names:\ncond = struct('name',  { '%s' }, ...\n'onset', { %s }', ...\n'duration', { %s })\n" % \
-            ("', '".join(namelist) , ",\n".join(onsetlist), ", ".join(durationlist))
+            ("', '".join(namelist), ",\n".join(onsetlist), ", ".join(durationlist))
         return S
 
     #~ def modulation_to_matlabstring(namelist, modulationnameparams, modulationnamelist, modulewhere):
@@ -30,7 +32,7 @@ def generate_spm_model_intra_EPImid(in_fn, out_fn):
         #~ return "\n".join(s)
 
     def consess_to_matlabstring(cons, fcons):
-        tstrs = ["consess{%d}.tcon.name = '%s';\nconsess{%d}.tcon.convec = %s;" % (i+1, c[0], i+1, str(c[1].tolist()).replace(',','')) for i, c in enumerate(cons)]
+        tstrs = ["consess{%d}.tcon.name = '%s';\nconsess{%d}.tcon.convec = %s;" % (i+1, c[0], i+1, str(c[1].tolist()).replace(',', '')) for i, c in enumerate(cons)]
         fstrs = ["consess{%d}.fcon.name = '%s';\nconsess{%d}.fcon.convec = {[%s]}';" % (i+len(cons)+1, c[0], i+len(cons)+1,  ";\n ".join([" ".join(["%4.4f" % x for x in l]) for l in c[1]])) for i, c in enumerate(fcons)]
         return "\n".join(tstrs + fstrs)
 
@@ -41,12 +43,12 @@ def generate_spm_model_intra_EPImid(in_fn, out_fn):
     for i, x in enumerate(factorlist):
         if len(x) == 0:
             print "WARNING : factor %s is empty on %s. Will generate null spmT" % (s, namelist[i])
-   #
-    contrast_infos = mid_generate_onsets.generate_contrasts_MID_nonparam(trialname, factorlist, namelist, othername = [''] * 6, width = 1) # WARNING sync 'width' with the template .m job (hrf.derivs)!
+    #
+    contrast_infos = mid_generate_onsets.generate_contrasts_MID_nonparam(trialname, factorlist, namelist, othername=['']*6, width=1)  # WARNING sync 'width' with the template .m job (hrf.derivs)!
 
-    header_jobscript = onsets_to_matlabstring(factorlist, namelist) + '\n' + \
-                        consess_to_matlabstring(*contrast_infos)
-    fp = open(out_fn,'w')
+    header_jobscript = (onsets_to_matlabstring(factorlist, namelist) + '\n' +
+                        consess_to_matlabstring(*contrast_infos))
+    fp = open(out_fn, 'w')
     fp.write(header_jobscript)
     fp.close()
 
