@@ -3,7 +3,7 @@
 # on onset/contrast generation to build the spm batch file
 ########################################################################
 
-# This python script are extracted from the general pipelines in NS
+# These Python scripts are extracted from the general pipelines in NeuroSpin
 
 
 Contents: sst.py and helper sst_generate_onsets.py
@@ -11,7 +11,7 @@ Contents: sst.py and helper sst_generate_onsets.py
           
 
 Syntax 
-python sst.py --in  ss_000055417875.csv --out contrasts.m
+python sst.py --in ss_000055417875.csv --out contrasts.m
 
 
 This script generates the onset/contrast part of the batch file (the 
