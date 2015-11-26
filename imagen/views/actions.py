@@ -8,9 +8,9 @@
 ##########################################################################
 
 # Cubicweb import
-from cubicweb.predicates import yes
+from logilab.common.registry import yes
 from cubicweb.web.action import Action
-from cubes.piws.views.actions import LicenseAction, LegalAction, NSPoweredByAction
+from cubes.piws.views.actions import PoweredByPIWSAction
 
 
 ###############################################################################
@@ -79,6 +79,4 @@ def registration_callback(vreg):
     vreg.register(ImagenNSPoweredByAction)
     vreg.register(NeurospinAction)
     vreg.register(ImagenAction)
-    vreg.unregister(LicenseAction)
-    vreg.unregister(LegalAction)
-    vreg.unregister(NSPoweredByAction)
+    vreg.unregister(PoweredByPIWSAction)
