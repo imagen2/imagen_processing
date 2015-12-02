@@ -33,36 +33,3 @@ class ServerStartupHook(Hook):
                     'cn={0},ou=Groups,dc=imagen2,dc=cea,dc=fr'.format(
                         egroup.name)] = egroup.eid
 
-
-class ImagenSessionOpenHook(Hook):
-    __regid__ = "imagen.remove_userstatus"
-    __select__ = Hook.__select__
-    events = ('server_startup', 'server_maintenance')
-
-    def __call__(self):
-
-        with self.repo.internal_cnx() as cnx:
-
-            if 'ctxcomponents' in cnx.vreg:
-
-                cw_properties_list = [
-                    {'pkey': u'ctxcomponents.userstatus.visible',
-                     'value': 'NULL'},
-                    {'pkey': u'ctxcomponents.userstatus.order',
-                     'value': u'5'},
-                    {'pkey': u'ctxcomponents.userstatus.context',
-                     'value': u'header-right'}
-                ]
-
-                for item in cw_properties_list:
-                    cnx.execute(u"DELETE Any X WHERE X is CWProperty, "
-                                u"X pkey '%(pkey)s'" % item)
-
-                cnx.execute(u"INSERT CWProperty X: X value %(value)s, "
-                            u"X pkey '%(pkey)s'" % cw_properties_list[0])
-                cnx.execute(u"INSERT CWProperty X: X value '%(value)s', "
-                            u"X pkey '%(pkey)s'" % cw_properties_list[1])
-                cnx.execute(u"INSERT CWProperty X: X value '%(value)s', "
-                            u"X pkey '%(pkey)s'" % cw_properties_list[2])
-
-                cnx.commit()
