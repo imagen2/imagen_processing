@@ -1,5 +1,5 @@
-# copyright 2016 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
-# contact http://www.logilab.fr -- mailto:contact@logilab.fr
+# copyright 2016 CEA (Saclay, FRANCE), all rights reserved.
+# contact http://www.cea.fr -- mailto:imagedatabase@cea.fr
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free

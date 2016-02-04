@@ -7,13 +7,17 @@ distname = 'cubicweb-imagen-upload'
 numversion = (0, 1, 0)
 version = '.'.join(str(num) for num in numversion)
 
-license = 'LGPL'
-author = 'LOGILAB S.A. (Paris, FRANCE)'
-author_email = 'contact@logilab.fr'
+license = 'CeCILL-B'
+author = 'NeuroSpin'
+author_email = 'imagendatabase@cea.fr'
 description = 'Specialization of rql_upload for the Imagen project'
-web = 'http://www.cubicweb.org/project/%s' % distname
+web = 'https://imagen2.cea.fr/' % distname
 
-__depends__ =  {'cubicweb': '>= 3.20.9'}
+__depends__ = {
+    'cubicweb': '>= 3.20.9'
+    'cubicweb-trustedauth': None,
+    'cubicweb-piws': None,
+}
 __recommends__ = {}
 
 classifiers = [
