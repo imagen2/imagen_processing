@@ -1,0 +1,135 @@
+.facet{
+ max-width: 100%;
+ }
+
+
+footer {
+ background-color: #EEE;
+ }
+
+
+
+#focusLink{
+ color: #FFFFFF;
+}
+
+.facetBody {
+ border-style: none !important;
+}
+
+.facetBody .ui-slider{
+ width: 100%;
+ margin-left: 10%;
+ }
+
+.btn-facet{
+ margin-bottom: 10px !important;
+}
+
+.progress {
+    margin-bottom: 0px;
+}
+
+.form-control {
+	display: inline;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857;
+    color: #555;
+    vertical-align: middle;
+    background-color: #FFF;
+    background-image: none;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+
+select[size] {
+    height: auto;
+    width: auto;
+}
+
+#sliding-table {
+	width:100%;
+	overflow:auto;
+}
+
+.col-md-3 {
+}
+
+.bg-warning {
+    background-color: #FCF8E3;
+}
+
+.bg-success {
+    background-color: #DFF0D8;
+}
+
+.bg-info {
+    background-color: #D9EDF7;
+}
+
+.bg-danger {
+    background-color: #F2DEDE;
+}
+
+.subject_cell{
+    width: "10%";
+}
+
+.span8 {
+    width: 40%;
+}
+
+legend { margin:3px; text-align:center;width:100%}
+
+.navbar-default .cw-site-title {
+    background: url(images/imagen.jpg) no-repeat left center;
+    background-size:55%;
+    color: transparent;
+}
+
+.navbar .cw-site-title {
+ display: inline-block;
+ float: left;
+ font-size: 40px;
+ line-height: 20px;
+ padding: 40px 5px 5px;
+}
+
+input#rql, input#norql {
+  font-size: inherit;
+  line-height: inherit;
+  text-align:center;
+}
+
+.search-query {
+    margin-top: 10px;
+    margin-right: auto;
+    width: 55vw;
+}
+
+.hero-unit {
+    background-color: #CBCBCB;
+}
+
+.panel-default {
+    border-color : #BABABA;
+}
+.panel-default > .panel-heading {
+    background-color: #BABABA;
+}
+
+.panel {
+    background-color: #E8E8E8;
+}
+
+.progress {
+    background-color: #252525;
+}
+
+body {
+background-color: #FDFDFD;
+}
