@@ -1,22 +1,11 @@
 # -*- coding: utf-8 -*-
-# copyright 2014 CEA (Saclay, FRANCE), all rights reserved.
-# contact http://www.cea.fr -- mailto:eu-aims.neurospin@cea.fr
+# copyright 2014-2016 CEA (Saclay, FRANCE), all rights reserved.
+# contact http://www.cea.fr -- mailto:imagendatabase@cea.fr
 #
-# This program is free software: you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation, either version 2.1 of the License, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public
-# License along
-# with this program. If not, see <http://www.gnu.org/licenses/>.
-
-# Cubicweb import
+# Distributed under the terms of the CeCILL-B license, as published by
+# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
+# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
+# for details.
 
 
 from cubicweb.view import EntityStartupView
@@ -670,16 +659,14 @@ class Doc_fmri(NullView):
         page += "</head><body>"
 
         self.w(page)
-        self.w(u"<p>It appears you don't have Adobe Reader or PDF support in t"
-               'his web browser. <a href="{0}">Click here to download t'
-               'he PDF</a></p>'.format(self._cw.data_url('EPI_doc.pdf')))
+        self.w(u"<p>It appears you don't have Adobe Reader or PDF support in "
+               'this web browser. <a href="{0}">Click here to download '
+               'the PDF</a></p>'.format(self._cw.data_url('EPI_doc.pdf')))
         self.w(u"</body>")
         self.w(u'<footer id="pagefooter" role="contentinfo">'
-               '<a href="http://is222243.intra.cea.fr:8989/license">'
-               'License</a> | <a href="http://is222243.intra.cea.fr:8989/'
-               'legal">Legal</a> | <a href="http://i2bm.cea.fr/dsv/i2bm/'
-               'Pages/NeuroSpin/UNATI/unati.aspx">&#169 2014, Neurospin '
-               'Analysis Platform developers</a></footer>')
+               '<a href="http://www.imagen-europe.com/">Imagen</a> | '
+               '<a href="http://i2bm.cea.fr/dsv/i2bm/NeuroSpin/">NeuroSpin</a>'
+               '</footer>')
         self.w(u'</html>')
 
         # JAVASCRIPTS
