@@ -308,8 +308,8 @@ def registration_callback(vreg):
     # Update components
     vreg.register(StatisticBox)
     vreg.unregister(CWUploadBox)
-    vreg.register(ImagenNSNavigationtBox)
-    vreg.unregister(NSNavigationtBox)
+    #vreg.register(ImagenNSNavigationtBox)
+    #vreg.unregister(NSNavigationtBox)
     vreg.unregister(NSSubjectStatistics)
     vreg.register(ImagenSubjectStatistics)
     vreg.unregister(NSAssessmentStatistics)
