@@ -37,7 +37,7 @@ class ImagenIndexView(IndexView):
             "database-image": self._cw.data_url("images/database.jpg"),
             "nsap-image": self._cw.data_url("images/neurospin.jpg"),
             "imagen-image": self._cw.data_url("images/imagen.jpg"),
-            "nsap-url": "http://dsv.cea.fr/dsv/i2bm/NeuroSpin",
+            "nsap-url": "http://i2bm.cea.fr/dsv/i2bm/NeuroSpin",
             "imagen-url": "http://www.imagen-europe.com/",
         }
         views_path = os.path.dirname(os.path.realpath(__file__))

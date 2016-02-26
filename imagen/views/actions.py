@@ -34,7 +34,7 @@ class NeurospinAction(Action):
     title = _("NeuroSpin")
 
     def url(self):
-        return 'http://dsv.cea.fr/dsv/i2bm/NeuroSpin'
+        return 'http://i2bm.cea.fr/dsv/i2bm/NeuroSpin'
 
 
 class ImagenLicenseAction(Action):
