@@ -14,7 +14,7 @@ description = 'Cantab and MRI data collection for Imagen follow-up 3'
 web = 'https://github.com/imagen2/imagen'
 
 __depends__ = {
-    'cubicweb': '>= 3.20.9'
+    'cubicweb': '>= 3.20.9',
     'cubicweb-piws': None,
     'cubicweb-trustedauth': None,
     }
