@@ -664,7 +664,7 @@ class Doc_fmri(NullView):
         self.w(u"</body>")
         self.w(u'<footer id="pagefooter" role="contentinfo">'
                '<a href="http://www.imagen-europe.com/">Imagen</a> | '
-               '<a href="http://i2bm.cea.fr/dsv/i2bm/NeuroSpin/">NeuroSpin</a>'
+               '<a href="http://i2bm.cea.fr/drf/i2bm/NeuroSpin/">NeuroSpin</a>'
                '</footer>')
         self.w(u'</html>')
 
