@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# copyright 2013-2016 CEA (Saclay, FRANCE), all rights reserved.
-# contact http://www.cea.fr -- mailto:imagendatabase@cea.fr
+# copyright 2013-2016 CEA, all rights reserved.
+# contact http://i2bm.cea.fr/drf/i2bm/NeuroSpin -- mailto:imagendatabase@cea.fr
 #
 # Distributed under the terms of the CeCILL-B license, as published by
 # the CEA-CNRS-INRIA. Refer to the LICENSE file or to
@@ -34,7 +34,7 @@ class NeurospinAction(Action):
     title = _("NeuroSpin")
 
     def url(self):
-        return 'http://i2bm.cea.fr/dsv/i2bm/NeuroSpin'
+        return 'http://i2bm.cea.fr/drf/i2bm/NeuroSpin'
 
 
 class ImagenLicenseAction(Action):

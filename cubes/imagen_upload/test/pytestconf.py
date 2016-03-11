@@ -13,8 +13,8 @@
 # FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
 # details.
 #
-# You should have received a copy of the GNU Lesser General Public License along
-# with CubicWeb.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with CubicWeb.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 """
@@ -22,6 +22,7 @@ import os
 import sys
 
 from logilab.common.pytest import PyTester
+
 
 def getlogin():
     """avoid usinng os.getlogin() because of strange tty / stdin problems

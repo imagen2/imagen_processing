@@ -7,15 +7,17 @@ distname = 'cubicweb-imagen'
 numversion = (1, 1, 0)
 version = '.'.join(str(num) for num in numversion)
 
-license = 'LGPL'
-author = 'NeuroSpin'
+license = 'CeCILL-B'
+author = 'CEA'
 author_email = 'imagendatabase@cea.fr'
 description = 'cubicweb cube for the Imagen project'
-web = 'http://www.cubicweb.org/project/%s' % distname
+web = 'https://github.com/imagen2/imagen'
 
-__depends__ = {'cubicweb': '>= 3.19.6',
-               'cubicweb-trustedauth': None,
-               'cubicweb-piws': None}
+__depends__ = {
+    'cubicweb': '>= 3.19.6',
+    'cubicweb-piws': None,
+    'cubicweb-trustedauth': None,
+    }
 __recommends__ = {}
 
 classifiers = [

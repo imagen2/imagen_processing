@@ -11,13 +11,13 @@ license = 'CeCILL-B'
 author = 'CEA'
 author_email = 'imagendatabase@cea.fr'
 description = 'Cantab and MRI data collection for Imagen follow-up 3'
-web = 'https://github.com/neurospin/%s' % modname
+web = 'https://github.com/imagen2/imagen'
 
 __depends__ = {
     'cubicweb': '>= 3.20.9'
     'cubicweb-piws': None,
     'cubicweb-trustedauth': None,
-	}
+    }
 __recommends__ = {}
 
 classifiers = [
@@ -32,6 +32,7 @@ from os.path import join, isdir
 from glob import glob
 
 THIS_CUBE_DIR = join('share', 'cubicweb', 'cubes', modname)
+
 
 def listdir(dirpath):
     return [join(dirpath, fname) for fname in _listdir(dirpath)
@@ -49,4 +50,3 @@ for dname in ('entities', 'views', 'sobjects', 'hooks', 'schema', 'data', 'wdoc'
         data_files.append([join(THIS_CUBE_DIR, dname), listdir(dname)])
 # Note: here, you'll need to add subdirectories if you want
 # them to be included in the debian package
-

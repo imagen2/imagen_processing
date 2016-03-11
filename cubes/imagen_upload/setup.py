@@ -4,7 +4,7 @@
 # copyright 2003-2010 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
-# This file is part of CubicWeb tag cube.
+# This file is part of CubicWeb.
 #
 # CubicWeb is free software: you can redistribute it and/or modify it under the
 # terms of the GNU Lesser General Public License as published by the Free
@@ -16,8 +16,8 @@
 # FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
 # details.
 #
-# You should have received a copy of the GNU Lesser General Public License along
-# with CubicWeb.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with CubicWeb.  If not, see <http://www.gnu.org/licenses/>.
 """Generic Setup script, takes package info from __pkginfo__.py file
 """
 __docformat__ = "restructuredtext en"
@@ -25,11 +25,11 @@ __docformat__ = "restructuredtext en"
 import os
 import sys
 import shutil
-from os.path import isdir, exists, join, walk
+from os.path import exists, join, walk
 
 try:
     if os.environ.get('NO_SETUPTOOLS'):
-        raise ImportError() # do as there is no setuptools
+        raise ImportError()  # do as there is no setuptools
     from setuptools import setup
     from setuptools.command import install_lib
     USE_SETUPTOOLS = True
@@ -41,10 +41,10 @@ from distutils.command import install_data
 
 # import required features
 from __pkginfo__ import modname, version, license, description, web, \
-     author, author_email, classifiers
+    author, author_email, classifiers
 
 if exists('README'):
-    long_description = file('README').read()
+    long_description = open('README').read()
 else:
     long_description = ''
 
@@ -52,10 +52,10 @@ else:
 import __pkginfo__
 if USE_SETUPTOOLS:
     requires = {}
-    for entry in ("__depends__",): # "__recommends__"):
+    for entry in ("__depends__",):  # "__recommends__"):
         requires.update(getattr(__pkginfo__, entry, {}))
     install_requires = [("%s %s" % (d, v and v or "")).strip()
-                       for d, v in requires.iteritems()]
+                        for d, v in requires.items()]
 else:
     install_requires = []
 
@@ -81,6 +81,7 @@ def ensure_scripts(linux_scripts):
     else:
         scripts_ = linux_scripts
     return scripts_
+
 
 def export(from_dir, to_dir,
            blacklist=BASE_BLACKLIST,
@@ -150,13 +151,15 @@ if USE_SETUPTOOLS:
             old_install_data.run(self)
             self.install_dir = _old_install_dir
     try:
-        import setuptools.command.easy_install # only if easy_install available
+        # only if easy_install available
+        import setuptools.command.easy_install  # noqa
         # monkey patch: Crack SandboxViolation verification
         from setuptools.sandbox import DirectorySandbox as DS
         old_ok = DS._ok
+
         def _ok(self, path):
             """Return True if ``path`` can be written during installation."""
-            out = old_ok(self, path) # here for side effect from setuptools
+            out = old_ok(self, path)  # here for side effect from setuptools
             realpath = os.path.normcase(os.path.realpath(path))
             allowed_path = os.path.normcase(sys.prefix)
             if realpath.startswith(allowed_path):
@@ -165,6 +168,7 @@ if USE_SETUPTOOLS:
         DS._ok = _ok
     except ImportError:
         pass
+
 
 def install(**kwargs):
     """setup entry point"""
@@ -181,21 +185,22 @@ def install(**kwargs):
         kwargs['zip_safe'] = False
         cmdclass['install_data'] = MyInstallData
 
-    return setup(name = distname,
-                 version = version,
-                 license = license,
-                 description = description,
-                 long_description = long_description,
-                 author = author,
-                 author_email = author_email,
-                 url = web,
-                 scripts = ensure_scripts(scripts),
-                 data_files = data_files,
-                 ext_modules = ext_modules,
-                 cmdclass = cmdclass,
-                 classifiers = classifiers,
+    return setup(name=distname,
+                 version=version,
+                 license=license,
+                 description=description,
+                 long_description=long_description,
+                 author=author,
+                 author_email=author_email,
+                 url=web,
+                 scripts=ensure_scripts(scripts),
+                 data_files=data_files,
+                 ext_modules=ext_modules,
+                 cmdclass=cmdclass,
+                 classifiers=classifiers,
                  **kwargs
                  )
 
-if __name__ == '__main__' :
+
+if __name__ == '__main__':
     install()

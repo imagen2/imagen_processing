@@ -24,5 +24,6 @@ class IMAGENIndexView(IndexView):
         self.w(u"THIS IS THE INDEX VIEW")
         rset = self._cw.execute("Any X WHERE X is Card, X title 'index'")
 
+
 def registration_callback(vreg):
     vreg.register_and_replace(IMAGENIndexView, NSIndexView)

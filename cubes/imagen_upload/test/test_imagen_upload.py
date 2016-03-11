@@ -31,6 +31,7 @@ uncomment code below if you want to activate automatic test for your cube:
 
 from cubicweb.devtools import testlib
 
+
 class DefaultTC(testlib.CubicWebTC):
     def test_something(self):
         self.skipTest('this cube has no test')
