@@ -1,0 +1,23 @@
+Source: cubicweb-imagen-upload
+Section: web
+Priority: optional
+Maintainer: Dimitri Papadopoulos <imagendatabase@cea.fr>
+Build-Depends:
+ debhelper (>= 7),
+ python (>= 2.6.5),
+Standards-Version: 3.9.3
+X-Python-Version: >= 2.6
+
+Package: cubicweb-imagen-upload
+Architecture: all
+Depends:
+ cubicweb-common (>= 3.20.9),
+ ${python:Depends},
+ ${misc:Depends},
+Description: Cantab and MRI data collection for Imagen follow-up 3
+ CubicWeb is a semantic web application framework.
+ .
+ Cantab and MRI data collection for Imagen follow-up 3
+ .
+ This package will install all the components you need to run the
+ cubicweb-imagen-upload application (cube :)..

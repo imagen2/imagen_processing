@@ -1,0 +1,22 @@
+{
+"GenomicMeasure": [{"box_title": "Related fileset",
+                    "rql": "Any X WHERE X is ExternalFile, F file_entries X, E results_files F"},
+                   {"box_title": "Associated subjects",
+                    "rql": "Any X WHERE X is Subject, E subjects X"},
+                   {"box_title": "Used to generate",
+                    "rql": "Any X WHERE X is ProcessingRun, E processing_runs X"}],
+"ProcessingRun": [{"box_title": "Generated from",
+                   "rql": "Any X WHERE X is GenomicMeasure, X processing_runs E"},
+                  {"box_title": "Related fileset",
+                   "rql": "Any X WHERE X is ExternalFile, F file_entries X, E results_files F"}],
+"Subject": [{"box_title": "Scans",
+             "rql": "Any X WHERE X is Scan, E scans X"},
+            {"box_title": "Processed data",
+             "rql": "Any X WHERE X is ProcessingRun, E processing_runs X"},
+            {"box_title": "Genomic measures",
+             "rql": "Any X WHERE X is GenomicMeasure, E genomic_measures X"}],
+"Scan": [{"box_title": "Associated subject(s)",
+          "rql": "Any X WHERE X is Subject, X scans E"},
+         {"box_title": "Related fileset",
+          "rql": "Any X WHERE X is ExternalFile, F file_entries X, E results_files F"}]
+}
