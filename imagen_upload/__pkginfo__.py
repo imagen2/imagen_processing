@@ -8,16 +8,16 @@ numversion = (0, 1, 0)
 version = '.'.join(str(num) for num in numversion)
 
 license = 'CeCILL-B'
-author = 'NeuroSpin'
+author = 'CEA'
 author_email = 'imagendatabase@cea.fr'
-description = 'Specialization of rql_upload for the Imagen project'
-web = 'https://imagen2.cea.fr/' % distname
+description = 'Cantab and MRI data collection for Imagen follow-up 3'
+web = 'https://github.com/neurospin/%s' % modname
 
 __depends__ = {
     'cubicweb': '>= 3.20.9'
-    'cubicweb-trustedauth': None,
     'cubicweb-piws': None,
-}
+    'cubicweb-trustedauth': None,
+	}
 __recommends__ = {}
 
 classifiers = [

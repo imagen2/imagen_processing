@@ -1,4 +1,4 @@
 """cubicweb-imagen_upload application package
 
-Specialization of rql_upload for the Imagen project
+Cantab and MRI data collection for Imagen follow-up 3
 """

@@ -1,7 +1,7 @@
 Source: cubicweb-imagen-upload
 Section: web
 Priority: optional
-Maintainer: CEA (Saclay, FRANCE) <imagendatabase@cea.fr>
+Maintainer: Dimitri Papadopoulos <imagendatabase@cea.fr>
 Build-Depends:
  debhelper (>= 7),
  python (>= 2.6.5),
@@ -14,10 +14,10 @@ Depends:
  cubicweb-common (>= 3.20.9),
  ${python:Depends},
  ${misc:Depends},
-Description: Specialization of rql_upload for the Imagen project
+Description: Cantab and MRI data collection for Imagen follow-up 3
  CubicWeb is a semantic web application framework.
  .
- Specialization of rql_upload for the Imagen project
+ Cantab and MRI data collection for Imagen follow-up 3
  .
  This package will install all the components you need to run the
  cubicweb-imagen-upload application (cube :)..

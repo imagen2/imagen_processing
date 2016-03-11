@@ -11,9 +11,9 @@
 Name:           cubicweb-imagen-upload
 Version:        0.1.0
 Release:        logilab.1%{?dist}
-Summary:        Specialization of rql_upload for the Imagen project
+Summary:        Cantab and MRI data collection for Imagen follow-up 3
 Group:          Applications/Internet
-License:        LGPL
+License:        CeCILL-B
 Source0:        cubicweb-imagen-upload-%{version}.tar.gz
 
 BuildArch:      noarch
@@ -23,7 +23,7 @@ BuildRequires:  %{python} %{python}-setuptools
 Requires:       cubicweb >= 3.20.9
 
 %description
-Specialization of rql_upload for the Imagen project
+Cantab and MRI data collection for Imagen follow-up 3
 
 %prep
 %setup -q -n cubicweb-imagen-upload-%{version}
