@@ -9,7 +9,7 @@
 
 from logilab.common.registry import yes
 from cubicweb.web.action import Action
-from cubes.piws.views.actions import PoweredByPIWSAction
+from cubes.piws.views.actions import PIWSPoweredByAction
 
 
 ###############################################################################
@@ -59,23 +59,10 @@ class ImagenLegalAction(Action):
         return self._cw.build_url("legal")
 
 
-class ImagenNSPoweredByAction(Action):
-    __regid__ = "poweredby"
-    __select__ = yes()
-    category = "footer"
-    order = 5
-    title = _("Powered by PIWS")
-
-    def url(self):
-        return "https://github.com/neurospin/piws"
-
-
 def registration_callback(vreg):
 
     # Update the footer
     vreg.register(ImagenLicenseAction)
     vreg.register(ImagenLegalAction)
-    vreg.register(ImagenNSPoweredByAction)
     vreg.register(ImagenAction)
     vreg.register(NeurospinAction)
-    vreg.unregister(PoweredByPIWSAction)

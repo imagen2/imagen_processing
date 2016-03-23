@@ -9,9 +9,8 @@
 
 """cubicweb-neurospinweb views/forms/actions/components for web ui"""
 import os
-from cubes.piws.views.startup import NSIndexView
+from cubes.piws.views.startup   import (PIWSIndexView, PIWSCardView)
 from cubicweb.web.views.startup import IndexView
-from cubes.piws.views.startup import NSCardView
 
 
 ###############################################################################
@@ -19,25 +18,32 @@ from cubes.piws.views.startup import NSCardView
 ###############################################################################
 class ImagenIndexView(IndexView):
 
-    __regid__ = 'index'
-
     def call(self, **kwargs):
         """ Class that defines the imagen index view.
         """
 
         # Must execute an rql to display index properly
         self._cw.execute('Any S Where S is Subject')
+        
+        ajaxcallback = "get_questionnaires_data"
+        rql_labels = ("DISTINCT Any T ORDERBY T WHERE A is Assessment, "
+                      "A timepoint T")
+        
+        QCcentral_url = self._cw.build_url(
+                            "view", vid="jtable-table",
+                            rql_labels=rql_labels, ajaxcallback=ajaxcallback,
+                            title="All Questionnaires", elts_to_sort=["ID"],
+                            tooltip_name="All Questionnaires", qtype="QC central")
 
         resources = {
             "demo-url": "",
             "welcome-url": self._cw.build_url("view",
                                               rql="Any S Where S is Subject"),
+            "QCcentral-url": QCcentral_url,
             "license-url": self._cw.build_url("license"),
             "connect-image": self._cw.data_url("images/connect.jpg"),
             "database-image": self._cw.data_url("images/database.jpg"),
-            "nsap-image": self._cw.data_url("images/neurospin.jpg"),
             "imagen-image": self._cw.data_url("images/imagen.jpg"),
-            "nsap-url": "http://i2bm.cea.fr/drf/i2bm/NeuroSpin",
             "imagen-url": "http://www.imagen-europe.com/",
         }
         views_path = os.path.dirname(os.path.realpath(__file__))
@@ -57,5 +63,5 @@ class ImagenIndexView(IndexView):
 ###############################################################################
 def registration_callback(vreg):
     vreg.register(ImagenIndexView)
-    vreg.unregister(NSIndexView)
-    vreg.unregister(NSCardView)
+    vreg.unregister(PIWSIndexView)
+    vreg.unregister(PIWSCardView)

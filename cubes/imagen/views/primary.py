@@ -7,12 +7,12 @@
 # http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
 # for details.
 
-from cubes.piws.views.primary import PiwsPrimaryView
+from cubes.piws.views.primary import PIWSPrimaryView
 
 import json
 
 
-class ImagenPrimaryView(PiwsPrimaryView):
+class ImagenPrimaryView(PIWSPrimaryView):
 
     def _prepare_side_boxes(self, entity):
         """ Create the right relation boxes to display.
@@ -61,7 +61,3 @@ class ImagenPrimaryView(PiwsPrimaryView):
 
 def registration_callback(vreg):
     pass
-
-    # Update components
-    #vreg.unregister(PiwsPrimaryView)
-    #vreg.register(ImagenPrimaryView)

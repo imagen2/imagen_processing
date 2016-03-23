@@ -8,24 +8,25 @@
 # for details.
 
 # Piws import
-from cubes.piws.views.components import NSNavigationtBox
 from cubes.rql_upload.views.components import CWUploadBox
-from cubes.piws.views.components import (NSSubjectStatistics,
-                                         NSAssessmentStatistics,
-                                         RelationBox)
+from cubes.piws.views.components       import (PIWSNavigationtBox,
+                                               PIWSSubjectStatistics,
+                                               PIWSAssessmentStatistics)
 
 # Cubicweb import
 from cubicweb.web import component
 from cubicweb.predicates import match_view, is_instance
-from cubicweb.predicates import nonempty_rset
-from cubicweb.predicates import match_kwargs
+
+from cubes.rql_upload.views.utils import load_forms
 
 ###############################################################################
 # Navigation Box
 ###############################################################################
 
+PIWSNavigationtBox.display_assessment = False
 
-class ImagenNSNavigationtBox(NSNavigationtBox):
+
+class ImagenPIWSNavigationtBox(PIWSNavigationtBox):
     """ Display a box containing navigation shortcuts.
     """
 
@@ -40,36 +41,86 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
         w(u'Subjects</a>')
         w(u'</div></div><br/>')
 
-        # Exams
-#        w(u'<div class="btn-toolbar">')
-#        w(u'<div class="btn-group-vertical btn-block">')
-#        href = self._cw.build_url(rql="Any A Where A is Assessment")
-#        w(u'<a class="btn btn-primary" href="{0}">'.format(href))
-#        w(u'Exams</a>')
-#        w(u'</div></div><br/>')
+        # Assessments
+        if self.display_assessment:
+            w(u'<div class="btn-toolbar">')
+            w(u'<div class="btn-group-vertical btn-block">')
+            href = self._cw.build_url(rql="Any A Where A is Assessment")
+            w(u'<a class="btn btn-primary" href="{0}">'.format(href))
+            w(u'Assessments</a>')
+            w(u'</div></div><br/>')
 
         # Scan
         w(u'<div class="btn-toolbar">')
         w(u'<div class="btn-group-vertical btn-block">')
         href = self._cw.build_url(rql="Any S Where S is Scan")
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
-        w(u'Images</a>')
+        w(u'Scans</a>')
         w(u'</div></div><br/>')
 
         # QuestionnaireRun
-        w(u'<div class="btn-toolbar">')
-        w(u'<div class="btn-group-vertical btn-block">')
         ajaxcallback = "get_questionnaires_data"
         rql_labels = ("DISTINCT Any T ORDERBY T WHERE A is Assessment, "
                       "A timepoint T")
-        href = self._cw.build_url(
-            "view", vid="jtable-table",
-            rql_labels=rql_labels, ajaxcallback=ajaxcallback,
-            title="All Questionnaires", elts_to_sort=["ID"],
-            tooltip_name="general_questionnaires_doc")
-        w(u'<a class="btn btn-primary" href="{0}">'.format(href))
-        w(u'Questionaires</a>')
-        w(u'</div></div><br/>')
+        rql_types = ("DISTINCT Any T ORDERBY T WHERE Q is Questionnaire, "
+                      "Q type T")
+        rset = self._cw.execute(rql_types)
+        types = [line[0] for line in rset.rows]
+        if len(types) > 0:
+            # > main button
+            w(u'<div class="btn-toolbar">')
+            w(u'<div class="btn-group-vertical btn-block">')
+            w(u'<a class="btn btn-info"'
+               'data-toggle="collapse" data-target="#questionnaires">')
+            w(u'Tables</a>')
+            w(u'</div></div>')
+            # > typed buttons container
+            w(u'<div id="questionnaires" class="collapse">')
+            w(u'<div class="panel-body">')
+            w(u'<hr>')
+            # > typed buttons
+            for qtype in types:
+                href = self._cw.build_url(
+                    "view", vid="jtable-table",
+                    rql_labels=rql_labels, ajaxcallback=ajaxcallback,
+                    title="All Questionnaires", elts_to_sort=["ID"],
+                    tooltip_name="All Questionnaires", qtype=qtype)
+                w(u'<div class="btn-toolbar">')
+                w(u'<div class="btn-group-vertical btn-block">')
+                w(u'<a class="btn btn-primary" href="{0}">'.format(href))
+                w(u'{0}</a>'.format(qtype))
+                w(u'</div></div><br/>')
+            w(u'<hr>')
+            w(u'</div></div><br/>')
+
+        # ProcessingRun
+        rql_types = ("DISTINCT Any T ORDERBY T WHERE P is ProcessingRun, "
+                      "P type T")
+        rset = self._cw.execute(rql_types)
+        types = [line[0] for line in rset.rows]
+        if len(types) > 0:
+            # > main button
+            w(u'<div class="btn-toolbar">')
+            w(u'<div class="btn-group-vertical btn-block">')
+            w(u'<a class="btn btn-info"'
+               'data-toggle="collapse" data-target="#processings">')
+            w(u'Processed data</a>')
+            w(u'</div></div>')
+            # > typed buttons container
+            w(u'<div id="processings" class="collapse">')
+            w(u'<div class="panel-body">')
+            w(u'<hr>')
+            # > typed buttons
+            for ptype in types:
+                href = self._cw.build_url(rql="Any P Where P is ProcessingRun, "
+                                              "P type '{0}'".format(ptype))
+                w(u'<div class="btn-toolbar">')
+                w(u'<div class="btn-group-vertical btn-block">')
+                w(u'<a class="btn btn-primary" href="{0}">'.format(href))
+                w(u'{0}</a>'.format(ptype))
+                w(u'</div></div><br/>')
+            w(u'<hr>')
+            w(u'</div></div><br/>')
 
         # GenomicMeasures
         w(u'<div class="btn-toolbar">')
@@ -78,37 +129,6 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
         w(u'<a class="btn btn-primary" href="{0}">'.format(href))
         w(u'Genomic measures</a>')
         w(u'</div></div><br/>')
-
-        # Processed data
-        w(u'<div class="btn-toolbar" >')
-        w(u'<div class="btn-group-vertical btn-block">')
-        w(u'<a class="btn btn-info" '
-          'data-toggle="collapse" data-target="#processed_buttons">')
-        w(u'Processed Data</a>')
-        w(u'</div>')
-        w(u'</div>')
-        w(u'<div id="processed_buttons" class="collapse">')
-        w(u'<div class="panel panel-info">')
-        w(u'<div class="panel-body">')
-
-        # button 1: Genetics
-        w(u'<div class="btn-toolbar">')
-        w(u'<div class="btn-group-vertical btn-block">')
-        href = self._cw.build_url(rql="Any PR Where PR is ProcessingRun")
-        w(u'<a class="btn btn-primary" href="{0}">'.format(href))
-        w(u'Genetics</a>')
-        w(u'</div></div><br/>')
-
-        # button 2: Scans
-#        w(u'<div class="btn-toolbar">')
-#        w(u'<div class="btn-group-vertical btn-block">')
-#        href = self._cw.build_url(rql=('Any G Where G is GenomicMeasure,'
-#                                       ' G type "qc"'))
-#        w(u'<a class="btn btn-primary" href="">')
-#        w(u'Scans</a>')
-#        w(u'</div></div><br/>')
-
-        w(u'</div></div></div><br>')
 
         # CWSearch
         w(u'<hr>')
@@ -120,28 +140,16 @@ class ImagenNSNavigationtBox(NSNavigationtBox):
           u'My cart</a>')
         w(u'</div></div><br/>')
 
-        # QC central
-        w(u'<hr>')
-        w(u'<div class="btn-toolbar">')
-        w(u'<div class="btn-group-vertical btn-block">')
-        href = self._cw.build_url("view", vid="QC_central")
-        w(u'<a class="btn btn-primary" href="{0}">'.format(href))
-        w(u'QC central</a>')
-        w(u'</div></div>')
-
-        # Help
-        w(u'<hr>')
-        tiphref = self._cw.build_url("view", vid="piws-documentation",
-                                     tooltip_name='help',
-                                     _notemplate=True)
-        w(u'<div class="btn-toolbar">')
-        w(u'<div class="btn-group-vertical btn-block">')
-        href = self._cw.build_url("view", vid="help")
-        w(u'<a href="{0}" class="btn btn-primary" target=_blank '
-          'type="button">'.format(tiphref))
-        w(u"Help &#9735")
-        w(u"</a>")
-        w(u'</div></div><br/>')
+        # CWUpload
+        config = load_forms(self._cw.vreg.config)
+        if config > 0:
+            w(u'<div class="btn-toolbar">')
+            w(u'<div class="btn-group-vertical btn-block">')
+            href = self._cw.build_url(rql="Any U Where U is CWUpload")
+            w(u'<a class="btn btn-primary" href="{0}">'.format(href))
+            w(u'<span class="glyphicon glyphicon glyphicon-cloud-upload">'
+                '</span> My uploads</a>')
+            w(u'</div></div><br/>')
 
 
 class StatisticBox(component.CtxComponent):
@@ -308,10 +316,8 @@ def registration_callback(vreg):
     # Update components
     vreg.register(StatisticBox)
     vreg.unregister(CWUploadBox)
-    #vreg.register(ImagenNSNavigationtBox)
-    #vreg.unregister(NSNavigationtBox)
-    vreg.unregister(NSSubjectStatistics)
+    vreg.unregister(PIWSNavigationtBox)
+    vreg.register(ImagenPIWSNavigationtBox)
+    vreg.unregister(PIWSSubjectStatistics)
     vreg.register(ImagenSubjectStatistics)
-    vreg.unregister(NSAssessmentStatistics)
-#    vreg.unregister(RelationBox)
-#    vreg.register(ImagenRelationBox)
+    vreg.unregister(PIWSAssessmentStatistics)
