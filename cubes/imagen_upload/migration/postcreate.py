@@ -14,18 +14,25 @@ You could setup site properties or a workflow here for example.
 """
 
 # Example of site property change
-set_property('ui.site-title', "Imagen FU3")
+set_property('ui.site-title', "")
+
+import json
 
 
-_LDAP_CONFIGURATION_DETAILS = {
-    'synchronization-interval': '30min',
-    'data-cnx-dn': u'***REMOVED***',
-    'data-cnx-password': u'***REMOVED***',
-    'user-base-dn': u'ou=People,dc=imagen2,dc=cea,dc=fr',
-    'user-attrs-map': u'userPassword:upassword,mail:email,uid:login',
-    'group-base-dn': u'ou=Groups,dc=imagen2,dc=cea,dc=fr',
-    'group-attrs-map': u'memberUid:member,cn:name',
-}
+_LDAP_CONFIGURATION_FILE = '/neurospin/imagen/src/scripts/ldap/configuration.json'
+
+with open(_LDAP_CONFIGURATION_FILE) as configuration_file:
+    configuration = json.load(configuration_file)
+
+    _LDAP_CONFIGURATION_DETAILS = {
+        'synchronization-interval': u'30min',
+        'data-cnx-dn': configuration['data-cnx-dn'],
+        'data-cnx-password': configuration['data-cnx-password'],
+        'user-base-dn': u'ou=People,dc=imagen2,dc=cea,dc=fr',
+        'user-attrs-map': u'userPassword:upassword,mail:email,uid:login',
+        'group-base-dn': u'ou=Groups,dc=imagen2,dc=cea,dc=fr',
+        'group-attrs-map': u'memberUid:member,cn:name',
+    }
 
 
 _LDAP_CONFIGURATION = u"""
