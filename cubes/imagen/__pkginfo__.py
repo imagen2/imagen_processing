@@ -4,7 +4,7 @@
 modname = 'imagen'
 distname = 'cubicweb-imagen'
 
-numversion = (1, 1, 0)
+numversion = (1, 5, 0)
 version = '.'.join(str(num) for num in numversion)
 
 license = 'CeCILL-B'
