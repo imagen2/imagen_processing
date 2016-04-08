@@ -9,7 +9,7 @@
 from cubicweb.web import facet
 from cubicweb.predicates import is_instance
 
-from cubes.piws.views.facets import LabelFacet
+from cubes.piws.views.facets import LabelFacet, ScanFieldFacet, StudyFacet
 
 ###############################################################################
 # FACETS
@@ -46,3 +46,5 @@ def registration_callback(vreg):
     vreg.unregister(LabelFacet)
     vreg.register(ImagenLabelFacet)
     vreg.register(ImagenTypeFacet)
+    vreg.unregister(ScanFieldFacet)
+    vreg.unregister(StudyFacet)
