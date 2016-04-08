@@ -9,7 +9,7 @@
 from cubicweb.web import facet
 from cubicweb.predicates import is_instance
 
-from cubes.piws.views.facets import LabelFacet, ScanFieldFacet, StudyFacet
+from cubes.piws.views.facets import LabelFacet, StudyFacet, ScanFieldFacet
 
 ###############################################################################
 # FACETS
@@ -43,8 +43,8 @@ def registration_callback(vreg):
     # The difference is that we don't want the "Label facet" to apply on scans
     # but instead filter scans based on "type", in particular for EPI to be
     # able to differenciate between the paradigms e.g. EPI_faces, EPI_mid...
+    vreg.unregister(StudyFacet)
+    vreg.unregister(ScanFieldFacet)
     vreg.unregister(LabelFacet)
     vreg.register(ImagenLabelFacet)
     vreg.register(ImagenTypeFacet)
-    vreg.unregister(ScanFieldFacet)
-    vreg.unregister(StudyFacet)

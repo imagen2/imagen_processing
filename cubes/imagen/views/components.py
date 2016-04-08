@@ -169,7 +169,7 @@ class StatisticBox(component.CtxComponent):
         """
         parse the file, return nothing if file is not found
         """
-        try:
+        if 1:
             tot, percentages = self.get_stats()
 
             w(u"<strong>Number of subjects: {0}</strong>".format(tot))
@@ -216,8 +216,8 @@ class StatisticBox(component.CtxComponent):
                 w(u'</li>')
             w(u'</li>')
 
-        except:
-            pass
+        #except:
+        #    pass
 
     def match_timepoint_label(self):
         """
@@ -238,7 +238,7 @@ class StatisticBox(component.CtxComponent):
 
         rql = "DISTINCT Any SID, T, SCL WHERE SC is Scan, " \
               "SC label SCL, " \
-              "S scans SC, " \
+              "SC subject S, " \
               "S code_in_study SID, " \
               "SC in_assessment A, " \
               "A timepoint T"
