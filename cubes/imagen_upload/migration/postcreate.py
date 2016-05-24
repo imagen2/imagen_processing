@@ -31,7 +31,7 @@ with open(_LDAP_CONFIGURATION_FILE) as configuration_file:
         'user-base-dn': u'ou=People,dc=imagen2,dc=cea,dc=fr',
         'user-attrs-map': u'userPassword:upassword,mail:email,uid:login',
         'group-base-dn': u'ou=Groups,dc=imagen2,dc=cea,dc=fr',
-        'group-attrs-map': u'memberUid:member,cn:name',
+        'group-attrs-map': u'memberUid:member,cn:name,description:description',
     }
 
 

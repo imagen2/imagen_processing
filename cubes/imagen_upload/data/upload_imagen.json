@@ -1,0 +1,32 @@
+{
+    "CANTAB": [
+        {
+            "name": "centre",
+            "type": "StringField",
+            "value": "",
+            "label": "Center",
+            "required": "True",
+            "choices": ["aa"],
+            "rql": "Any C WHERE X is CWGroup, X description ILIKE '%acquisition_centre%', X name C, U in_group X:choices"},
+        {
+            "name": "acquisition_date",
+            "type": "DateField",
+            "required": "True",
+            "label": "Acquisition Date"},
+        {
+            "name": "cantab_file",
+            "type": "MultipleFileField",
+            "required": "True",
+            "label": "CANTAB Files",
+            "check_value": "*.zip"}
+    ],
+
+    "example2": [
+        {
+            "name": "file1", "type": "FileField",
+            "required": "False", "label": "file1", "check_value": ".*zip"},
+        {
+            "name": "file2", "type": "FileField",
+            "required": "False", "label": "file2"}
+    ]
+}

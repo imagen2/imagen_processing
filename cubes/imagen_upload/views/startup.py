@@ -10,7 +10,7 @@
 from cubicweb.web.views.startup import IndexView
 
 # Cubes import
-from cubes.piws.views.startup import NSIndexView
+from cubes.piws.views.startup import PIWSIndexView
 
 
 class IMAGENIndexView(IndexView):
@@ -21,9 +21,9 @@ class IMAGENIndexView(IndexView):
         """ Create the 'index' like page of our site.
         """
         # Get the card that contains some text description about this site
-        self.w(u"THIS IS THE INDEX VIEW")
+        self.w(u"Welcome to IMAGEN follow-up 3 data collection platform")
         rset = self._cw.execute("Any X WHERE X is Card, X title 'index'")
 
 
 def registration_callback(vreg):
-    vreg.register_and_replace(IMAGENIndexView, NSIndexView)
+    vreg.register_and_replace(IMAGENIndexView, PIWSIndexView)

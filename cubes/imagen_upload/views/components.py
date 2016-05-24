@@ -7,10 +7,10 @@
 # for details.
 
 # Cubes import
-from cubes.piws.views.components import NSNavigationtBox
+from cubes.piws.views.components import PIWSNavigationtBox
 
 
 def registration_callback(vreg):
 
     # Update components
-    vreg.unregister(NSNavigationtBox)
+    vreg.unregister(PIWSNavigationtBox)
