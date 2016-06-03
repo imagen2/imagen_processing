@@ -4,7 +4,7 @@
 modname = 'imagen'
 distname = 'cubicweb-imagen'
 
-numversion = (1, 5, 0)
+numversion = (1, 6, 0)
 version = '.'.join(str(num) for num in numversion)
 
 license = 'CeCILL-B'
@@ -14,10 +14,10 @@ description = 'cubicweb cube for the Imagen project'
 web = 'https://github.com/imagen2/imagen'
 
 __depends__ = {
-    'cubicweb': '>= 3.19.6',
-    'cubicweb-piws': None,
+    'cubicweb': '>= 3.20.9',
+    'cubicweb-piws': '>= 2.2.0',
     'cubicweb-trustedauth': None,
-    }
+}
 __recommends__ = {}
 
 classifiers = [
