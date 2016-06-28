@@ -21,7 +21,7 @@ class IMAGENIndexView(IndexView):
         """ Create the 'index' like page of our site.
         """
         # Get the card that contains some text description about this site
-        self.w(u"Welcome to IMAGEN follow-up 3 data collection platform")
+        self.w(u"<h2>Welcome to IMAGEN follow-up 3 data collection platform<h2>")
         rset = self._cw.execute("Any X WHERE X is Card, X title 'index'")
 
 

@@ -1,32 +1,79 @@
 {
-    "CANTAB": [
-        {
-            "name": "centre",
-            "type": "StringField",
-            "value": "",
-            "label": "Center",
-            "required": "True",
-            "choices": ["aa"],
-            "rql": "Any C WHERE X is CWGroup, X description ILIKE '%acquisition_centre%', X name C, U in_group X:choices"},
-        {
-            "name": "acquisition_date",
-            "type": "DateField",
-            "required": "True",
-            "label": "Acquisition Date"},
-        {
-            "name": "cantab_file",
-            "type": "MultipleFileField",
-            "required": "True",
-            "label": "CANTAB Files",
-            "check_value": "*.zip"}
-    ],
+    "CANTAB": 
+	{
+		"Fields": [
+			{
+			    "name": "centre",
+			    "type": "StringField",
+			    "value": "",
+			    "label": "Center",
+			    "required": "True",
+			    "choices": [""],
+			    "rql": "DISTINCT Any C WHERE X is CWGroup, U login '%(uid)s', U in_group X, X name C:choices"},
+			{
+			    "name": "sid",
+			    "type": "StringField",
+			    "value": "",
+			    "label": "Subject Id (PSC1)",
+			    "required": "True"},
+			{
+			    "name": "acquisition_date",
+			    "type": "DateField",
+			    "required": "True",
+			    "label": "Acquisition Date"},
+			{
+			    "name": "cant",
+			    "type": "FileField",
+			    "required": "True",
+			    "label": "File cant_<PSC1>.cclar",
+			    "check_value": "cclar"},
+			{
+			    "name": "datasheet",
+			    "type": "FileField",
+			    "required": "True",
+			    "label": "File datasheet_<PSC1>.csv",
+			    "check_value": "csv"},
+			{
+			    "name": "detailed_datasheet",
+			    "type": "FileField",
+			    "required": "True",
+			    "label": "File detailed_datasheet_<PSC1>.csv",
+			    "check_value": "csv"},
+			{
+			    "name": "report",
+			    "type": "FileField",
+			    "required": "True",
+			    "label": " File report_<PSC1>.html",
+			    "check_value": "html"}],
+		"SynchroneCheck": "cubes.imagen_upload.checks.synchrone_check_cantab",
+		"ASynchroneCheck": "cubes.imagen_upload.checks.asynchrone_check_cantab"
+	},
+    "Image": 
+	{
+		"Fields": [
+			{
+			    "name": "centre",
+			    "type": "StringField",
+			    "value": "",
+			    "label": "Center",
+			    "required": "True",
+			    "choices": [""],
+			    "rql": "DISTINCT Any C WHERE X is CWGroup, U login '%(uid)s', U in_group X, X name C:choices"},
+			{
+			    "name": "sid",
+			    "type": "StringField",
+			    "value": "",
+			    "label": "Subject Id (PSC1)",
+			    "width": "100px",
+			    "required": "True"},
+			{
+			    "name": "file",
+			    "type": "FileField",
+			    "required": "True",
+			    "label": "Image file (<PSC1>.zip)",
+			    "check_value": "zip"}],
+		"SynchroneCheck": "cubes.imagen_upload.checks.synchrone_check_image",
+		"ASynchroneCheck": "cubes.imagen_upload.checks.asynchrone_check_image"
+	}
 
-    "example2": [
-        {
-            "name": "file1", "type": "FileField",
-            "required": "False", "label": "file1", "check_value": ".*zip"},
-        {
-            "name": "file2", "type": "FileField",
-            "required": "False", "label": "file2"}
-    ]
 }
