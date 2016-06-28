@@ -151,6 +151,19 @@ class ImagenPIWSNavigationtBox(PIWSNavigationtBox):
                 '</span> My uploads</a>')
             w(u'</div></div><br/>')
 
+        # Help
+        tiphref = self._cw.build_url("view", vid="piws-documentation",
+                                     tooltip_name="help",
+                                     _notemplate=True)
+        w(u'<hr>')
+        w(u'<div class="btn-toolbar">')
+        w(u'<div class="btn-group-vertical btn-block">')
+        w(u'<a class="btn btn-warning" target=_blank href="{0}">'.format(tiphref))
+        w(u'<span class="glyphicon glyphicon-question-sign"></span> '
+          u'Help</a>')
+        w(u'</div></div><br/>')
+
+
 
 class StatisticBox(component.CtxComponent):
     """
