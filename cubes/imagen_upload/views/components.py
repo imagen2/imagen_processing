@@ -24,7 +24,9 @@ class IMAGENCWUploadedBox(CWUploadedBox):
     def render_body(self, w, **kwargs):
         super(IMAGENCWUploadedBox, self).render_body(w, **kwargs)
 
-        rql = "DISTINCT Any G WHERE G is CWGroup, U in_group G, U login '{}'"
+        rql = ("DISTINCT Any G WHERE G is CWGroup,"
+               " G description ILIKE '%acquisition_centre%',"
+               " U in_group G, U login '{}'")
         rql = rql.format(self._cw.user_data()['login'])
         rset = self._cw.execute(rql)
         for entity in rset.entities():
