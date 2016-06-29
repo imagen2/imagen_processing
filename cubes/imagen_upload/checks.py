@@ -10,8 +10,9 @@
 import os
 import re
 import shutil
+import traceback
 
-#from imagen.sanity import cantab, imaging
+from imagen.sanity import cantab, imaging
 
 SID_ERROR_MESSAGE = ("- The subject ID is malformed."
                      " [12 decimal digits required]<br/>")
@@ -21,6 +22,10 @@ UPLOAD_ALREADY_EXISTS = ("- A similar upload already exists."
                          " Please contact an administrator if you want"
                          " to force the upload.<br/>")
 
+SYSTEM_ERROR_RAISED = ("- A system error raised."
+                       " Please send the following message"
+                       " to an administrator.")
+
 
 def is_PSC1(upload):
     """ Cheks if sid field value is well formated (12 decimal digits)
@@ -28,7 +33,7 @@ def is_PSC1(upload):
     Pameters:
         upload: A CWUpload object
 
-    Return:
+    Return:cubes/imagen/views/components.py
         Return True value match with the pattern, False otherwise
     """
 
@@ -51,7 +56,6 @@ def is_aldready_uploaded(upload):
     Return:
         Return True if an equivalent upload is already done, False otherwise
     """
-    print upload.eid
     rql = ("Any COUNT(X) WHERE X is CWUpload,"
            " NOT X eid '{}',"
            " X form_name ILIKE '{}',"
@@ -77,6 +81,14 @@ def synchrone_check_cantab(upload):
         error += SID_ERROR_MESSAGE
     if is_aldready_uploaded(upload):
         error += UPLOAD_ALREADY_EXISTS
+    #dimitri check
+    files = []
+    for eUFile in upload.upload_files:
+        files.append(eUFile.get_file_path())
+    psc1, errors = cantab.check(files)
+    if not psc1:
+        for err in errors:
+            error += err.__str__()
 
     # return
     if error:
@@ -107,7 +119,7 @@ def asynchrone_check_cantab(repository):
                 to_file = to_file + "/{}".format(eUFile.data_name)
                 shutil.copy2(from_file, to_file)
             rql = ("SET X status 'Validated'"
-                   " WHERE X is CWUpload, X eid {}".format(entity.eid))
+                   " WHERE X is CWUpload, X eid '{}'".format(entity.eid))
             cnx.execute(rql)
         cnx.commit()
 
@@ -119,7 +131,11 @@ def synchrone_check_image(upload):
         error += SID_ERROR_MESSAGE
     if is_aldready_uploaded(upload):
         error += UPLOAD_ALREADY_EXISTS
-
+    #dimitri check
+    psc1, errors = imaging.check(upload.upload_files[0].get_file_path())
+    if not psc1:
+        for err in errors:
+            error += err.__str__()
     # return
     if error:
         return (False, error)
@@ -128,8 +144,46 @@ def synchrone_check_image(upload):
 
 
 def asynchrone_check_image(repository):
+
+    validated_dir = repository.vreg.config["validated_directory"]
     rql = ("Any X WHERE X is CWUpload,"
            " X form_name ILIKE 'image', X status 'Quarantine'")
     with repository.internal_cnx() as cnx:
-        rset =  cnx.execute(rql)
-    return (True, "Wrong updated files format.")
+        rset = cnx.execute(rql)
+        for entity in rset.entities():
+            try:
+                psc1, errors = imaging.extended_check(
+                    entity.upload_files[0].get_file_path())
+                error = ''
+                if not psc1:
+                    for err in errors:
+                        error += err.__str__()
+                    rql = ("SET X status 'Rejected', X error '{}'"
+                           " WHERE X is CWUpload, X eid {}".format(
+                               error, entity.eid))
+                else:
+                    from_file = entity.upload_files[0].get_file_path()
+                    to_file = u'{0}/{1}/{2}'.format(
+                        validated_dir,
+                        entity.get_field_value('centre'),
+                        entity.get_field_value('sid')
+                    )
+                    if not os.path.exists(to_file):
+                        os.makedirs(to_file)
+                    to_file = to_file + "/{}".format(
+                        entity.upload_files[0].data_name)
+                    shutil.copy2(from_file, to_file)
+                    rql = ("SET X status 'Validated'"
+                           " WHERE X is CWUpload, X eid '{}'".format(
+                               entity.eid))
+                cnx.execute(rql)
+            except:
+                stacktrace = traceback.format_exc()
+                stacktrace = stacktrace.replace('"', "'").replace("'", "\\'")
+                rql = ("SET X status 'Rejected', X error '{} <br/> {}'"
+                       " WHERE X is CWUpload, X eid '{}'".format(
+                           SYSTEM_ERROR_RAISED,
+                           stacktrace,
+                           entity.eid))
+                cnx.execute(rql)
+        cnx.commit()
