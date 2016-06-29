@@ -8,3 +8,8 @@
 # for details.
 
 """cubicweb-imagen-upload schema"""
+
+from yams.buildobjs import String
+from cubicweb.schemas.bootstrap import CWGroup
+
+CWGroup.add_relation(String(maxsize=512), name='description')
