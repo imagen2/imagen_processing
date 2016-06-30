@@ -182,7 +182,7 @@ def asynchrone_check_rmi(repository):
 
     validated_dir = repository.vreg.config["validated_directory"]
     rql = ("Any X WHERE X is CWUpload,"
-           " X form_name ILIKE 'RMI', X status 'Quarantine'")
+           " X form_name ILIKE 'MRI', X status 'Quarantine'")
     with repository.internal_cnx() as cnx:
         rset = cnx.execute(rql)
         for entity in rset.entities():
