@@ -27,6 +27,15 @@ SYSTEM_ERROR_RAISED = ("- A system error raised."
                        " to an administrator.")
 
 
+def get_message_error(flag, errors):
+    message = ''
+    if not flag:
+        for err in errors:
+            message += err.__str__()
+            message += u'<br/>'
+    return message
+
+
 def is_PSC1(upload):
     """ Cheks if sid field value is well formated (12 decimal digits)
 
@@ -75,24 +84,49 @@ def is_aldready_uploaded(upload):
 
 
 def synchrone_check_cantab(upload):
-    error = ''
+    message = ''
     # checks
     if not is_PSC1(upload):
-        error += SID_ERROR_MESSAGE
+        message += SID_ERROR_MESSAGE
     if is_aldready_uploaded(upload):
-        error += UPLOAD_ALREADY_EXISTS
+        message += UPLOAD_ALREADY_EXISTS
+
     #dimitri check
-    files = []
-    for eUFile in upload.upload_files:
-        files.append(eUFile.get_file_path())
-    psc1, errors = cantab.check(files)
-    if not psc1:
-        for err in errors:
-            error += err.__str__()
+    sid = upload.get_field_value('sid')
+    tid = upload.get_field_value('time_point')
+    for ufile in upload.upload_files:
+        psc1 = True
+        errors = None
+        if ufile.name == 'cant':
+            psc1, errors = cantab.check_cant_name(ufile.data_name, sid, tid)
+            message += get_message_error(psc1, errors)
+            psc1, errors = cantab.check_cant_content(
+                ufile.get_file_path(), sid, tid)
+            message += get_message_error(psc1, errors)
+        elif ufile.name == 'datasheet':
+            psc1, errors = cantab.check_datasheet_name(
+                ufile.data_name, sid, tid)
+            message += get_message_error(psc1, errors)
+            psc1, errors = cantab.check_datasheet_content(
+                ufile.get_file_path(), sid, tid)
+            message += get_message_error(psc1, errors)
+        elif ufile.name == 'detailed_datasheet':
+            psc1, errors = cantab.check_detailed_datasheet_name(
+                ufile.data_name, sid, tid)
+            message += get_message_error(psc1, errors)
+            psc1, errors = cantab.check_detailed_datasheet_content(
+                ufile.get_file_path(), sid, tid)
+            message += get_message_error(psc1, errors)
+        elif ufile.name == 'report':
+            psc1, errors = cantab.check_report_name(ufile.data_name, sid, tid)
+            message += get_message_error(psc1, errors)
+            psc1, errors = cantab.check_report_content(
+                ufile.get_file_path(), sid, tid)
+            message += get_message_error(psc1, errors)
 
     # return
-    if error:
-        return (False, error)
+    if message:
+        return (False, message)
     else:
         return (True, None)
 
@@ -124,7 +158,7 @@ def asynchrone_check_cantab(repository):
         cnx.commit()
 
 
-def synchrone_check_image(upload):
+def synchrone_check_rmi(upload):
     error = ''
     # checks
     if not is_PSC1(upload):
@@ -136,6 +170,7 @@ def synchrone_check_image(upload):
     if not psc1:
         for err in errors:
             error += err.__str__()
+            error += u'<br/>'
     # return
     if error:
         return (False, error)
@@ -143,11 +178,11 @@ def synchrone_check_image(upload):
         return (True, None)
 
 
-def asynchrone_check_image(repository):
+def asynchrone_check_rmi(repository):
 
     validated_dir = repository.vreg.config["validated_directory"]
     rql = ("Any X WHERE X is CWUpload,"
-           " X form_name ILIKE 'image', X status 'Quarantine'")
+           " X form_name ILIKE 'RMI', X status 'Quarantine'")
     with repository.internal_cnx() as cnx:
         rset = cnx.execute(rql)
         for entity in rset.entities():
@@ -158,6 +193,7 @@ def asynchrone_check_image(repository):
                 if not psc1:
                     for err in errors:
                         error += err.__str__()
+                        error += u'<br/>'
                     rql = ("SET X status 'Rejected', X error '{}'"
                            " WHERE X is CWUpload, X eid {}".format(
                                error, entity.eid))
