@@ -8,3 +8,21 @@
 # for details.
 
 """cubicweb-imagen-upload entity's classes"""
+
+from cubes.rql_upload.entities import EntityCWUpload
+
+
+class EntityCWUpload(EntityCWUpload):
+    """ Overrired the 'CWUpload' entity associated functions. """
+
+    def dc_title(self):
+        """ Method that defines the upload entity title. """
+
+        return u"{} for {} ({}) by {} on {} at {}".format(
+            self.form_name,
+            self.get_field_value('sid'),
+            self.get_field_value('time_point'),
+            self.dc_creator(),
+            self.creation_date.strftime('%Y/%m/%d'),
+            self.creation_date.strftime('%H:%M:%S')
+        )
