@@ -7,11 +7,13 @@
 # for details.
 ##########################################################################
 
+import hashlib
 import os
 import re
 import shutil
 import traceback
 
+from cubes.rql_upload.tools import get_or_create_logger
 from imagen.sanity import cantab, imaging
 
 SID_ERROR_MESSAGE = ("- The subject ID is malformed."
@@ -135,26 +137,54 @@ def asynchrone_check_cantab(repository):
     """ Copy uploaded cantab files from 'upload_dir' to 'validated_dir/...'
         and set status 'validated'
     """
+
+    logger = get_or_create_logger(repository.vreg.config)
     validated_dir = repository.vreg.config["validated_directory"]
+
     rql = ("Any X WHERE X is CWUpload,"
            " X form_name ILIKE 'cantab', X status 'Quarantine'")
     with repository.internal_cnx() as cnx:
         rset = cnx.execute(rql)
         for entity in rset.entities():
-            for eUFile in entity.upload_files:
-                from_file = eUFile.get_file_path()
-                to_file = u'{0}/{1}/{2}'.format(
-                    validated_dir,
-                    entity.get_field_value('centre'),
-                    entity.get_field_value('sid')
-                )
-                if not os.path.exists(to_file):
-                    os.makedirs(to_file)
-                to_file = to_file + "/{}".format(eUFile.data_name)
-                shutil.copy2(from_file, to_file)
-            rql = ("SET X status 'Validated'"
-                   " WHERE X is CWUpload, X eid '{}'".format(entity.eid))
-            cnx.execute(rql)
+            try:
+                sid = entity.get_field_value('sid')
+                centre = entity.get_field_value('centre')
+                tp = entity.get_field_value('time_point')
+                for eUFile in entity.upload_files:
+                    from_file = eUFile.get_file_path()
+                    to_file = u'{0}/{1}/{2}/{3}'.format(
+                        validated_dir, tp, centre, sid)
+                    if not os.path.exists(to_file):
+                        os.makedirs(to_file)
+                    to_file = to_file + "/{}".format(eUFile.data_name)
+                    shutil.copy2(from_file, to_file)
+                    sha1 = unicode(
+                        hashlib.sha1(open(to_file, 'rb').read()).hexdigest())
+                    if sha1 == eUFile.data_sha1hex:
+                        os.remove(from_file)
+                        os.symlink(to_file, from_file)
+                        logger.info(
+                            ("Copy from '{}' to '{}'"
+                             ", delete and create symlink".format(
+                                 from_file, to_file)))
+                    else:
+                        logger.critical(
+                            "Incorrect copy from '{}' to '{}'".format(
+                                from_file, to_file))
+                rql = ("SET X status 'Validated'"
+                       " WHERE X is CWUpload, X eid '{}'".format(entity.eid))
+                cnx.execute(rql)
+            except:
+                stacktrace = traceback.format_exc()
+                stacktrace = stacktrace.replace('"', "'").replace("'", "\\'")
+                logger.critical("A system error raised")
+                rql = ("SET X status 'Rejected', X error '{} <br/> {}'"
+                       " WHERE X is CWUpload, X eid '{}'".format(
+                           SYSTEM_ERROR_RAISED,
+                           stacktrace,
+                           entity.eid))
+                cnx.execute(rql)
+
         cnx.commit()
 
 
@@ -180,12 +210,16 @@ def synchrone_check_rmi(upload):
 
 def asynchrone_check_rmi(repository):
 
+    logger = get_or_create_logger(repository.vreg.config)
     validated_dir = repository.vreg.config["validated_directory"]
     rql = ("Any X WHERE X is CWUpload,"
            " X form_name ILIKE 'MRI', X status 'Quarantine'")
     with repository.internal_cnx() as cnx:
         rset = cnx.execute(rql)
         for entity in rset.entities():
+            sid = entity.get_field_value('sid')
+            centre = entity.get_field_value('centre')
+            tp = entity.get_field_value('time_point')
             try:
                 psc1, errors = imaging.extended_check(
                     entity.upload_files[0].get_file_path())
@@ -199,16 +233,26 @@ def asynchrone_check_rmi(repository):
                                error, entity.eid))
                 else:
                     from_file = entity.upload_files[0].get_file_path()
-                    to_file = u'{0}/{1}/{2}'.format(
-                        validated_dir,
-                        entity.get_field_value('centre'),
-                        entity.get_field_value('sid')
-                    )
+                    to_file = u'{0}/{1}/{2}/{3}'.format(
+                        validated_dir, tp, centre, sid)
                     if not os.path.exists(to_file):
                         os.makedirs(to_file)
                     to_file = to_file + "/{}".format(
                         entity.upload_files[0].data_name)
                     shutil.copy2(from_file, to_file)
+                    sha1 = unicode(
+                        hashlib.sha1(open(to_file, 'rb').read()).hexdigest())
+                    if sha1 == entity.upload_files[0].data_sha1hex:
+                        os.remove(from_file)
+                        os.symlink(to_file, from_file)
+                        logger.info(
+                            ("Copy from '{}' to '{}'"
+                             ", delete and create symlink".format(
+                                 from_file, to_file)))
+                    else:
+                        logger.critical(
+                            "Incorrect copy from '{}' to '{}'".format(
+                                from_file, to_file))
                     rql = ("SET X status 'Validated'"
                            " WHERE X is CWUpload, X eid '{}'".format(
                                entity.eid))
@@ -216,6 +260,7 @@ def asynchrone_check_rmi(repository):
             except:
                 stacktrace = traceback.format_exc()
                 stacktrace = stacktrace.replace('"', "'").replace("'", "\\'")
+                logger.critical("A system error raised")
                 rql = ("SET X status 'Rejected', X error '{} <br/> {}'"
                        " WHERE X is CWUpload, X eid '{}'".format(
                            SYSTEM_ERROR_RAISED,
