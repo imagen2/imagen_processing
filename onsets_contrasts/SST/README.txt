@@ -10,7 +10,7 @@ Contents: sst.py and helper sst_generate_onsets.py
           example/ss_000055417875.csv is an actual behavioural file from BL
           
 
-Syntax 
+Syntax:
 python sst.py --in ss_000055417875.csv --out contrasts.m
 
 

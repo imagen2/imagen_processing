@@ -10,7 +10,7 @@ Contents: mid.py and helper mid_generate_onsets.py
           example/mid_000055417875.csv is an actual behavioural file from BL
           
 
-Syntax 
+Syntax:
 python mid.py --in mid_000055417875.csv --out contrasts.m
 
 

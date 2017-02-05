@@ -1,6 +1,6 @@
-Code to go from the CSV files to onsets
-=======================================
+From CSV files to onsets
+========================
 
-See README.txt in subfolders
+For each task see README.txt in relevant subfolder
 
 TODO: check that the conditions and onsets are reasonable
