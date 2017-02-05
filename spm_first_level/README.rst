@@ -1,5 +1,5 @@
-Imagen fMRI data: preprocessing with SPM
-========================================
+Imagen fMRI data: 1st level processing with SPM
+===============================================
 
 These Python scripts have been written for follow-up 2 (FU2) of Imagen.
 We have (re)processed fMRI data from all Imagen time points using these scripts.
