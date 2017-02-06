@@ -10,3 +10,6 @@ Imagen MRI data processing
 
 ``spm_first_level``
   1st level processing of fMRI data with SPM.
+
+``rsfMRI_preprocessing``
+  Preprocessing of resting-state fMRI data with FSL and ANTS.
