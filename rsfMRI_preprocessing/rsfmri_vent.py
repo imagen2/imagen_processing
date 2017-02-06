@@ -162,13 +162,13 @@ for emit, qc_receiv, preproc_receiv in zip(emits, qc_receivs, preproc_receivs):
             t = os.path.join(qc_receiv, s)
             domkdir(t)
             docopy(f,
-                   os.path.join(t, os.path.basename(f).replace('_usr_share_fsl_5.0_data_standard_','')),
+                   os.path.join(t, os.path.basename(f).replace('_usr_share_fsl_5.0_data_standard_', '')),
                    doit=doit)
         pngfiles = glob.glob(os.path.join(emit, '..*.png'))
         #print STOP
-        if 'BETS' in pngfiles[0]: #(chemin type BL) 
+        if 'BETS' in pngfiles[0]:  # (chemin type BL)
             subjects = [os.path.basename(i).split('_BETS_')[1].split('_')[0] for i in pngfiles]
-        elif 'laura' in pngfiles[0]:#(chemin type FU2)
+        elif 'laura' in pngfiles[0]:  # (chemin type FU2)
             subjects = [os.path.basename(i).split('IMAGEN_T1_FU2_')[1].split('_')[0] for i in pngfiles]
         else:
             print 'chemin incorrect', pngfiles[0]
@@ -179,12 +179,12 @@ for emit, qc_receiv, preproc_receiv in zip(emits, qc_receivs, preproc_receivs):
             domkdir(t)
             if 'BETS' in f:
                 docopy(f,
-                   os.path.join(t, os.path.basename(f).replace('.._.._T1_DATA_NEW_BETS_','')),
-                   doit=doit)
+                       os.path.join(t, os.path.basename(f).replace('.._.._T1_DATA_NEW_BETS_', '')),
+                       doit=doit)
             elif 'laura' in f:
                 docopy(f,
-                   os.path.join(t, os.path.basename(f).replace('.._.._.._.._.._laura.daedelow_IMAGEN_T1_FU2_','')),
-                   doit=doit)
+                       os.path.join(t, os.path.basename(f).replace('.._.._.._.._.._laura.daedelow_IMAGEN_T1_FU2_', '')),
+                       doit=doit)
             else:
                 print 'renommage incorrect', pngfiles[0]
                 exit(1)
@@ -213,14 +213,14 @@ qc_receivs = [
     os.path.join(target_dir, 'FU2/processed/rsfmri_preprocessing_qc'),
     os.path.join(target_dir, 'FU2/processed/rsfmri_preprocessing_qc'),
     os.path.join(target_dir, 'BL/processed/rsfmri_preprocessing_qc'),
-    os.path.join(target_dir, 'FU2/processed/rsfmri_preprocessing_qc'),]
+    os.path.join(target_dir, 'FU2/processed/rsfmri_preprocessing_qc'), ]
 preproc_receivs = [
     os.path.join(target_dir, 'BL/processed/rsfmri_preprocessing'),
     os.path.join(target_dir, 'BL/processed/rsfmri_preprocessing'),
     os.path.join(target_dir, 'FU2/processed/rsfmri_preprocessing'),
     os.path.join(target_dir, 'FU2/processed/rsfmri_preprocessing'),
     os.path.join(target_dir, 'BL/processed/rsfmri_preprocessing'),
-    os.path.join(target_dir, 'FU2/processed/rsfmri_preprocessing'),]
+    os.path.join(target_dir, 'FU2/processed/rsfmri_preprocessing'), ]
 
 for emit, qc_receiv, preproc_receiv in zip(emits, qc_receivs, preproc_receivs):
     if not os.path.exists(qc_receiv):
