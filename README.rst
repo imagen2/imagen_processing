@@ -2,6 +2,9 @@
 Imagen MRI data processing
 ==========================
 
+``fsl_dti``
+  Preprocessing of DTI data with FSL.
+
 ``onsets_contrasts``
   From CSV behavioral files to onsets.
 
