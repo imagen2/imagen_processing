@@ -1,0 +1,580 @@
+#! /bin/bash
+
+if [ $# -lt 6 ] ; then
+    echo "" ;	
+    echo "Usage: imagen_diffsl <mag> <phase> <dti> <center> <restore> <pdir>" ;
+    echo "" ;
+    echo "v.5 09/04/2015 H. Lemaitre (herve.lemaitre@u-psud.fr)" ;
+    echo "               P. Frere    (pabezivin@gmail.com)" ;
+    echo "" ;
+    echo "Preprocess Imagen dti data for:" ;
+    echo "1. Linear registration with eddy current correction and bvec rotation" ;
+    echo "2. B0 mapping correction if possible" ;
+    echo "3. Brain extraction" 
+    echo "4. Tensor computation with weighted least squares and RESTORE (optional)" ;
+    echo "* For center 2 and 3, replace mag with NA." ;
+    echo "* For center 4, call the three dti sets." ;
+    echo "* Call center 41 for Siemens scanner from center 4" ; 
+    echo "" ;
+    echo "" ;
+    echo "Ex: " ;
+    echo "imagen_diffsl mag phase dti 1 yes /disk/" ;
+    echo "imagen_diffsl NA phase dti 2 yes /disk/" ;
+    echo "imagen_diffsl NA phase dti 3 yes /disk/" ;	
+    echo "imagen_diffsl dti1 dti2 dti3 4 yes /disk/" ;
+    echo "imagen diffsl mag phase dti 41 yes /disk/" ;
+    echo "imagen_diffsl mag phase dti 5 yes /disk/" ;
+    echo "imagen_diffsl mag phase dti 6 yes /disk/" ;
+    echo "imagen_diffsl mag phase dti 7 yes /disk/" ;
+    echo "imagen_diffsl mag phase dti 8 yes /disk/" ;
+    echo "" ;
+    echo "Depends: FSL (>= 5)" ;
+    echo "         if RESTORE=yes, restore.py script and python (>=2.7), dipy (>=0.8)" ;	
+    echo "" ;
+    exit 1 ; 
+fi
+
+echo "############## Initialization				##############"
+center=${4} ;
+restore=${5} ;
+pdir=${6}
+doB0=1 ;
+echo "FSL `cat ${FSLDIR}/etc/fslversion`" ;
+echo "host: `hostname`" ;
+echo "Processing:" ;
+echo "$1" ;
+echo "$2" ;
+echo "$3" ;
+echo "center ${center}" ;
+echo "using restore: ${restore}" ; 
+echo "Creating directory and copying data in:" ;
+echo ${pdir}
+
+if [ ${center} -eq 1 -o ${center} -ge 5 ]; then
+	mag=`${FSLDIR}/bin/remove_ext ${1}` ;
+	phase=`${FSLDIR}/bin/remove_ext ${2}` ;
+	dti=`${FSLDIR}/bin/remove_ext ${3}` ;
+	subject=`basename ${dti} | cut -d "_" -f1` ;
+	if [ -d "${pdir}/${subject}" ]; then
+		rm -rf ${pdir}/${subject} 
+		mkdir -p ${pdir}/${subject}
+		else mkdir -p ${pdir}/${subject}
+	fi	
+	echo "Start process for subject ${subject}:"
+	if [ `imtest ${dti}` -eq 1 ]; then
+		echo "...dti file does exist"
+		${FSLDIR}/bin/imcp ${dti} ${pdir}/${subject}/${subject}_dti
+		else echo "...dti file does NOT exist!"
+		exit
+	fi
+	if [ -f ${dti}.bval ]; then
+		echo "...bval file does exist"
+		cp ${dti}.bval ${pdir}/${subject}/${subject}_dti.bval
+		else echo "...bval file does NOT exist!"
+		exit
+	fi
+	if [ -f ${dti}.bvec ]; then
+		echo "...bvec file does exist"
+		cp ${dti}.bvec ${pdir}/${subject}/${subject}_dti.bvec
+		else echo "...bvec file does NOT exist!"
+		exit
+	fi
+	if [ `imtest ${phase}` -eq 1 ]; then
+		echo "...phase file does exist"
+		${FSLDIR}/bin/imcp ${phase} ${pdir}/${subject}/${subject}_phase
+		else echo "...phase file does NOT exist!"
+		doB0=2
+	fi
+	if [ `imtest ${mag}` -eq 1 ]; then
+		echo "...magnitude file does exist"
+		${FSLDIR}/bin/imcp ${mag} ${pdir}/${subject}/${subject}_mag
+		else echo "...magnitude file does NOT exist!"
+		doB0=2
+	fi	
+fi
+if [ ${center} -eq 2 -o ${center} -eq 3 ]; then
+        dti=`${FSLDIR}/bin/remove_ext ${3}` ;
+	subject=`basename ${dti} | cut -d "_" -f1` ;
+	mag=`${FSLDIR}/bin/remove_ext ${1}` ;
+	phase=`${FSLDIR}/bin/remove_ext ${2}` ;
+	if [ -d "${pdir}/${subject}" ]; then
+		rm -rf ${pdir}/${subject} 
+		mkdir -p ${pdir}/${subject}
+		else mkdir -p ${pdir}/${subject} 
+	fi	
+	echo "Start process for subject ${subject}:"
+	if [ `imtest ${dti}` -eq 1 ]; then
+		echo "...dti file does exist"
+		${FSLDIR}/bin/imcp ${dti} ${pdir}/${subject}/${subject}_dti
+		else echo "...dti file does NOT exist!"
+		exit
+	fi
+	if [ -f ${dti}.bval ]; then
+		echo "...bval file does exist"
+		cp ${dti}.bval ${pdir}/${subject}/${subject}_dti.bval
+		else echo "...bval file does NOT exist!"
+		exit
+	fi
+	if [ -f ${dti}.bvec ]; then
+		echo "...bvec file does exist"
+		cp ${dti}.bvec ${pdir}/${subject}/${subject}_dti.bvec
+		else echo "...bvec file does NOT exist!"
+		exit
+	fi
+	if [ `imtest ${phase}` -eq 1 ]; then
+		echo "...phase file does exist"
+		${FSLDIR}/bin/imcp ${phase} ${pdir}/${subject}/${subject}_phase
+		else echo "...phase file does NOT exist!"
+		doB0=2
+	fi
+	if [ `imtest ${mag}` -eq 1 ]; then
+		echo "...magnitude file does exist"
+		${FSLDIR}/bin/imcp ${mag} ${pdir}/${subject}/${subject}_mag
+		else echo "...magnitude file does NOT exist!"		
+	fi	
+fi
+if [ ${center} -eq 4 ]; then
+	dti1=`${FSLDIR}/bin/remove_ext ${1}` ;
+	dti2=`${FSLDIR}/bin/remove_ext ${2}` ;
+	dti3=`${FSLDIR}/bin/remove_ext ${3}` ;
+	subject=`basename ${dti1} | cut -d "_" -f1` ;
+	if [ -d "${pdir}/${subject}" ]; then
+		rm -rf ${pdir}/${subject} 
+		mkdir -p ${pdir}/${subject}
+		else mkdir -p ${pdir}/${subject} 
+	fi
+	echo "Start process for subject ${subject}:"
+	if [ `imtest ${dti1}` -eq 1 ]; then
+		echo "...dti1 file does exist"
+		${FSLDIR}/bin/imcp ${dti1} ${pdir}/${subject}/${subject}_dti1
+		else echo "...dti1 file does NOT exist!"
+		exit
+	fi
+	if [ -f ${dti1}.bval ]; then
+		echo "...bval1 file does exist"
+		cp ${dti1}.bval ${pdir}/${subject}/${subject}_dti1.bval
+		else echo "...bval1 file does NOT exist!"
+		exit
+	fi
+	if [ -f ${dti1}.bvec ]; then
+		echo "...bvec1 file does exist"
+		cp ${dti1}.bvec ${pdir}/${subject}/${subject}_dti1.bvec
+		else echo "...bvec1 file does NOT exist!"
+		exit
+	fi
+	if [ `imtest ${dti2}` -eq 1 ]; then
+		echo "...dti2 file does exist"
+		${FSLDIR}/bin/imcp ${dti2} ${pdir}/${subject}/${subject}_dti2
+		else echo "...dti2 file does NOT exist!"
+		exit
+	fi
+	if [ -f ${dti2}.bval ]; then
+		echo "...bval2 file does exist"
+		cp ${dti2}.bval ${pdir}/${subject}/${subject}_dti2.bval
+		else echo "...bval2 file does NOT exist!"
+		exit
+	fi
+	if [ -f ${dti2}.bvec ]; then
+		echo "...bvec2 file does exist"
+		cp ${dti2}.bvec ${pdir}/${subject}/${subject}_dti2.bvec
+		else echo "...bvec2 file does NOT exist!"
+		exit
+	fi
+	if [ `imtest ${dti3}` -eq 1 ]; then
+		echo "...dti3 file does exist"
+		${FSLDIR}/bin/imcp ${dti3} ${pdir}/${subject}/${subject}_dti3
+		else echo "...dti3 file does NOT exist!"
+		exit
+	fi
+	if [ -f ${dti3}.bval ]; then
+		echo "...bval3 file does exist"
+		cp ${dti3}.bval ${pdir}/${subject}/${subject}_dti3.bval
+		else echo "...bval3 file does NOT exist!"
+		exit
+	fi
+	if [ -f ${dti3}.bvec ]; then
+		echo "...bvec3 file does exist"
+		cp ${dti3}.bvec ${pdir}/${subject}/${subject}_dti3.bvec
+		else echo "...bvec3 file does NOT exist!"
+		exit
+	fi
+	fslmerge -t ${pdir}/${subject}/${subject}_dti ${pdir}/${subject}/${subject}_dti1 ${pdir}/${subject}/${subject}_dti2 ${pdir}/${subject}/${subject}_dti3
+	bval1=`head -1 ${pdir}/${subject}/${subject}_dti1.bval`
+	bval2=`head -1 ${pdir}/${subject}/${subject}_dti2.bval`
+	bval3=`head -1 ${pdir}/${subject}/${subject}_dti3.bval`
+	bvec11=`head -1 ${pdir}/${subject}/${subject}_dti1.bvec`
+	bvec12=`head -2 ${pdir}/${subject}/${subject}_dti1.bvec | tail -1`
+	bvec13=`head -3 ${pdir}/${subject}/${subject}_dti1.bvec | tail -1`
+	bvec21=`head -1 ${pdir}/${subject}/${subject}_dti2.bvec`
+	bvec22=`head -2 ${pdir}/${subject}/${subject}_dti2.bvec | tail -1`
+	bvec23=`head -3 ${pdir}/${subject}/${subject}_dti2.bvec | tail -1`
+	bvec31=`head -1 ${pdir}/${subject}/${subject}_dti3.bvec`
+	bvec32=`head -2 ${pdir}/${subject}/${subject}_dti3.bvec | tail -1`
+	bvec33=`head -3 ${pdir}/${subject}/${subject}_dti3.bvec | tail -1`
+	echo "${bval1} ${bval2} ${bval3}" > ${pdir}/${subject}/${subject}_dti.bval
+	echo "${bvec11} ${bvec21} ${bvec31}" > ${pdir}/${subject}/${subject}_dti.bvec
+	echo "${bvec12} ${bvec22} ${bvec32}" >> ${pdir}/${subject}/${subject}_dti.bvec
+	echo "${bvec13} ${bvec23} ${bvec33}" >> ${pdir}/${subject}/${subject}_dti.bvec
+fi
+
+echo "############## Eddy current correction ##############"
+cd ${pdir}/${subject}
+# Mainly from eddy_correct script
+ref=0 ;									# reference volume
+input=${subject}_dti ;
+output=${subject}_dti_ecc ;
+ii=1 ;
+triger1=1 ;
+triger2=`echo $triger1 + 10000 | bc | cut -b2-5` ;
+dim=`${FSLDIR}/bin/fslval ${input} dim4` ;
+
+${FSLDIR}/bin/fslroi ${input} ${output}_ref $ref 1 ;
+${FSLDIR}/bin/fslsplit ${input} ${output}_tmp ;
+full_list=`${FSLDIR}/bin/imglob ${output}_tmp????.*` ;
+
+echo "Dropout slices:" ;
+echo "...Computing b0 slices" ; 
+${FSLDIR}/bin/fslsplit ${output}_tmp0000 ${output}_tmp_b0_z -z ;
+${FSLDIR}/bin/fslmerge -t ${output}_tmp_b0_z ${output}_tmp_b0_z* 2> /dev/null ;
+b0=`${FSLDIR}/bin/fslstats -t ${output}_tmp_b0_z -M` ;
+echo ${b0} >> ${input}.slices ;
+
+echo "...Computing diffusion slices" ;
+while [ $triger1 -lt $dim ] ; do
+${FSLDIR}/bin/fslsplit ${output}_tmp${triger2} ${output}_tmp${triger2}_z -z ;
+${FSLDIR}/bin/fslmerge -t ${output}_tmp${triger2}_z ${output}_tmp${triger2}_z* 2> /dev/null ;
+w=`${FSLDIR}/bin/fslstats -t ${output}_tmp${triger2}_z -M` ;
+echo ${w}  >> ${input}.slices ;
+triger1=`echo $triger1 + 1 | bc` ;
+triger2=`echo $triger2 + 10001 | bc | cut -b2-5` ;
+done
+echo "Done" ;
+
+echo "Linear Registration:" ;
+echo "# Eddy current correction log" > ${output}.log ;
+echo "volume total.angle[rads] exclusion2 exclusion5" > ${output}.rotation ; 
+
+for i in ${full_list} ; do
+    vol=`${FSLDIR}/bin/remove_ext ${i}` ;
+    mat=`echo ${vol}.mat` ;
+    echo processing ${vol} ;
+    echo processing ${vol} >> ${output}.log ;
+    # warping
+    ${FSLDIR}/bin/flirt -in ${vol} -ref ${output}_ref -nosearch -omat ${mat} ;
+    ${FSLDIR}/bin/flirt -in ${vol} -ref ${output}_ref -init ${mat} -applyxfm -o ${vol} -paddingsize 1 ;
+    ${FSLDIR}/bin/avscale --allparams ${mat} >> ${output}.log ;
+    # extract the three rotation angles in radians
+    angle1=`${FSLDIR}/bin/avscale --allparams ${mat} | grep 'Rotation Angles' | cut -d "=" -f2 | awk '{print $1}'` ;
+    angle2=`${FSLDIR}/bin/avscale --allparams ${mat} | grep 'Rotation Angles' | cut -d "=" -f2 | awk '{print $2}'` ;
+    angle3=`${FSLDIR}/bin/avscale --allparams ${mat} | grep 'Rotation Angles' | cut -d "=" -f2 | awk '{print $3}'` ;
+    # Total angle
+    angletotal=`echo "sqrt(${angle1}^2+${angle2}^2+${angle3}^2)" | bc -l` ;
+    angletotal2=`echo "sqrt(${angle1}^2+${angle2}^2+${angle3}^2)*10000" | bc -l | cut -d "." -f1` ;
+    # thresholding (5 degrees = 0.0872665 radians = 872; 2 degrees = 0.0349066 radians = 349)
+    threshold2=349 ;
+    threshold5=872 ;
+    if [ ${angletotal2} -gt ${threshold2} ]; then trigger2=1; else trigger2=0; fi
+    if [ ${angletotal2} -gt ${threshold5} ]; then trigger5=1; else trigger5=0; fi
+    echo ${vol} ${angletotal} ${trigger2} ${trigger5} >> ${output}.rotation ;
+    # bvecs rotation (from fdt_rotate_bvecs)
+    m11=`avscale ${mat} | grep Rotation -A 1 | tail -n 1| awk '{print $1}'`
+    m12=`avscale ${mat} | grep Rotation -A 1 | tail -n 1| awk '{print $2}'`
+    m13=`avscale ${mat} | grep Rotation -A 1 | tail -n 1| awk '{print $3}'`
+    m21=`avscale ${mat} | grep Rotation -A 2 | tail -n 1| awk '{print $1}'`
+    m22=`avscale ${mat} | grep Rotation -A 2 | tail -n 1| awk '{print $2}'`
+    m23=`avscale ${mat} | grep Rotation -A 2 | tail -n 1| awk '{print $3}'`
+    m31=`avscale ${mat} | grep Rotation -A 3 | tail -n 1| awk '{print $1}'`
+    m32=`avscale ${mat} | grep Rotation -A 3 | tail -n 1| awk '{print $2}'`
+    m33=`avscale ${mat} | grep Rotation -A 3 | tail -n 1| awk '{print $3}'`
+
+    X=`cat ${input}.bvec | awk -v x=$ii '{print $x}' | head -n 1 | tail -n 1 | awk -F"E" 'BEGIN{OFMT="%10.10f"} {print $1 * (10 ^ $2)}' `
+    Y=`cat ${input}.bvec | awk -v x=$ii '{print $x}' | head -n 2 | tail -n 1 | awk -F"E" 'BEGIN{OFMT="%10.10f"} {print $1 * (10 ^ $2)}' `
+    Z=`cat ${input}.bvec | awk -v x=$ii '{print $x}' | head -n 3 | tail -n 1 | awk -F"E" 'BEGIN{OFMT="%10.10f"} {print $1 * (10 ^ $2)}' `
+    rX=`echo "scale=7;  ($m11 * $X) + ($m12 * $Y) + ($m13 * $Z)" | bc -l`
+    rY=`echo "scale=7;  ($m21 * $X) + ($m22 * $Y) + ($m23 * $Z)" | bc -l`
+    rZ=`echo "scale=7;  ($m31 * $X) + ($m32 * $Y) + ($m33 * $Z)" | bc -l`
+
+    if [ "$ii" -eq 1 ];then
+	echo $rX > ${output}.bvec;echo $rY >> ${output}.bvec;echo $rZ >> ${output}.bvec
+    else
+	cp ${output}.bvec ${output}_bvectmp
+	(echo $rX;echo $rY;echo $rZ) | paste ${output}_bvectmp - > ${output}.bvec
+    fi
+    let "ii+=1"
+done
+
+${FSLDIR}/bin/fslmerge -t ${output} ${full_list}
+
+/bin/rm -f $tmpo
+/bin/rm ${output}_tmp????.* ${output}_ref* ${output}_tmp_b0_z* ${output}_tmp????_z????* ${output}_bvectmp
+
+echo "Done" ;
+
+echo "############## Brain extraction after EC correction	##############"
+${FSLDIR}/bin/fslmaths ${subject}_dti_ecc -Tmean mean_tmp
+${FSLDIR}/bin/bet2 mean_tmp mean_tmp_bet -f 0.4 -n -m
+${FSLDIR}/bin/immv mean_tmp_bet_mask ${subject}_dti_ecc_mask
+${FSLDIR}/bin/fslmaths ${subject}_dti_ecc -mas ${subject}_dti_ecc_mask ${subject}_dti_ecc_brain
+/bin/rm -f mean_tmp*
+echo "Done"
+
+echo "############## Tensor computation after EC correction	##############"
+
+echo "Tensor fitting with weighted least squares:" ;
+${FSLDIR}/bin/dtifit -k ${subject}_dti_ecc_brain -o ${subject}_dti_ecc_brain -r ${subject}_dti_ecc.bvec -b ${subject}_dti.bval -m ${subject}_dti_ecc_mask -w
+
+# Radial Diffusivity
+${FSLDIR}/bin/fslmaths ${subject}_dti_ecc_brain_L2 -add ${subject}_dti_ecc_brain_L3 -div 2 ${subject}_dti_ecc_brain_RD
+
+# Summary log
+echo "# Summary Tensor Fitting with weighted least squares" > ${subject}_dti_ecc_brain_tf.log
+echo "# Img	Mean	SD	Min	Max " >> ${subject}_dti_ecc_brain_tf.log
+echo S0 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_S0 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_S0 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_S0 -R` >> ${subject}_dti_ecc_brain_tf.log
+echo FA `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_FA -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_FA -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_FA -R` >> ${subject}_dti_ecc_brain_tf.log
+echo MD `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_MD -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_MD -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_MD -R` >> ${subject}_dti_ecc_brain_tf.log
+echo MO `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_MO -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_MO -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_MO -R` >> ${subject}_dti_ecc_brain_tf.log
+echo L1 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_L1 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_L1 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_L1 -R` >> ${subject}_dti_ecc_brain_tf.log
+echo L2 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_L2 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_L2 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_L2 -R` >> ${subject}_dti_ecc_brain_tf.log
+echo L3 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_L3 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_L3 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_L3 -R` >> ${subject}_dti_ecc_brain_tf.log
+echo "Done"
+
+if [ ${restore} == "yes" ]; then
+	echo "Tensor fitting with RESTORE:" ;
+	restore.py ${subject}_dti.nii.gz ${subject}_dti_ecc_brain.nii.gz ${subject}_dti.bval ${subject}_dti_ecc.bvec ${subject}_dti_ecc_brain
+
+    	# Summary log
+	echo "# Summary Tensor Fitting with RESTORE" > ${subject}_dti_ecc_brain_restore_tf.log
+	echo "# Img	Mean	SD	Min	Max " >> ${subject}_dti_ecc_brain_restore_tf.log
+	echo S0 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_S0 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_S0 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_S0 -R` >> ${subject}_dti_ecc_brain_restore_tf.log
+	echo FA `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_FA -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_FA -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_FA -R` >> ${subject}_dti_ecc_brain_restore_tf.log
+	echo MD `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_MD -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_MD -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_MD -R` >> ${subject}_dti_ecc_brain_restore_tf.log
+	echo MO `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_MO -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_MO -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_MO -R` >> ${subject}_dti_ecc_brain_restore_tf.log
+	echo L1 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_L1 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_L1 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_L1 -R` >> ${subject}_dti_ecc_brain_restore_tf.log
+	echo L2 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_L2 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_L2 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_L2 -R` >> ${subject}_dti_ecc_brain_restore_tf.log
+	echo L3 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_L3 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_L3 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_restore_L3 -R` >> ${subject}_dti_ecc_brain_restore_tf.log
+	echo "Done"
+fi
+
+if [ ${doB0} -eq 2 ]; then
+	echo "############## Process for subject ${subject} done	##############"
+	exit
+fi
+echo "############## B0 mapping correction			##############"
+# FM = space of fieldmap images
+# EF = space of EPI image
+# UD = undistorted (in any space)
+# D  = distorted (in any space)
+epi_te=`echo "scale=6;104/1000.0" | bc` ; 				# te = 104 ms for Imagen
+unwarp_dir=y								# unwarping direction = y
+siglossthresh=`echo "scale=3;1.0 - (10 / 100.0)" | bc` ; 		# signal loss set to 10%
+
+if [ ${center} -eq 1 ]; then
+	dte=2.27 ; 							# delta echo time = 2.27 ms (te1=14.86, te2=17.14)
+	dwell=`echo "scale=6;0.616/1000.0/2" | bc` ; 			# dwell time = 0.616 ms (ASSET factor 2)
+fi
+if [ ${center} -eq 2 -o ${center} -eq 3 ]; then
+	dte=5 ; 							# delta echo time = 5 ms (te1=7.1 te2=2.1)
+	dwell=`echo "scale=6;0.737/1000.0/2" | bc` ; 			# dwell time = 0.737 ms (SENSE factor 2)
+fi
+if [ ${center} -eq 4 ]; then						# No Fieldmaps for Berlin
+	echo "First Berlin sets do not have B0 maps."
+	echo "############## Process for subject ${subject} done	##############"
+	exit
+fi
+if [ ${center} -ge 5 ]; then
+	dte=2.46 ; 							# delta echo time = 2.46 ms (te1=4.63, te2=7.09)
+	dwell=`echo "scale=6;0.580/1000.0/2" | bc` ; 			# dwell time = 0.580 ms (SENSE factor 2)
+fi
+
+echo "Compute B0 mapping"
+# Scaling
+if [ ${center} -eq 1 ]; then
+	# Header slope=1 and intercept=0
+	${FSLDIR}/bin/fslmaths ${subject}_phase -div 10000 ${subject}_phase_w -odt float
+fi
+if [ ${center} -eq 2 -o ${center} -eq 3 ]; then
+	if [ `imtest ${mag}` -eq 1 ]; then
+	# Header slope=subject-based and intercept=0
+	slope=`fslval ${subject}_phase scl_slope`
+	${FSLDIR}/bin/fslmaths ${subject}_phase -div ${slope} ${subject}_phase_w
+	${FSLDIR}/bin/fslmaths ${subject}_phase_w -div 4094 -mul 6.283078 -sub 3.141539 ${subject}_phase_w -odt float
+	else
+	# Header slope=subject-based and intercept=0
+	slope=`fslval ${subject}_phase scl_slope`
+	${FSLDIR}/bin/fslmaths ${subject}_phase -div ${slope} ${subject}_phase_w
+	${FSLDIR}/bin/fslroi ${subject}_phase_w ${subject}_mag 0 1
+	${FSLDIR}/bin/fslroi ${subject}_phase_w ${subject}_phase_w 1 1
+	${FSLDIR}/bin/fslmaths ${subject}_phase_w -div 4094 -mul 6.283078 -sub 3.141539 ${subject}_phase_w -odt float
+	fi
+fi
+if [ ${center} -ge 5 ]; then
+	# Header slope=2 and intercep=-4096
+	${FSLDIR}/bin/fslmaths ${subject}_phase -mul 1.570795 -div 2048 ${subject}_phase_w -odt float
+fi
+
+# Unwrapping
+${FSLDIR}/bin/prelude -a ${subject}_mag -p ${subject}_phase_w -o ${subject}_phase_uw
+${FSLDIR}/bin/fslmaths ${subject}_phase_uw -mul 1000 -div $dte ${subject}_phase_rads
+
+# Copy input files into unwarp subdir
+echo "Compute unwarping"
+mkdir -p ${subject}_dti_ecc.unwarp
+${FSLDIR}/bin/fslroi ${subject}_dti_ecc ${subject}_dti_ecc.unwarp/EF_D_example_func $ref 1
+${FSLDIR}/bin/fslmaths ${subject}_phase_rads ${subject}_dti_ecc.unwarp/FM_UD_fmap
+${FSLDIR}/bin/fslmaths ${subject}_mag ${subject}_dti_ecc.unwarp/FM_UD_fmap_mag
+cd ${subject}_dti_ecc.unwarp
+
+# Save schedule file
+echo "# 1mm scale"					> measurecost1.sch
+echo "setscale 1"					>> measurecost1.sch	
+echo "setoption smoothing 1"				>> measurecost1.sch
+echo "setoption boundguess 1"				>> measurecost1.sch
+echo "clear U"						>> measurecost1.sch
+echo "setrow UA  1 0 0 0  0 1 0 0  0 0 1 0  0 0 0 1"	>> measurecost1.sch
+echo "measurecost 7 UA 0 0 0 0 0 0 abs"			>> measurecost1.sch
+echo "printparams U"					>> measurecost1.sch
+      
+# Generate mask for fmap_mag
+${FSLDIR}/bin/bet2 FM_UD_fmap_mag FM_UD_fmap_mag_brain -m
+    
+# Remask by the non-zero voxel mask of the fmap_rads image (as prelude may have masked this differently before)
+# NB: need to use cluster to fill in holes where fmap=0
+${FSLDIR}/bin/fslmaths FM_UD_fmap -abs -bin -mas FM_UD_fmap_mag_brain_mask -mul -1 -add 1 -bin FM_UD_fmap_mag_brain_mask_inv
+${FSLDIR}/bin/cluster -i FM_UD_fmap_mag_brain_mask_inv -t 0.5 --no_table -o FM_UD_fmap_mag_brain_mask_idx
+maxidx=`${FSLDIR}/bin/fslstats FM_UD_fmap_mag_brain_mask_idx -R | awk '{ print \$2 }'`
+${FSLDIR}/bin/fslmaths FM_UD_fmap_mag_brain_mask_idx -thr $maxidx -bin -mul -1 -add 1 -bin -mas FM_UD_fmap_mag_brain_mask FM_UD_fmap_mag_brain_mask
+        
+# Refine mask (remove edge voxels where signal is poor)
+meanValue=`${FSLDIR}/bin/fslstats FM_UD_fmap -k FM_UD_fmap_mag_brain_mask -P 50`
+${FSLDIR}/bin/fslmaths FM_UD_fmap -sub $meanValue -mas FM_UD_fmap_mag_brain_mask FM_UD_fmap
+thresh50=`${FSLDIR}/bin/fslstats FM_UD_fmap_mag_brain -P 98`
+thresh50=`awk "BEGIN {print $thresh50 / 2.0}"`
+${FSLDIR}/bin/fslmaths FM_UD_fmap_mag_brain -thr $thresh50 -bin FM_UD_fmap_mag_brain_mask50 
+${FSLDIR}/bin/fslmaths FM_UD_fmap_mag_brain_mask -ero FM_UD_fmap_mag_brain_mask_ero 
+${FSLDIR}/bin/fslmaths FM_UD_fmap_mag_brain_mask_ero -add FM_UD_fmap_mag_brain_mask50 -thr 0.5 -bin FM_UD_fmap_mag_brain_mask
+${FSLDIR}/bin/fslmaths FM_UD_fmap -mas FM_UD_fmap_mag_brain_mask FM_UD_fmap
+${FSLDIR}/bin/fslmaths FM_UD_fmap_mag_brain -mas FM_UD_fmap_mag_brain_mask FM_UD_fmap_mag_brain
+
+# run despiking filter just on the edge voxels
+${FSLDIR}/bin/fslmaths FM_UD_fmap_mag_brain_mask -ero FM_UD_fmap_mag_brain_mask_ero
+$FSLDIR/bin/fugue --loadfmap=FM_UD_fmap --savefmap=FM_UD_fmap_tmp_fmapfilt --mask=FM_UD_fmap_mag_brain_mask --despike --despikethreshold=2.1
+$FSLDIR/bin/fslmaths FM_UD_fmap -sub FM_UD_fmap_tmp_fmapfilt -mas FM_UD_fmap_mag_brain_mask_ero -add FM_UD_fmap_tmp_fmapfilt FM_UD_fmap
+/bin/rm -f FM_UD_fmap_tmp_fmapfilt* FM_UD_fmap_mag_brain_mask_ero* FM_UD_fmap_mag_brain_mask50* FM_UD_fmap_mag_brain_i*
+   
+# now demedian
+medianValue=`${FSLDIR}/bin/fslstats FM_UD_fmap -k FM_UD_fmap_mag_brain_mask -P 50`
+${FSLDIR}/bin/fslmaths FM_UD_fmap -sub $medianValue -mas FM_UD_fmap_mag_brain_mask FM_UD_fmap
+    
+# Get a sigloss estimate and make a siglossed mag for forward warp
+${FSLDIR}/bin/sigloss -i FM_UD_fmap --te=$epi_te -m FM_UD_fmap_mag_brain_mask -s FM_UD_fmap_sigloss
+${FSLDIR}/bin/fslmaths FM_UD_fmap_sigloss -mul FM_UD_fmap_mag_brain FM_UD_fmap_mag_brain_siglossed -odt float
+
+# Make a warped version of FM_UD_fmap_mag to match with the EPI
+${FSLDIR}/bin/fugue -i FM_UD_fmap_mag_brain_siglossed --loadfmap=FM_UD_fmap --mask=FM_UD_fmap_mag_brain_mask --dwell=$dwell -w FM_D_fmap_mag_brain_siglossed --nokspace --unwarpdir=$unwarp_dir
+${FSLDIR}/bin/fugue -i FM_UD_fmap_sigloss             --loadfmap=FM_UD_fmap --mask=FM_UD_fmap_mag_brain_mask --dwell=$dwell -w FM_D_fmap_sigloss             --nokspace --unwarpdir=$unwarp_dir
+${FSLDIR}/bin/fugue -i FM_UD_fmap_mag_brain_siglossed --loadfmap=FM_UD_fmap --mask=FM_UD_fmap_mag_brain_mask --dwell=$dwell -w FM_D_fmap_mag_brain_siglossed_x --nokspace --unwarpdir=x
+${FSLDIR}/bin/fugue -i FM_UD_fmap_mag_brain_siglossed --loadfmap=FM_UD_fmap --mask=FM_UD_fmap_mag_brain_mask --dwell=$dwell -w FM_D_fmap_mag_brain_siglossed_y --nokspace --unwarpdir=y
+${FSLDIR}/bin/fugue -i FM_UD_fmap_mag_brain_siglossed --loadfmap=FM_UD_fmap --mask=FM_UD_fmap_mag_brain_mask --dwell=$dwell -w FM_D_fmap_mag_brain_siglossed_negx --nokspace --unwarpdir=x-
+${FSLDIR}/bin/fugue -i FM_UD_fmap_mag_brain_siglossed --loadfmap=FM_UD_fmap --mask=FM_UD_fmap_mag_brain_mask --dwell=$dwell -w FM_D_fmap_mag_brain_siglossed_negy --nokspace --unwarpdir=y-
+${FSLDIR}/bin/fslmaths FM_D_fmap_sigloss -thr $siglossthresh FM_D_fmap_sigloss -odt float
+# Restriction on the angle (-45 45)
+${FSLDIR}/bin/flirt -in EF_D_example_func -ref FM_D_fmap_mag_brain_siglossed -omat EF_2_FM.mat -dof 6 -refweight FM_D_fmap_sigloss -searchrx -45 45 -searchry -45 45 -searchrz -45 45 -out FM_D_example_func
+${FSLDIR}/bin/convert_xfm -omat FM_2_EF.mat -inverse EF_2_FM.mat
+
+# Checking correction
+costa=`${FSLDIR}/bin/flirt -in EF_D_example_func -ref FM_UD_fmap_mag_brain_siglossed -schedule measurecost1.sch -init EF_2_FM.mat -refweight FM_D_fmap_sigloss | head -1 | cut -d " " -f1`
+costx=`${FSLDIR}/bin/flirt -in EF_D_example_func -ref FM_D_fmap_mag_brain_siglossed_x -schedule measurecost1.sch -init EF_2_FM.mat -refweight FM_D_fmap_sigloss | head -1 | cut -d " " -f1`
+costy=`${FSLDIR}/bin/flirt -in EF_D_example_func -ref FM_D_fmap_mag_brain_siglossed_y -schedule measurecost1.sch -init EF_2_FM.mat -refweight FM_D_fmap_sigloss | head -1 | cut -d " " -f1`
+costnegx=`${FSLDIR}/bin/flirt -in EF_D_example_func -ref FM_D_fmap_mag_brain_siglossed_negx -schedule measurecost1.sch -init EF_2_FM.mat -refweight FM_D_fmap_sigloss | head -1 | cut -d " " -f1`
+costnegy=`${FSLDIR}/bin/flirt -in EF_D_example_func -ref FM_D_fmap_mag_brain_siglossed_negy -schedule measurecost1.sch -init EF_2_FM.mat -refweight FM_D_fmap_sigloss | head -1 | cut -d " " -f1`
+icosta=`echo ${costa}*10000| bc -l | sed 's/[.].*//'`
+icostx=`echo ${costx}*10000| bc -l | sed 's/[.].*//'`
+icosty=`echo ${costy}*10000| bc -l | sed 's/[.].*//'`
+icostnegx=`echo ${costnegx}*10000| bc -l | sed 's/[.].*//'`
+icostnegy=`echo ${costnegy}*10000| bc -l | sed 's/[.].*//'`
+warn=""
+if [ ${icostx} -lt ${icosta} ] && [ ${icostx} -lt ${icosty} ] && [ ${icostx} -lt ${icostnegy} ] && [ ${icostx} -lt ${icostnegx} ]; then
+	unwarp_dir=x
+elif [ ${icostnegx} -lt ${icosta} ] && [ ${icostnegx} -lt ${icosty} ] && [ ${icostnegx} -lt ${icostnegy} ] && [ ${icostnegx} -lt ${icostx} ]; then
+	unwarp_dir=x-
+elif [ ${icostnegy} -lt ${icosta} ] && [ ${icostnegy} -lt ${icosty} ] && [ ${icostnegy} -lt ${icostx} ] && [ ${icostnegy} -lt ${icostnegx} ]; then
+	unwarp_dir=y-
+elif [ ${icosty} -gt ${icosta} ]; then
+	warn="Warning !!! The distortion correction did not improve the coregistration."
+fi
+echo "# B0 mapping correction log" > ../${subject}_dti_ecc_dc.log
+echo "${costa} cost value for uncorrected image"	>> ../${subject}_dti_ecc_dc.log
+echo "${costx} cost value for correction in x"		>> ../${subject}_dti_ecc_dc.log
+echo "${costy} cost value for correction in y"		>> ../${subject}_dti_ecc_dc.log
+echo "${costnegx} cost value for correction in -x"	>> ../${subject}_dti_ecc_dc.log
+echo "${costnegy} cost value for correction in -y"	>> ../${subject}_dti_ecc_dc.log
+echo "Distortion correction applied in ${unwarp_dir}"	>> ../${subject}_dti_ecc_dc.log
+echo ${warn} 						>> ../${subject}_dti_ecc_dc.log
+echo "Cost values for correction in x=${costx} y=${costy} -x=${costnegx} -y=${costnegy} and uncorrected=${costa}"			
+echo "Distortion correction applied in ${unwarp_dir}"
+echo ${warn}
+
+# Put fmap stuff into space of EF_D_example_func
+${FSLDIR}/bin/flirt -in FM_UD_fmap                -ref EF_D_example_func -init FM_2_EF.mat -applyxfm -out EF_UD_fmap
+${FSLDIR}/bin/flirt -in FM_UD_fmap_mag_brain      -ref EF_D_example_func -init FM_2_EF.mat -applyxfm -out EF_UD_fmap_mag_brain
+${FSLDIR}/bin/flirt -in FM_UD_fmap_mag_brain_mask -ref EF_D_example_func -init FM_2_EF.mat -applyxfm -out EF_UD_fmap_mag_brain_mask
+${FSLDIR}/bin/flirt -in FM_UD_fmap_sigloss        -ref EF_D_example_func -init FM_2_EF.mat -applyxfm -out EF_UD_fmap_sigloss
+${FSLDIR}/bin/fslmaths FM_UD_fmap_mag_brain_mask -thr 0.5 -bin FM_UD_fmap_mag_brain_mask -odt float
+${FSLDIR}/bin/fslmaths EF_UD_fmap_sigloss -thr $siglossthresh EF_UD_fmap_sigloss -odt float
+  
+# Apply warp to EF_D_example_func and save unwarp-shiftmap then convert to unwarp-warpfield
+${FSLDIR}/bin/fugue --loadfmap=EF_UD_fmap --dwell=$dwell --mask=EF_UD_fmap_mag_brain_mask -i EF_D_example_func -u EF_UD_example_func --unwarpdir=$unwarp_dir --saveshift=EF_UD_shift
+${FSLDIR}/bin/convertwarp -s EF_UD_shift -o EF_UD_warp -r EF_D_example_func --shiftdir=$unwarp_dir --absout
+    
+# Apply unwarping to 4D image
+echo "Apply unwarping"
+cd ${pdir}/${subject}
+${FSLDIR}/bin/applywarp -i ${subject}_dti_ecc -r ${subject}_dti_ecc.unwarp/EF_UD_example_func -o ${subject}_dti_ecc_dc -w ${subject}_dti_ecc.unwarp/EF_UD_warp --interp=spline --abs
+
+
+echo "############## Brain extraction after B0 correction	##############"
+${FSLDIR}/bin/fslmaths ${subject}_dti_ecc_dc -Tmean mean_tmp
+${FSLDIR}/bin/bet2 mean_tmp mean_tmp_bet -f 0.4 -n -m
+${FSLDIR}/bin/immv mean_tmp_bet_mask ${subject}_dti_ecc_dc_mask
+${FSLDIR}/bin/fslmaths ${subject}_dti_ecc_dc -mas ${subject}_dti_ecc_dc_mask ${subject}_dti_ecc_dc_brain
+/bin/rm -f mean_tmp*
+echo "Done"
+
+echo "############## Tensor Computation after B0 correction	##############"
+
+echo "Tensor fitting with weighted least squares:" ;
+${FSLDIR}/bin/dtifit -k ${subject}_dti_ecc_dc_brain -o ${subject}_dti_ecc_dc_brain -r ${subject}_dti_ecc.bvec -b ${subject}_dti.bval -m ${subject}_dti_ecc_dc_mask -w
+
+# Radial Diffusivity
+${FSLDIR}/bin/fslmaths ${subject}_dti_ecc_dc_brain_L2 -add ${subject}_dti_ecc_dc_brain_L3 -div 2 ${subject}_dti_ecc_dc_brain_RD
+
+# Summary log
+echo "# Summary Tensor Fitting" > ${subject}_dti_ecc_dc_brain_tf.log
+echo "# Img	Mean	SD	Min	Max " >> ${subject}_dti_ecc_dc_brain_tf.log
+echo S0 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_S0 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_S0 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_S0 -R` >> ${subject}_dti_ecc_dc_brain_tf.log
+echo FA `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_FA -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_FA -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_FA -R` >> ${subject}_dti_ecc_dc_brain_tf.log
+echo MD `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_MD -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_MD -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_MD -R` >> ${subject}_dti_ecc_dc_brain_tf.log
+echo MO `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_MO -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_MO -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_MO -R` >> ${subject}_dti_ecc_dc_brain_tf.log
+echo L1 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_L1 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_L1 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_L1 -R` >> ${subject}_dti_ecc_dc_brain_tf.log
+echo L2 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_L2 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_L2 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_L2 -R` >> ${subject}_dti_ecc_dc_brain_tf.log
+echo L3 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_L3 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_L3 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_L3 -R` >> ${subject}_dti_ecc_dc_brain_tf.log
+echo "Done"
+
+if [ ${restore} == "yes" ]; then
+	echo "Tensor fitting with RESTORE:" ;
+	restore.py ${subject}_dti.nii.gz ${subject}_dti_ecc_dc_brain.nii.gz ${subject}_dti.bval ${subject}_dti_ecc.bvec ${subject}_dti_ecc_dc_brain
+
+    	# Summary log
+	echo "# Summary Tensor Fitting with RESTORE" > ${subject}_dti_ecc_dc_brain_restore_tf.log
+	echo "# Img	Mean	SD	Min	Max " >> ${subject}_dti_ecc_dc_brain_restore_tf.log
+	echo S0 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_brain_S0 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_S0 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_S0 -R` >> ${subject}_dti_ecc_dc_brain_restore_tf.log
+	echo FA `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_FA -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_FA -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_FA -R` >> ${subject}_dti_ecc_dc_brain_restore_tf.log
+	echo MD `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_MD -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_MD -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_MD -R` >> ${subject}_dti_ecc_dc_brain_restore_tf.log
+	echo MO `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_MO -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_MO -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_MO -R` >> ${subject}_dti_ecc_dc_brain_restore_tf.log
+	echo L1 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_L1 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_L1 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_L1 -R` >> ${subject}_dti_ecc_dc_brain_restore_tf.log
+	echo L2 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_L2 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_L2 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_L2 -R` >> ${subject}_dti_ecc_dc_brain_restore_tf.log
+	echo L3 `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_L3 -M` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_L3 -S` `${FSLDIR}/bin/fslstats ${subject}_dti_ecc_dc_brain_restore_L3 -R` >> ${subject}_dti_ecc_dc_brain_restore_tf.log
+	echo "Done"
+fi
+
+echo "############## Process for subject ${subject} done	##############"
