@@ -8,11 +8,14 @@ Imagen MRI data processing
 ``onsets_contrasts``
   From CSV behavioral files to onsets.
 
+``spm_new_segment``
+  Segmentation of structural MRI data with SPM.
+
 ``spm_preprocessing``
-  Preprocessing of fMRI data with SPM.
+  Preprocessing of task-based fMRI data with SPM.
 
 ``spm_first_level``
-  1st level processing of fMRI data with SPM.
+  1st level processing of task-based fMRI data with SPM.
 
 ``rsfMRI_preprocessing``
   Preprocessing of resting-state fMRI data with FSL and ANTS.
