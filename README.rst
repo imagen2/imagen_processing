@@ -2,6 +2,9 @@
 Imagen MRI data processing
 ==========================
 
+``freesurfer``
+  Segmentation of structural MRI data with FreeSurfer.
+
 ``fsl_dti``
   Preprocessing of DTI data with FSL.
 
