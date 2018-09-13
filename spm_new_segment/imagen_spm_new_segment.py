@@ -32,7 +32,6 @@ import os
 import glob
 import shutil
 import argparse
-import sys
 
 # Mmutils import
 from mmutils.adapters.io import gzip_file

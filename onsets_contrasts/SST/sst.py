@@ -39,7 +39,6 @@ def generate_spm_model_intra_EPIstopsignal(in_fn, out_fn):
 
     behav = in_fn
 
-    #
     def onsets_to_matlabstring(factorlist, namelist):
         onsetlist = [('[' + " ".join(['%4.2f' % x for x in vec]) + ']' if len(vec) else 'nan') for vec in factorlist]
         durationlist = [('[0]' if len(vec) else 'nan') for vec in factorlist]
@@ -56,8 +55,7 @@ def generate_spm_model_intra_EPIstopsignal(in_fn, out_fn):
     factorlist, namelist = generate_onsets.generate_SS(trialname, behav)
     for i, x in enumerate(factorlist):
         if len(x) == 0:
-            print "WARNING : factor %s is empty on %s. Will generate null spmT" % (s, namelist[i])
-    #
+            print "WARNING : factor %s is empty on %s. Will generate null spmT" % (namelist[i], trialname)
     contrast_infos = generate_onsets.generate_contrasts_SS(trialname, factorlist, namelist, othername=['']*6, width=1)  # WARNING sync 'width' with the template .m job (hrf.derivs)!
 
     header_jobscript = (onsets_to_matlabstring(factorlist, namelist) + '\n' +
@@ -65,6 +63,7 @@ def generate_spm_model_intra_EPIstopsignal(in_fn, out_fn):
     fp = open(out_fn, 'w')
     fp.write(header_jobscript)
     fp.close()
+
 
 if __name__ == "__main__":
     behav = '/neurospin/imagen/processed/nifti/000055417875/BehaviouralData/ss_000055417875.csv'

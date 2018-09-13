@@ -14,7 +14,7 @@
 #
 
 # arguments
-import sys, getopt
+import sys
 rawfile=str(sys.argv[1])
 dtifile=str(sys.argv[2])
 dtibval=str(sys.argv[3])

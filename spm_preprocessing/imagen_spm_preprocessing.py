@@ -160,15 +160,11 @@ def run_spm_preprocessing(funcfile, outdir, repetition_time, ref_slice,
         )
     print "    ... done."
 
-    """
-    Processing definition: create the <clinfmri.preproc.FmriPreproc> that
-    define the different step of the processings.
-    """
+    # Processing definition: create the <clinfmri.preproc.FmriPreproc> that
+    # define the different step of the processings.
     pipeline = get_process_instance("clinfmri.preproc.converted_fmri_preproc.xml")
 
-    """
-    It is possible to display the pipeline.
-    """
+    # It is possible to display the pipeline.
     if enable_display:
         import sys
         from PySide import QtGui
@@ -179,9 +175,7 @@ def run_spm_preprocessing(funcfile, outdir, repetition_time, ref_slice,
         view.show()
         app.exec_()
 
-    """
-    Now to parametrize the pipeline pipeline.
-    """
+    # Now to parametrize the pipeline pipeline.
     pipeline.fmri_file = funcfile
     pipeline.realign_register_to_mean = True
     pipeline.select_slicer = timings_corr_algo
@@ -194,9 +188,7 @@ def run_spm_preprocessing(funcfile, outdir, repetition_time, ref_slice,
     if template is not None:
         pipeline.template_file = template
 
-    """
-    The pipeline is now ready to be executed.
-    """
+    # The pipeline is now ready to be executed.
     study_config.run(pipeline, executer_qc_nodes=False, verbose=1)
 
 
@@ -287,4 +279,3 @@ run_spm_preprocessing(outdir=tmp_capsul, **kwargs)
 # Reorganize data
 image_name = os.path.basename(kwargs["funcfile"]).split(".")[0]
 reorganize_preproc_files(outdir, subject_id, paradigm, image_name, tmp_capsul)
-

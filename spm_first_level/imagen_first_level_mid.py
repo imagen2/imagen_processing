@@ -32,7 +32,6 @@
 import os
 import glob
 import tarfile
-import numpy as np
 import shutil
 import argparse
 import gzip
