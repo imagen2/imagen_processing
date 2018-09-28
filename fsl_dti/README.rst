@@ -2,7 +2,7 @@
 DTI data: preprocessing with FSL
 =======
 -----------------
-Goal: 
+Goal:
 -----------------
 The imagen_diffsl script preprocesses all dti data from the eight IMAGEN centers (http://www.imagen-europe.com). 
 
@@ -39,7 +39,7 @@ imagen_diffsl <mag> <phase> <dti> <center> <restore> <pdir>
 * restore=yes or no for the optional RESTORE
 * pdir, output directory for preprocessed data
 
-All images must be in ANALYZE, NIFTI or NIFTI.GZ. 
+All images must be in ANALYZE, NIFTI or NIFTI.GZ.
 
 For centers concatenating fieldmaps (magnitude and phase images in a 4D image) like Nottingham and Dublin, you may replace the magnitude with NA and the phase with the 4D image:
 imagen_diffsl	NA	000038429243s601a1006	000038429243s901a1009 2 yes /tmp/
@@ -58,7 +58,7 @@ Outputs:
 The script creates one folder per subject with inside:
 
 ======================================= =======================================================================================
-file            Description 
+file            Description
 ======================================= =======================================================================================
 subject_mag                             the raw magnitude image
 subject_phase 	                        the raw phase image
@@ -131,7 +131,7 @@ QCing the distortion correction by looking at the cost measure of the spatial re
 QCing the tensor computation by using a k-means clustering on the global FA, MD, L1, L2, L3 and MO values.
 
 * Files: subject_dti_ecc_brain_tf.log
-* Flag: if not in the two main clusters. 
+* Flag: if not in the two main clusters.
 
 -----------------
 Data availability:
