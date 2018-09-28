@@ -43,7 +43,7 @@ python imagen_spm_preprocessing.py \
 -r 2.2 \
 -e 40 \
 -d 40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 \
--t /neurospin/imagen/workspace/fmri/scripts/ImagenEPI200_3mm.nii \
+-t template/ImagenEPI200_3mm.nii.gz \
 -c spm \
 -n fmri \
 -s /neurospin/imagen/workspace/spm/spm12-iteration6 \

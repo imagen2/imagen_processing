@@ -1,0 +1,9 @@
+Template
+fait sur 240 sujets (30 par centres) * 2 Sessions (*t*, ie. stop_signal & short_mid),
+critere : 
+ xor entre le maskIntra et le maskTemlate
+=> on vire les 18% les plus élevés (ie. les 80 images les plus à droite sur le critere xor)
+=> il reste 400 images
+=> moyenne de ce truc
+=> Smooth a 5 5 5
+resolution : voxels de 3mm
