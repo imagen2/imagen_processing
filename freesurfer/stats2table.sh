@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2019 CEA
+# Copyright (c) 2019-2020 CEA
 #
 # This software is governed by the CeCILL license under French law and
 # abiding by the rules of distribution of free software. You can use,
@@ -36,7 +36,7 @@ FREESURFER_HOME=/i2bm/local/freesurfer-5.3.0
 export FREESURFER_HOME
 . ${FREESURFER_HOME}/FreeSurferEnv.sh
 
-for timepoint in BL FU2 FU3
+for timepoint in BL FU2 FU3 STRATIFY
 do
     SUBJECTS_DIR="/neurospin/imagen/$timepoint/processed/freesurfer"
     STATS_DIR="/neurospin/imagen/$timepoint/processed/freesurfer_stats"
