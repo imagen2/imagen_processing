@@ -32,11 +32,11 @@
 # Create TSV tables with stats extracted from each individual dataset
 # processed by FreeSurfer.
 
-FREESURFER_HOME=/i2bm/local/freesurfer-5.3.0
+FREESURFER_HOME=/i2bm/local/freesurfer-6.0.0
 export FREESURFER_HOME
 . ${FREESURFER_HOME}/FreeSurferEnv.sh
 
-for timepoint in BL FU2 FU3 STRATIFY
+for timepoint in FU3 STRATIFY
 do
     SUBJECTS_DIR="/neurospin/imagen/$timepoint/processed/freesurfer"
     STATS_DIR="/neurospin/imagen/$timepoint/processed/freesurfer_stats"
