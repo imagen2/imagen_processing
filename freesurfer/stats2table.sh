@@ -49,6 +49,7 @@ do
             for HEMI in rh lh
             do
                 aparcstats2table --subjects `for subject in $SUBJECTS_DIR/0000* ; do basename "$subject" ; done` --hemi "$HEMI" --meas "$MEAS" --tablefile "${STATS_DIR}/${HEMI}.aparc.${MEAS}.tsv"
+                unix2dos -o "${STATS_DIR}/${HEMI}.aparc.${MEAS}.tsv"
             done
         done
         
@@ -56,10 +57,12 @@ do
         for MEAS in volume mean
         do
             asegstats2table --subjects `for subject in $SUBJECTS_DIR/0000* ; do basename "$subject" ; done` --meas "$MEAS" --tablefile "${STATS_DIR}/aseg.${MEAS}.tsv"
+            unix2dos -o "${STATS_DIR}/aseg.${MEAS}.tsv"
         done
 
         # extract Euler numbers from log file
         CURRENT_DIR=`dirname "$0"`
         "$CURRENT_DIR"/eno2table.py --subjects `for subject in $SUBJECTS_DIR/0000* ; do basename "$subject" ; done` --tablefile "${STATS_DIR}/euler.tsv"
+        unix2dos -o "${STATS_DIR}/euler.tsv"
     fi
 done
