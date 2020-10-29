@@ -63,6 +63,5 @@ do
         # extract Euler numbers from log file
         CURRENT_DIR=`dirname "$0"`
         "$CURRENT_DIR"/eno2table.py --subjects `for subject in $SUBJECTS_DIR/0000* ; do basename "$subject" ; done` --tablefile "${STATS_DIR}/euler.tsv"
-        unix2dos -o "${STATS_DIR}/euler.tsv"
     fi
 done
