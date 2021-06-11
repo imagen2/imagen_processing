@@ -5,8 +5,8 @@ Imagen MRI data processing
 ``freesurfer``
   Segmentation of structural MRI data with FreeSurfer.
 
-``fsl_dti``
-  Preprocessing of DTI data with FSL.
+``tbss_dti``
+  Preprocessing of DTI data with mrtrix, dtitk, ants and fsl.
 
 ``onsets_contrasts``
   From CSV behavioral files to onsets.
@@ -17,6 +17,9 @@ Imagen MRI data processing
 ----------------------------
 Obsolete FU2 processing code
 ----------------------------
+
+``fsl_dti``
+  Preprocessing of DTI data with FSL.
 
 ``spm_new_segment_FU2``
   Segmentation of baseline and FU2 structural MRI data with SPM.
