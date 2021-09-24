@@ -2,14 +2,14 @@
 Imagen MRI data processing
 ==========================
 
-``fsl_dti``
-  Preprocessing of DTI data with FSL.
-
 ``freesurfer``
   Segmentation of structural MRI data with FreeSurfer.
-
+  
 ``tbss_dti``
-  Preprocessing of DTI data with mrtrix, dtitk, ants and fsl.
+  Preprocessing of DTI data with mrtrix, dtitk, ants and fsl (current version).
+
+``fsl_dti``
+  Preprocessing of DTI data with fsl (old version).
 
 ``onsets_contrasts``
   From CSV behavioral files to onsets.
