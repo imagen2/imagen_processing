@@ -29,7 +29,7 @@ Voxel-wise statistical inference of the diffusion tensor metrics was carried out
 
 # 3. Quality controls
 
-QC variables are stored in the spreadsheet ["imagen_dti_report.csv"](https://github.com/imagen2/imagen_processing/blob/master/tbss_dti/imagen_dti_report.csv). qc_cross_global and qc_long_global are the main qc variables for the cross-sectional (3.1) and longitudinal (3.2) QCs.
+QC variables are stored in the spreadsheet ["imagen_dti_qcreport.csv"](https://github.com/imagen2/imagen_processing/blob/master/tbss_dti/imagen_dti_qcreport.csv). qc_cross_global and qc_long_global are the main qc variables for the cross-sectional (3.1) and longitudinal (3.2) QCs.
 
 ## 3.1  Cross-sectional QC
 

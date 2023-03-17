@@ -193,7 +193,7 @@ pre code {
 </div>
 <div id="quality-controls" class="section level1">
 <h1>3. Quality controls</h1>
-<p>QC variables are stored in the spreadsheet <a href="https://github.com/imagen2/imagen_processing/blob/master/tbss_dti/imagen_dti_report.csv">“imagen_dti_report.csv”</a>. qc_cross_global and qc_long_global are the main qc variables for the cross-sectional (3.1) and longitudinal (3.2) QCs.</p>
+<p>QC variables are stored in the spreadsheet <a href="https://github.com/imagen2/imagen_processing/blob/master/tbss_dti/imagen_dti_qcreport.csv">“imagen_dti_qcreport.csv”</a>. qc_cross_global and qc_long_global are the main qc variables for the cross-sectional (3.1) and longitudinal (3.2) QCs.</p>
 <div id="cross-sectional-qc" class="section level2">
 <h2>3.1 Cross-sectional QC</h2>
 <p>The eddy qc tools (QUAD, SQUAD) were applied at the single subject and study wise level exporting -1- outliers-related, -2- volume to volume motion and -3- signal to noise ratio (SNR) QC metrics. An automatic QC procedure was performed on the number of volumes (qc_vol), the tensor computation (qc_tensor), the size of the brain mask (qc_mask), the average SNR of the b0 volumes (qc_snrb0), and the total % of outlier slices (qc_outlier) using an univariate inter quartile range approach and an multivariate outlier approach (mvoutier R package).</p>
