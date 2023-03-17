@@ -1,14 +1,14 @@
 ---
 title: "Standard Operating Procedure for diffusion images"
 author: "Herve Lemaitre"
-date: "2021-06-11"
+date: "2023-03-17"
 output:
   html_document:
     keep_md: true
   
 ---
 
-# 1. Introduction
+# 1. Diffusion data
 
 IMAGEN diffusion MRI images were obtained at baseline (14 years-old), at follow up 2 (18 years-old) and at follow-up 3 (20 years-old) on 3 Tesla scanners (Siemens; Philips; General Electric). The diffusion tensor images were acquired using an Echo Planar imaging sequence (4 b-value=0 s/mm2 and 32 diffusion encoding directions with b-value=1300 s/mm2; 60 oblique-axial slices (angulated parallel to the anterior commissure/ posterior commissure line); echo time ≈ 104 ms; 128x128 matrix; field of view 307x307mm; voxel size 2.4 x 2.4 x 2.4 mm), adapted to tensor measurements and tractography analysis. Where available, a peripherally gated sequence was used; when this was not possible, TR was set to 15s, approximately matching the effective TR of the gated scans 
 
@@ -29,13 +29,15 @@ Voxel-wise statistical inference of the diffusion tensor metrics was carried out
 
 # 3. Quality controls
 
+QC variables are stored in the spreadsheet ["imagen_dti_report.csv"](https://github.com/imagen2/imagen_processing/blob/master/tbss_dti/imagen_dti_report.csv). qc_cross_global and qc_long_global are the main qc variables for the cross-sectional (3.1) and longitudinal (3.2) QCs.
+
 ## 3.1  Cross-sectional QC
 
-The eddy qc tools (QUAD, SQUAD) were applied at the single subject and study wise level exporting (1) outliers-related, (2) volume to volume motion and (3) signal to noise ratio (SNR) QC metrics. An automatic QC procedure was performed on the number of volumes, the tensor computation, the size of the brain mask, the average SNR of the b0 volumes, and the total % of outlier slices using an univariate inter quartile range approach and an multivariate outlier approach (mvoutier R package).
+The eddy qc tools (QUAD, SQUAD) were applied at the single subject and study wise level exporting -1- outliers-related, -2- volume to volume motion and -3- signal to noise ratio (SNR) QC metrics. An automatic QC procedure was performed on the number of volumes (qc_vol), the tensor computation (qc_tensor), the size of the brain mask (qc_mask), the average SNR of the b0 volumes (qc_snrb0), and the total % of outlier slices (qc_outlier) using an univariate inter quartile range approach and an multivariate outlier approach (mvoutier R package).
 
 ## 3.2  Longitudinal QC
 
-Diffusion images underwent visual quality control procedures in order to discard images with defective spatial normalization. (1) A first visual QC procedure was performed on the initial registration of the individual diffusion images on the IXI aging template. (2) A second visual QC procedure was performed on the initial registration of the within-subject templates on the IXI aging template. (3) A third visual QC procedure was performed on the final registration of the individual diffusion imges on the IIT human brain tensor template.
+Diffusion images underwent visual quality control procedures in order to discard images with defective spatial normalization. -1- A first visual QC procedure was performed on the initial registration of the individual diffusion images on the IXI aging template (qc_affvisual1). -2- A second visual QC procedure was performed on the initial registration of the within-subject templates on the IXI aging template (qc_affvisual2). -3- A third visual QC procedure was performed on the final registration of the individual diffusion images on the IIT human brain tensor template (qc_warpvisual).
 
 ## 3.3 TBSS integration QC
 
@@ -44,6 +46,7 @@ Whole sample mean FA images after rigid, affine and diffeomorphic registrations 
 # 4. Outputs
 
 ## 4.1 Skeleton images
+
 Images of FA, MD AD and RD skeleton images are stored under the following format:  
 "XXXXXXXXXXXX_dti_denoised_degibbsed_preprocessed_biascorrected_dtitk_warpedtomni_YY_skeletonised.nii.gz"  
 XXXXXXXXXXX: Subject number  
