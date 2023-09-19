@@ -32,7 +32,7 @@
 # Create TSV tables with stats extracted from each individual dataset
 # processed by FreeSurfer.
 
-FREESURFER_HOME=/i2bm/local/freesurfer-5.3.0
+FREESURFER_HOME=/drf/local/freesurfer-5.3.0
 export FREESURFER_HOME
 . ${FREESURFER_HOME}/FreeSurferEnv.sh
 

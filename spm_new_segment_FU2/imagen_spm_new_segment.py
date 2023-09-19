@@ -84,7 +84,7 @@ parser.add_argument(
     help="the spm standalone path.")
 parser.add_argument(
     "-d", "--spmdir", dest="spmdir", type=is_directory,
-    default="/i2bm/local/spm12-standalone-6472/spm12_mcr/spm12",
+    default="/drf/local/spm12-standalone-6472/spm12_mcr/spm12",
     help="the spm standalone directory.")
 parser.add_argument(
     "-e", "--erase", dest="erase", action="store_true",

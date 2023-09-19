@@ -362,7 +362,7 @@ parser.add_argument(
     help="the root of freesurfer directory.")
 parser.add_argument(
     "-d", "--spmdir", dest="spmdir", type=is_directory,
-    default="/i2bm/local/spm12",
+    default="/drf/local/spm12",
     help="the spm directory.")
 parser.add_argument(
     "-l", "--fslconfig", dest="fslconfig", type=is_file,
@@ -370,7 +370,7 @@ parser.add_argument(
     help="the FSL configuration file path.")
 parser.add_argument(
     "-g", "--fsconfig", dest="fsconfig", type=is_file,
-    default="/i2bm/local/freesurfer/SetUpFreeSurfer.sh",
+    default="/drf/local/freesurfer/SetUpFreeSurfer.sh",
     help="the Freesurfer configuration file path.")
 parser.add_argument(
     "-m", "--matlabexec", dest="matlabexec", type=is_file,
@@ -403,7 +403,7 @@ parser.add_argument(
     help="the mask image.")
 parser.add_argument(
     "-p", "--template", dest="template", type=is_file,
-    default="/i2bm/local/spm12/tpm/TPM.nii",
+    default="/drf/local/spm12/tpm/TPM.nii",
     help="the template file.")
 args = parser.parse_args()
 
