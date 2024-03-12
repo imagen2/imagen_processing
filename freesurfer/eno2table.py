@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2019 CEA
 #
@@ -39,7 +38,7 @@ import re
 import csv
 
 
-ENO_REGEX = re.compile('orig.nofix lheno +=\s+(-?\d+), +rheno +=\s+(-?\d+)')
+ENO_REGEX = re.compile(r'orig.nofix lheno +=\s+(-?\d+), +rheno +=\s+(-?\d+)')
 
 DELIMITER = [
     ('tab', '\t'),
