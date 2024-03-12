@@ -31,12 +31,11 @@
 # Create TSV tables with stats extracted from each individual dataset
 # processed by FreeSurfer.
 
-import os
-import sys
 import argparse
-import re
 import csv
-
+import os
+import re
+import sys
 
 ENO_REGEX = re.compile(r'orig.nofix lheno +=\s+(-?\d+), +rheno +=\s+(-?\d+)')
 
