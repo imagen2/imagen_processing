@@ -6,10 +6,10 @@ Imagen MRI data processing
   Segmentation of structural MRI data with FreeSurfer.
   
 ``tbss_dti``
-  Preprocessing of DTI data with mrtrix, dtitk, ants and fsl (current version).
+  Diffusion data preprocessed for tract-based spatial statistics (current version).
 
 ``fsl_dti``
-  Preprocessing of DTI data with fsl (old version).
+  Diffusion data preprocessed with fsl (deprecated version).
 
 ``onsets_contrasts``
   From CSV behavioral files to onsets.

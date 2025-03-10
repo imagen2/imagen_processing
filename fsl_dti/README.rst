@@ -1,5 +1,5 @@
 =======
-DTI data: preprocessing with FSL
+Diffusion data preprocessed with fsl (deprecated version)
 =======
 -----------------
 Goal:
