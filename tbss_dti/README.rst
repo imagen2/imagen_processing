@@ -1,10 +1,10 @@
 =======
-Diffusion data preprocessed for tract-based spatial statistics (current version).
+DTI data preprocessed for tract-based spatial statistics (current version).
 =======
 -----------------
 Standard Operating Procedure:
 -----------------
-The SOP for the diffusion data can be found under `sop_diffusion.md`_.
+The SOP for the diffusion data can be found under `sop_dti_diffusion.md`_.
 
 -----------------
 Data availability:
@@ -21,4 +21,4 @@ Contact:
 Herve Lemaitre (herve.lemaitre@u-bordeaux.fr).
 
 
-.. _sop_diffusion.md: https://github.com/imagen2/imagen_processing/blob/master/tbss_dti/sop_diffusion.md
+.. _sop_dti_diffusion.md: https://github.com/imagen2/imagen_processing/blob/master/tbss_dti/sop_dti_diffusion.md
