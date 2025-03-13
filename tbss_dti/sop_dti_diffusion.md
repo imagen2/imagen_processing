@@ -68,10 +68,10 @@ For IMAGEN sister databases (e.g. STRATIFY), diffusion images followed the same 
 
 ## 6. Releases
 
-**old versions** only with fsl (deprecated): "fsl_dti", "classic" folders
+**old versions** only with fsl (deprecated): "fsl_dti", "classic" folders  
 **1.0** early version (deprecated) with fsl and dti-tk: "dtitk1.0" folder  
-**2.0** updated version with mrtrix, dti-tk and longitudinal preprocessing: "dtitk2.0" folder
-**2.1** images are now within fsl standard space: "dtitk2.1" folder
+**2.0** updated version with mrtrix, dti-tk and longitudinal preprocessing: "dtitk2.0" folder  
+**2.1** images are now within fsl standard space: "dtitk2.1" folder  
 
 # 7. References
 
