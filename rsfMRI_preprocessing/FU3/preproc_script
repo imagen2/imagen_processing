@@ -1,0 +1,277 @@
+#!/bin/bash
+
+###############################################################################################
+##                          																				 		##
+## Organize data in the following way:																	 		##
+##																													 		##
+## - make a data directory																					 		##
+## - create subject folders with subject ID as name												 		##
+## - each subject folder should contain the task data named <subject ID>_<task ID>.nii.gz 	##
+##   and the T1 image named <subject ID>_<T1 ID>.nii.gz											 		##
+##																													 		##
+## Please change "specify path to tools" below to point to the right directory with binaries ##
+## Please change "preprocessing settings" below according to your data 						 		##
+##	Please change "set data directory" below according to your file system 					 		##
+##																													 		##
+###############################################################################################
+
+## check if input arguments are provided
+## ID's need to correspond to the name of the subject's folder in the data directory, the task name in the 4D image file, and identifier in the 3D anatomical image  
+## e.g.: in folder PAT001 there is a task file named PAT001_nback.nii.gz, and a T1 named PAT001_t1.nii.gz 
+
+if [ $# -eq 0 ] ; then
+	echo	
+	echo usage is: bash preproc_script.sh "<subject ID>" "<task ID>" "<anatomy ID>"
+	echo
+	echo "ID's need to correspond to the name of the subject's folder in the data directory, the task name in the 4D image file, and identifier in the 3D anatomical image"
+	echo
+	echo "if: in folder PAT001 there is a task file named PAT001_nback.nii.gz, and a T1 named PAT001_t1.nii.gz"
+	echo "then: bash preproc_script.sh PAT001 nback t1"
+	echo
+	exit
+fi
+
+
+######################################### insert general settings #############################
+
+# specify path to tools
+
+export SCRIPTPATH=/mnt/mbServerProjects/SCRATCH/USERS/ilya/PREPROC_TOOLS
+
+# preprocessing settings
+
+tr=2.2					# TR in seconds
+hp_filt=125			# high-pass filter cut-off in seconds
+skern=4.0			# smoothing kernel (FWHM in mm)
+#st=`echo --down`	# slice acquisition order (descending: `echo --down`; ascending: `echo ""`; interleaved not supported)
+
+bbthresh=10			# brain background threshold (10 is standard)
+
+# set data directory
+
+data_dir=/mnt/mbServerData/data/STRATIFY/PROCESSED/REBUILD_SOUTHAMPTON
+#export ANTSPATH=/mnt/raid5/projects/tristram/software/ANTs.2.1.0.Debian-Ubuntu_X64
+
+###############################################################################################
+
+# change to subject directory 
+
+pp=$1
+task_id=$2
+t1_id=$3
+
+task_scan=${pp}_${task_id}.nii.gz
+t1_scan=${pp}_${t1_id}.nii.gz
+
+cd $data_dir/$pp
+
+echo loading in data...
+echo ""
+
+# create initial files and subdirectories
+
+mkdir ${pp}_${task_id}.preproc
+
+cd ${pp}_${task_id}.preproc
+
+mkdir mc
+mkdir reg
+
+fslmaths $data_dir/$pp/$task_scan prefiltered_func_data -odt float
+
+
+echo ""
+echo STEP 1: standard preprocessing
+echo ""
+
+# run motion correction and extract framewise displacement (FD)
+
+echo - motion correction
+
+fslroi prefiltered_func_data example_func $(echo `fslnvols prefiltered_func_data`/2 | bc) 1
+mcflirt -in prefiltered_func_data -out prefiltered_func_data_mcf -mats -plots -reffile example_func -rmsrel -rmsabs -spline_final
+
+mv -f prefiltered_func_data_mcf.mat prefiltered_func_data_mcf.par prefiltered_func_data_mcf_abs.rms prefiltered_func_data_mcf_abs_mean.rms prefiltered_func_data_mcf_rel.rms prefiltered_func_data_mcf_rel_mean.rms mc
+
+fsl_tsplot -i mc/prefiltered_func_data_mcf.par -t 'MCFLIRT estimated rotations (radians)' -u 1 --start=1 --finish=3 -a x,y,z -w 640 -o mc/rot.png
+fsl_tsplot -i mc/prefiltered_func_data_mcf.par -t 'MCFLIRT estimated translations (mm)' -u 1 --start=4 --finish=6 -a x,y,z -w 640 -h 144 -o mc/trans.png
+fsl_tsplot -i mc/prefiltered_func_data_mcf_abs.rms,mc/prefiltered_func_data_mcf_rel.rms -t 'MCFLIRT estimated mean displacement (mm)' -u 1 -w 640 -h 144 -a absolute,relative -o mc/disp.png
+
+fsl_motion_outliers -i prefiltered_func_data -o temp -s mc/prefiltered_func_data_fd.txt --fdrms
+
+rm temp
+
+# create EPI brain mask and mask mc-corrected data
+
+fslmaths prefiltered_func_data_mcf.nii.gz -Tmean mean_func
+bet2 mean_func mask -f 0.3 -n -m
+immv mask_mask mask
+fslmaths prefiltered_func_data_mcf -mas mask prefiltered_func_data_bet
+
+# Use fslstats to output the 2nd and 98th percentile
+lowerp=`fslstats prefiltered_func_data_bet -p 2`
+upperp=`fslstats prefiltered_func_data_bet -p 98`
+
+# The brain/background threshold (to distinguish between brain and background is 10% - so we divide by 10)
+# Anything above this value, then, is activation between the 2nd and 98th percentile that is likely to be 
+# brain activation and not noise or something else!
+thresholdp=`python -c "print(($upperp-$lowerp)/$bbthresh)"`
+
+# Use fslmaths to threshold the brain extracted data based on the brain/background threshold above
+# use "mask" as a binary mask, and Tmin to specify we want the minimum across time
+fslmaths prefiltered_func_data_bet -thr $thresholdp -Tmin -bin mask -odt char
+
+# Take the motion corrected functional data, and using "mask" as a mask (the -k option)
+# output the 50th percentile (the mean?)
+# We will need this later to calculate the intensity scaling factor
+meanintensity=`fslstats prefiltered_func_data_mcf -k mask -p 50`
+
+# Fill potential zeroes that have occured inside the brain mask during brain/background thresholding
+fslmaths mask.nii.gz -dilF mask
+
+#We are now masking the motion corrected functional data with the mask to produce
+# functional data that is motion corrected and thresholded based on the highpass filter
+fslmaths prefiltered_func_data_mcf -mas mask prefiltered_func_data_thresh
+
+# We now take this functional data that is motion corrected, high pass filtered, and
+# create a "mean_func" image that is the mean across time (Tmean)
+fslmaths prefiltered_func_data_thresh -Tmean mean_func
+
+# To run susan, FSLs tool for noise reduction, we need a brightness threshold. Here is how to calculate:
+# After thresholding, the values in the image are between $upperp-lowerp and $thresholdp
+# If we set the expected noise level to .66, then anything below (($upperp-$lowerp)-$thresholdp)/0.66 should be noise.
+# This is saying that we want the brightness threshold to be 66% of the median value.
+# Note that the FSL "standard" is 75% (.75)
+# This is the value that we use for bt, the "brightness threshold" in susan
+uppert=`python -c "print(($upperp-$lowerp))"`
+difft=`python -c "print(($uppert-$thresholdp))"`
+
+# We also need to calculate the spatial size based on the smoothing.
+# FWHM = 2.355*spatial size. So if desired FWHM = 6mm, spatial size = 2.54...
+ssize=`python -c "print(($skern/2.355))"`
+
+# susan uses nonlinear filtering to reduce noise 
+# by only averaging a voxel with local voxels which have similar intensity
+
+echo - spatial smoothing
+
+susan prefiltered_func_data_thresh $difft $ssize 3 1 1 mean_func $difft prefiltered_func_data_smooth
+
+# Now we mask the smoothed functional data with the mask image, and overwrite the smoothed image.
+fslmaths prefiltered_func_data_smooth -mas mask prefiltered_func_data_smooth
+
+# We now need to calculate the intensity scaling factor applied to the whole  4D dataset so that it's mean is 10000
+
+echo - grand mean intensity normalization 
+
+inscalefactor=`python -c "print((10000/$meanintensity))"`
+
+# We now multiply the smoothed data by the intensity scaling factor to get
+# the intensity normalized data
+fslmaths prefiltered_func_data_smooth -mul $inscalefactor filtered_func_data
+
+# Calculate the mean across time for the filtered_func_data, replace mean_func
+fslmaths filtered_func_data -Tmean mean_func
+
+echo ""
+echo STEP 2: Registration
+echo ""
+
+# automated T1 brain extraction using ANTs 
+
+$ANTSPATH/antsBrainExtraction.sh -d 3 -a $data_dir/$pp/$t1_scan -e $SCRIPTPATH/BET/ants_oasis_template_ras/T_template0.nii.gz -m $SCRIPTPATH/BET/ants_oasis_template_ras/T_template0_BrainCerebellumProbabilityMask.nii.gz -f $SCRIPTPATH/BET/ants_oasis_template_ras/T_template0_BrainCerebellumRegistrationMask.nii.gz -o temp
+
+rm tempBrainExtractionPrior0GenericAffine.mat
+rm tempBrainExtractionMask.nii.gz
+mv tempBrainExtractionBrain.nii.gz ${pp}_${t1_id}_brain.nii.gz
+
+# coregistration EPI to T1 using FSL's Boundary Based Registration
+
+echo - EPI to T1
+
+epi_reg --epi=example_func.nii.gz --t1=$data_dir/$pp/$t1_scan --t1brain=${pp}_${t1_id}_brain.nii.gz --out=reg/example_func2highres
+
+# normalize T1 to 2mm MNI using ANTs nonlinear SyNQuick
+
+echo - T1 to 2mm MNI
+
+$ANTSPATH/antsRegistrationSyNQuick.sh -d 3 -f $FSLDIR/data/standard/MNI152_T1_2mm_brain.nii.gz -m ${pp}_${t1_id}_brain.nii.gz -o reg/highres2standard
+
+# rename ANTs output to standard FSL naming
+
+mv reg/highres2standard0GenericAffine.mat reg/highres2standard.mat
+mv reg/highres2standard1InverseWarp.nii.gz reg/standard2highres_warp.nii.gz
+mv reg/highres2standard1Warp.nii.gz reg/highres2standard_warp.nii.gz
+mv reg/highres2standardWarped.nii.gz reg/highres2standard.nii.gz
+mv reg/highres2standardInverseWarped.nii.gz reg/standard2highres.nii.gz
+
+# normalize example_func to 2mm MNI applying ANTs warp files
+
+$ANTSPATH/antsApplyTransforms -d 3 -i reg/example_func2highres.nii.gz -r $FSLDIR/data/standard/MNI152_T1_2mm_brain.nii.gz -n linear -t reg/highres2standard_warp.nii.gz -t reg/highres2standard.mat -o reg/example_func2standard.nii.gz --float 1
+
+# normalize mask to 2mm MNI applying ANTs warp files
+
+flirt -in mask.nii.gz -ref reg/example_func2highres.nii.gz -applyxfm -init reg/example_func2highres.mat -out mask_T1
+
+$ANTSPATH/antsApplyTransforms -d 3 -i mask_T1.nii.gz -r $FSLDIR/data/standard/MNI152_T1_2mm_brain.nii.gz -n linear -t reg/highres2standard_warp.nii.gz -t reg/highres2standard.mat -o mask_mni.nii.gz --float 1
+
+fslmaths mask_mni.nii.gz -thr 0.5 -bin mask_mni
+rm mask_T1.nii.gz
+
+echo ""
+echo STEP 3: ICA-based data clean-up
+echo ""
+
+# run ICA_AROMA
+
+python2.7 $SCRIPTPATH/AROMA/ICA_AROMA_modified.py -f $data_dir/$pp/${pp}_${task_id}.preproc -o $data_dir/$pp/${pp}_${task_id}.preproc/ICA_AROMA
+
+echo ""
+echo STEP 4: Finalizing preprocessing
+echo ""
+
+# post-AROMA
+
+echo - high-pass temporal filtering
+
+python $SCRIPTPATH/DETREND.PY --in=ICA_AROMA/denoised_func_data_nonaggr.nii.gz --degree=3 --no-demean --out=ICA_AROMA/denoised_func_data_nonaggr_detrended.nii.gz
+
+#fslmaths ICA_AROMA/denoised_func_data_nonaggr.nii.gz -Tmean ICA_AROMA/temp_mean
+
+#fslmaths ICA_AROMA/denoised_func_data_nonaggr.nii.gz -bptf $(echo "scale=5; $hp_filt/$tr/2" | bc) -1 -add ICA_AROMA/temp_mean.nii.gz ICA_AROMA/denoised_func_data_nonaggr_hpf
+
+#rm ICA_AROMA/temp_mean.nii.gz
+
+# normalize ICA-cleaned and hpf 4D data to 2mm MNI applying ANTs warp files
+
+echo - normalizing preprocessed EPI data to MNI
+
+flirt -in ICA_AROMA/denoised_func_data_nonaggr_detrended -ref reg/example_func2highres.nii.gz -applyxfm -init reg/example_func2highres.mat -out func_data_preproc_T1
+
+#flirt -in ICA_AROMA/denoised_func_data_nonaggr_hpf -ref reg/example_func2highres.nii.gz -applyxfm -init reg/example_func2highres.mat -out func_data_preproc_T1
+
+$ANTSPATH/WarpTimeSeriesImageMultiTransform 4 func_data_preproc_T1.nii.gz ${pp}_${task_id}_preproc_mni.nii.gz -R $FSLDIR/data/standard/MNI152_T1_2mm_brain.nii.gz reg/highres2standard_warp.nii.gz reg/highres2standard.mat
+
+rm func_data_preproc_T1.nii.gz
+
+echo ""
+echo STEP 5: Creating TSNR and TSTD maps 
+echo ""
+
+# calculate task's mean and std over time, and divide mean by std to get tsnr
+
+#raw data
+fslmaths $data_dir/$pp/${pp}_${task_id}.nii.gz -Tmean temp_mean
+fslmaths $data_dir/$pp/${pp}_${task_id}.nii.gz -Tstd temp_std
+fslmaths temp_mean -div temp_std ${pp}_tsnr_raw
+mv temp_std.nii.gz ${pp}_tstd_raw.nii.gz
+
+#preprocessed data
+fslmaths ${pp}_${task_id}_preproc_mni.nii.gz -Tmean temp_mean
+fslmaths ${pp}_${task_id}_preproc_mni.nii.gz -Tstd temp_std
+fslmaths temp_mean -div temp_std ${pp}_tsnr_mni
+mv temp_std.nii.gz ${pp}_tstd_mni.nii.gz
+
+# (re)move unnecessary files
+rm -r temp* prefiltered* filtered*
+mv ICA_AROMA/denoised_func_data_nonaggr_detrended.nii.gz ${pp}_${task_id}_preproc_native.nii.gz
