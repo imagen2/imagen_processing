@@ -1,0 +1,992 @@
+{
+  "halfpipe_version": "1.2.0",
+  "schema_version": "3.0",
+  "timestamp": "2021-09-10_16-26",
+  "global_settings": {
+    "dummy_scans": 0,
+    "slice_timing": true,
+    "skull_strip_algorithm": "none",
+    "run_mriqc": false,
+    "run_fmriprep": true,
+    "run_halfpipe": true,
+    "fd_thres": 0.5,
+    "anat_only": false,
+    "write_graph": false,
+    "hires": false,
+    "run_reconall": true,
+    "t2s_coreg": false,
+    "medial_surface_nan": false,
+    "bold2t1w_dof": 9,
+    "fmap_bspline": true,
+    "force_syn": false,
+    "longitudinal": false,
+    "regressors_all_comps": false,
+    "regressors_dvars_th": 1.5,
+    "regressors_fd_th": 0.5,
+    "skull_strip_fixed_seed": false,
+    "skull_strip_template": "OASIS30ANTs",
+    "aroma_err_on_warn": false,
+    "aroma_melodic_dim": -200,
+    "sloppy": false
+  },
+  "files": [
+    {
+      "path": "/fast/work/groups/ag_walter/newdata/stratify/code/lea/skull_strip/sub-{sub}_synthseg.nii.gz",
+      "extension": ".nii.gz",
+      "tags": {},
+      "datatype": "anat",
+      "suffix": "T1w"
+    },
+    {
+      "path": "/fast/work/groups/ag_walter/newdata/stratify/sorted/london_invicro/{sub}/Session{ses}/EPI_faces/*.nii.gz",
+      "extension": ".nii.gz",
+      "tags": {
+        "task": "faces"
+      },
+      "datatype": "func",
+      "suffix": "bold",
+      "metadata": {
+        "slice_encoding_direction": "is",
+        "effective_echo_spacing": 0.00052,
+        "phase_encoding_direction": "ap",
+        "slice_timing_code": "sequential decreasing"
+      }
+    },
+    {
+      "path": "/fast/work/groups/ag_walter/newdata/stratify/sorted/london_invicro/{sub}/Session{ses}/EPI_mid/*.nii.gz",
+      "extension": ".nii.gz",
+      "tags": {
+        "task": "mid"
+      },
+      "datatype": "func",
+      "suffix": "bold",
+      "metadata": {
+        "slice_encoding_direction": "is",
+        "effective_echo_spacing": 0.00052,
+        "phase_encoding_direction": "ap",
+        "slice_timing_code": "sequential decreasing"
+      }
+    },    
+    {
+      "path": "/fast/work/groups/ag_walter/newdata/stratify/sorted/london_invicro/{sub}/Session{ses}/EPI_stop_signal/*.nii.gz",
+      "extension": ".nii.gz",
+      "tags": {
+        "task": "stop_signal"
+      },
+      "datatype": "func",
+      "suffix": "bold",
+      "metadata": {
+        "slice_encoding_direction": "is",
+        "effective_echo_spacing": 0.00052,
+        "phase_encoding_direction": "ap",
+        "slice_timing_code": "sequential decreasing"
+      }
+    },  
+    {
+      "path": "/fast/work/groups/ag_walter/newdata/stratify/sorted/london_invicro/{sub}/Session{ses}/EPI_rest/*.nii.gz",
+      "extension": ".nii.gz",
+      "tags": {
+        "task": "rest"
+      },
+      "datatype": "func",
+      "suffix": "bold",
+      "metadata": {
+        "slice_encoding_direction": "is",
+        "effective_echo_spacing": 0.00052,
+        "phase_encoding_direction": "ap",
+        "slice_timing_code": "sequential decreasing"
+      }
+    },
+    {
+      "path": "/fast/work/groups/ag_walter/newdata/stratify/sorted/london_invicro/{sub}/Session{ses}/B0MAP/{sub}_*_e2.nii.gz",
+      "extension": ".nii.gz",
+      "tags": {},
+      "datatype": "fmap",
+      "suffix": "magnitude1" 
+    },
+    {
+      "path": "/fast/work/groups/ag_walter/newdata/stratify/sorted/london_invicro/{sub}/Session{ses}/B0MAP/{sub}_*_e2_ph.nii.gz",
+      "extension": ".nii.gz",
+      "tags": {},
+      "datatype": "fmap",
+      "suffix": "phasediff",
+      "metadata": {
+        "echo_time_difference": 0.00246
+      }
+    },
+    {
+      "path": "/fast/work/groups/ag_walter/newdata/stratify/code/lea/events/{sub}/{task}.tsv",
+      "extension": ".tsv",
+      "tags": {},
+      "datatype": "func",
+      "suffix": "events",
+      "metadata": {
+        "units": "seconds"
+      }
+    }
+  ],
+  "settings": [
+    {
+      "ica_aroma": true,
+      "smoothing": {
+        "fwhm": 6
+      },
+      "grand_mean_scaling": {
+        "mean": 10000
+      },
+      "bandpass_filter": {
+        "hp_width": 125,
+        "type": "gaussian"
+      },
+      "name": "facesVar1Setting",
+      "filters": [
+        {
+          "values": [
+            "faces"
+          ],
+          "entity": "task",
+          "action": "include",
+          "type": "tag"
+        }
+      ],
+      "output_image": false
+    },
+    {
+      "ica_aroma": false,
+      "smoothing": {
+        "fwhm": 6
+      },
+      "grand_mean_scaling": {
+        "mean": 10000
+      },
+      "bandpass_filter": {
+        "hp_width": 125,
+        "type": "gaussian"
+      },
+      "confounds_removal": [
+        "(trans|rot)_[xyz]"
+      ],
+      "name": "facesVar2Setting",
+      "filters": [
+        {
+          "values": [
+            "faces"
+          ],
+          "entity": "task",
+          "action": "include",
+          "type": "tag"
+        }
+      ],
+      "output_image": false
+    },
+    {
+      "ica_aroma": false,
+      "smoothing": {
+        "fwhm": 6
+      },
+      "grand_mean_scaling": {
+        "mean": 10000
+      },
+      "bandpass_filter": {
+        "hp_width": 125,
+        "type": "gaussian"
+      },
+      "name": "facesVar3Setting",
+      "filters": [
+        {
+          "values": [
+            "faces"
+          ],
+          "entity": "task",
+          "action": "include",
+          "type": "tag"
+        }
+      ],
+      "output_image": false
+    },
+    {
+      "ica_aroma": true,
+      "smoothing": {
+        "fwhm": 6
+      },
+      "grand_mean_scaling": {
+        "mean": 10000
+      },
+      "bandpass_filter": {
+        "hp_width": 125,
+        "type": "gaussian"
+      },
+      "name": "midVar1Setting",
+      "filters": [
+        {
+          "values": [
+            "mid"
+          ],
+          "entity": "task",
+          "action": "include",
+          "type": "tag"
+        }
+      ],
+      "output_image": false
+    },
+    {
+      "ica_aroma": false,
+      "smoothing": {
+        "fwhm": 6
+      },
+      "grand_mean_scaling": {
+        "mean": 10000
+      },
+      "bandpass_filter": {
+        "hp_width": 125,
+        "type": "gaussian"
+      },
+      "confounds_removal": [
+        "(trans|rot)_[xyz]"
+      ],
+      "name": "midVar2Setting",
+      "filters": [
+        {
+          "values": [
+            "mid"
+          ],
+          "entity": "task",
+          "action": "include",
+          "type": "tag"
+        }
+      ],
+      "output_image": false
+    },
+    {
+      "ica_aroma": false,
+      "smoothing": {
+        "fwhm": 6
+      },
+      "grand_mean_scaling": {
+        "mean": 10000
+      },
+      "bandpass_filter": {
+        "hp_width": 125,
+        "type": "gaussian"
+      },
+      "name": "midVar3Setting",
+      "filters": [
+        {
+          "values": [
+            "mid"
+          ],
+          "entity": "task",
+          "action": "include",
+          "type": "tag"
+        }
+      ],
+      "output_image": false
+    },
+    {
+      "ica_aroma": true,
+      "smoothing": {
+        "fwhm": 6.0
+      },
+      "grand_mean_scaling": {
+        "mean": 10000.0
+      },
+      "bandpass_filter": {
+        "hp_width": 125.0,
+        "type": "gaussian"
+      },
+      "name": "stopSignalVar1Setting",
+      "filters": [
+        {
+          "values": [
+            "stop_signal"
+          ],
+          "entity": "task",
+          "action": "include",
+          "type": "tag"
+        }
+      ],
+      "output_image": false
+    },
+    {
+      "ica_aroma": false,
+      "smoothing": {
+        "fwhm": 6.0
+      },
+      "grand_mean_scaling": {
+        "mean": 10000.0
+      },
+      "bandpass_filter": {
+        "hp_width": 125.0,
+        "type": "gaussian"
+      },
+      "confounds_removal": [
+        "(trans|rot)_[xyz]"
+      ],
+      "name": "stopSignalVar2Setting",
+      "filters": [
+        {
+          "values": [
+            "stop_signal"
+          ],
+          "entity": "task",
+          "action": "include",
+          "type": "tag"
+        }
+      ],
+      "output_image": false
+    },
+    {
+      "ica_aroma": false,
+      "smoothing": {
+        "fwhm": 6.0
+      },
+      "grand_mean_scaling": {
+        "mean": 10000.0
+      },
+      "bandpass_filter": {
+        "hp_width": 125.0,
+        "type": "gaussian"
+      },
+      "name": "stopSignalVar3Setting",
+      "filters": [
+        {
+          "values": [
+            "stop_signal"
+          ],
+          "entity": "task",
+          "action": "include",
+          "type": "tag"
+        }
+      ],
+      "output_image": false
+    },
+    {
+      "name": "preproc",
+      "filters": [],
+      "output_image": true
+    }
+  ],
+  "features": [
+    {
+      "setting": "facesVar1Setting",
+      "hrf": "dgamma",
+      "name": "faces_var1",
+      "type": "task_based",
+      "high_pass_filter_cutoff": 125,
+      "conditions": [
+        "clip_concentric_circles",
+        "clip_faces_angry",
+        "clip_faces_neutral"
+      ],
+      "contrasts": [
+        {
+          "values": {
+            "clip_concentric_circles": -1,
+            "clip_faces_angry": 1,
+            "clip_faces_neutral": 0
+          },
+          "name": "face_neg_vs_control",
+          "type": "t"
+        },
+        {
+          "values": {
+            "clip_concentric_circles": 0,
+            "clip_faces_angry": 1,
+            "clip_faces_neutral": -1
+          },
+          "name": "face_neg_vs_neut",
+          "type": "t"
+        },
+        {
+          "values": {
+            "clip_concentric_circles": -2,
+            "clip_faces_angry": 1,
+            "clip_faces_neutral": 1
+          },
+          "name": "face_vs_control",
+          "type": "t"
+        },
+        {
+          "values": {
+            "clip_concentric_circles": -1,
+            "clip_faces_angry": 0,
+            "clip_faces_neutral": 1
+          },
+          "name": "face_neut_vs_control",
+          "type": "t"
+        },
+        {
+          "values": {
+            "clip_concentric_circles": 1,
+            "clip_faces_angry": 0,
+            "clip_faces_neutral": 0
+          },
+          "name": "clip_concentric_circles",
+          "type": "t"
+        }, 
+        {
+          "values": {
+            "clip_concentric_circles": 0,
+            "clip_faces_angry": 1,
+            "clip_faces_neutral": 0
+          },
+          "name": "clip_faces_angry",
+          "type": "t"
+        }, {
+          "values": {
+            "clip_concentric_circles": 0,
+            "clip_faces_angry": 0,
+            "clip_faces_neutral": 1
+          },
+          "name": "clip_faces_neutral",
+          "type": "t"
+        }
+      ]
+    },
+    {
+      "setting": "facesVar2Setting",
+      "hrf": "dgamma",
+      "name": "faces_var2",
+      "type": "task_based",
+      "high_pass_filter_cutoff": 125,
+      "conditions": [
+        "clip_concentric_circles",
+        "clip_faces_angry",
+        "clip_faces_neutral"
+      ],
+      "contrasts": [
+        {
+          "values": {
+            "clip_concentric_circles": -1,
+            "clip_faces_angry": 1,
+            "clip_faces_neutral": 0
+          },
+          "name": "face_neg_vs_control",
+          "type": "t"
+        },
+        {
+          "values": {
+            "clip_concentric_circles": 0,
+            "clip_faces_angry": 1,
+            "clip_faces_neutral": -1
+          },
+          "name": "face_neg_vs_neut",
+          "type": "t"
+        },
+        {
+          "values": {
+            "clip_concentric_circles": -2,
+            "clip_faces_angry": 1,
+            "clip_faces_neutral": 1
+          },
+          "name": "face_vs_control",
+          "type": "t"
+        },
+        {
+          "values": {
+            "clip_concentric_circles": -1,
+            "clip_faces_angry": 0,
+            "clip_faces_neutral": 1
+          },
+          "name": "face_neut_vs_control",
+          "type": "t"
+        },
+        {
+          "values": {
+            "clip_concentric_circles": 1,
+            "clip_faces_angry": 0,
+            "clip_faces_neutral": 0
+          },
+          "name": "clip_concentric_circles",
+          "type": "t"
+        }, 
+        {
+          "values": {
+            "clip_concentric_circles": 0,
+            "clip_faces_angry": 1,
+            "clip_faces_neutral": 0
+          },
+          "name": "clip_faces_angry",
+          "type": "t"
+        }, {
+          "values": {
+            "clip_concentric_circles": 0,
+            "clip_faces_angry": 0,
+            "clip_faces_neutral": 1
+          },
+          "name": "clip_faces_neutral",
+          "type": "t"
+        }
+
+      ]
+    },
+    {
+      "setting": "facesVar3Setting",
+      "hrf": "dgamma",
+      "name": "faces_var3",
+      "type": "task_based",
+      "high_pass_filter_cutoff": 125,
+      "conditions": [
+        "clip_concentric_circles",
+        "clip_faces_angry",
+        "clip_faces_neutral"
+      ],
+      "contrasts": [
+        {
+          "values": {
+            "clip_concentric_circles": -1,
+            "clip_faces_angry": 1,
+            "clip_faces_neutral": 0
+          },
+          "name": "face_neg_vs_control",
+          "type": "t"
+        },
+        {
+          "values": {
+            "clip_concentric_circles": 0,
+            "clip_faces_angry": 1,
+            "clip_faces_neutral": -1
+          },
+          "name": "face_neg_vs_neut",
+          "type": "t"
+        },
+        {
+          "values": {
+            "clip_concentric_circles": -2,
+            "clip_faces_angry": 1,
+            "clip_faces_neutral": 1
+          },
+          "name": "face_vs_control",
+          "type": "t"
+        },
+        {
+          "values": {
+            "clip_concentric_circles": -1,
+            "clip_faces_angry": 0,
+            "clip_faces_neutral": 1
+          },
+          "name": "face_neut_vs_control",
+          "type": "t"
+        },
+        {
+          "values": {
+            "clip_concentric_circles": 1,
+            "clip_faces_angry": 0,
+            "clip_faces_neutral": 0
+          },
+          "name": "clip_concentric_circles",
+          "type": "t"
+        }, 
+        {
+          "values": {
+            "clip_concentric_circles": 0,
+            "clip_faces_angry": 1,
+            "clip_faces_neutral": 0
+          },
+          "name": "clip_faces_angry",
+          "type": "t"
+        }, {
+          "values": {
+            "clip_concentric_circles": 0,
+            "clip_faces_angry": 0,
+            "clip_faces_neutral": 1
+          },
+          "name": "clip_faces_neutral",
+          "type": "t"
+        }
+
+      ]
+    },
+    {
+      "setting": "midVar1Setting",
+      "hrf": "dgamma",
+      "name": "mid_var1",
+      "type": "task_based",
+      "high_pass_filter_cutoff": 125,
+      "conditions": [
+        "cue_anticipation_big_win",
+        "cue_anticipation_no_win",
+        "cue_anticipation_small_win",
+        "feedback_big_win",
+        "feedback_no_big_win",
+        "feedback_no_small_win",
+        "feedback_no_win",
+        "feedback_small_win",
+        "target"
+      ],
+      "contrasts": [
+        {
+          "values": {
+            "cue_anticipation_big_win": 1,
+            "cue_anticipation_no_win": -2,
+            "cue_anticipation_small_win": 1,
+            "feedback_big_win": 0,
+            "feedback_no_big_win": 0,
+            "feedback_no_small_win": 0,
+            "feedback_no_win": 0,
+            "feedback_small_win": 0,
+            "target": 0
+          },
+          "name": "ant_gain_vs_ant_control",
+          "type": "t"
+        },
+        {
+          "values": {
+            "cue_anticipation_big_win": 0,
+            "cue_anticipation_no_win": 0,
+            "cue_anticipation_small_win": 0,
+            "feedback_big_win": 1,
+            "feedback_no_big_win": -1,
+            "feedback_no_small_win": -1,
+            "feedback_no_win": 0,
+            "feedback_small_win": 1,
+            "target": 0
+          },
+          "name": "out_gain_vs_out_no_gain",
+          "type": "t"
+        },
+        {
+          "values": {
+            "cue_anticipation_big_win": 1,
+            "cue_anticipation_no_win": -1,
+            "cue_anticipation_small_win": 0,
+            "feedback_big_win": 0,
+            "feedback_no_big_win": 0,
+            "feedback_no_small_win": 0,
+            "feedback_no_win": 0,
+            "feedback_small_win": 0,
+            "target": 0
+          },
+          "name": "ant_big_gain_vs_ant_control",
+          "type": "t"
+        }
+      ]
+    },
+    {
+      "setting": "midVar2Setting",
+      "hrf": "dgamma",
+      "name": "mid_var2",
+      "type": "task_based",
+      "high_pass_filter_cutoff": 125,
+      "conditions": [
+        "cue_anticipation_big_win",
+        "cue_anticipation_no_win",
+        "cue_anticipation_small_win",
+        "feedback_big_win",
+        "feedback_no_big_win",
+        "feedback_no_small_win",
+        "feedback_no_win",
+        "feedback_small_win",
+        "target"
+      ],
+      "contrasts": [
+        {
+          "values": {
+            "cue_anticipation_big_win": 1,
+            "cue_anticipation_no_win": -2,
+            "cue_anticipation_small_win": 1,
+            "feedback_big_win": 0,
+            "feedback_no_big_win": 0,
+            "feedback_no_small_win": 0,
+            "feedback_no_win": 0,
+            "feedback_small_win": 0,
+            "target": 0
+          },
+          "name": "ant_gain_vs_ant_control",
+          "type": "t"
+        },
+        {
+          "values": {
+            "cue_anticipation_big_win": 0,
+            "cue_anticipation_no_win": 0,
+            "cue_anticipation_small_win": 0,
+            "feedback_big_win": 1,
+            "feedback_no_big_win": -1,
+            "feedback_no_small_win": -1,
+            "feedback_no_win": 0,
+            "feedback_small_win": 1,
+            "target": 0
+          },
+          "name": "out_gain_vs_out_no_gain",
+          "type": "t"
+        },
+        {
+          "values": {
+            "cue_anticipation_big_win": 1,
+            "cue_anticipation_no_win": -1,
+            "cue_anticipation_small_win": 0,
+            "feedback_big_win": 0,
+            "feedback_no_big_win": 0,
+            "feedback_no_small_win": 0,
+            "feedback_no_win": 0,
+            "feedback_small_win": 0,
+            "target": 0
+          },
+          "name": "ant_big_gain_vs_ant_control",
+          "type": "t"
+        }
+      ]
+    },
+    {
+      "setting": "midVar3Setting",
+      "hrf": "dgamma",
+      "name": "mid_var3",
+      "type": "task_based",
+      "high_pass_filter_cutoff": 125,
+      "conditions": [
+        "cue_anticipation_big_win",
+        "cue_anticipation_no_win",
+        "cue_anticipation_small_win",
+        "feedback_big_win",
+        "feedback_no_big_win",
+        "feedback_no_small_win",
+        "feedback_no_win",
+        "feedback_small_win",
+        "target"
+      ],
+      "contrasts": [
+        {
+          "values": {
+            "cue_anticipation_big_win": 1,
+            "cue_anticipation_no_win": -2,
+            "cue_anticipation_small_win": 1,
+            "feedback_big_win": 0,
+            "feedback_no_big_win": 0,
+            "feedback_no_small_win": 0,
+            "feedback_no_win": 0,
+            "feedback_small_win": 0,
+            "target": 0
+          },
+          "name": "ant_gain_vs_ant_control",
+          "type": "t"
+        },
+        {
+          "values": {
+            "cue_anticipation_big_win": 0,
+            "cue_anticipation_no_win": 0,
+            "cue_anticipation_small_win": 0,
+            "feedback_big_win": 1,
+            "feedback_no_big_win": -1,
+            "feedback_no_small_win": -1,
+            "feedback_no_win": 0,
+            "feedback_small_win": 1,
+            "target": 0
+          },
+          "name": "out_gain_vs_out_no_gain",
+          "type": "t"
+        },
+        {
+          "values": {
+            "cue_anticipation_big_win": 1,
+            "cue_anticipation_no_win": -1,
+            "cue_anticipation_small_win": 0,
+            "feedback_big_win": 0,
+            "feedback_no_big_win": 0,
+            "feedback_no_small_win": 0,
+            "feedback_no_win": 0,
+            "feedback_small_win": 0,
+            "target": 0
+          },
+          "name": "ant_big_gain_vs_ant_control",
+          "type": "t"
+        }
+      ]
+    },
+    {
+      "setting": "stopSignalVar1Setting",
+      "hrf": "dgamma",
+      "name": "stop_signal_var1",
+      "type": "task_based",
+      "high_pass_filter_cutoff": 125.0,
+      "conditions": [
+        "go_success",
+        "stop_success",
+        "stop_failure",
+        "stop_too_early_response",
+        "go_too_late",
+        "go_wrong_key_response"
+      ],
+      "contrasts": [
+        {
+          "values": {
+            "go_success": -0.5,
+            "stop_success": 1.0,
+            "stop_failure": -0.5
+          },
+          "name": "response_inhibition",
+          "type": "t"
+        },
+        {
+          "values": {
+            "go_success": 0.0,
+            "stop_success": -1.0,
+            "stop_failure": 1.0
+          },
+          "name": "error_processing",
+          "type": "t"
+        },
+        {
+          "values": {
+            "go_success": 1.0,
+            "stop_success": -1.0,
+            "stop_failure": 0.0
+          },
+          "name": "motor",
+          "type": "t"
+        },
+        {
+          "values": {
+            "go_success": 0,
+            "stop_success": 1,
+            "stop_failure": 0
+          },
+          "name": "stop_success",
+          "type": "t"
+        }
+      ]
+    },
+    {
+      "setting": "stopSignalVar2Setting",
+      "hrf": "dgamma",
+      "name": "stop_signal_var2",
+      "type": "task_based",
+      "high_pass_filter_cutoff": 125.0,
+      "conditions": [
+        "go_success",
+        "stop_success",
+        "stop_failure",
+        "stop_too_early_response",
+        "go_too_late",
+        "go_wrong_key_response"
+      ],
+      "contrasts": [
+        {
+          "values": {
+            "go_success": -0.5,
+            "stop_success": 1.0,
+            "stop_failure": -0.5
+          },
+          "name": "response_inhibition",
+          "type": "t"
+        },
+        {
+          "values": {
+            "go_success": 0.0,
+            "stop_success": -1.0,
+            "stop_failure": 1.0
+          },
+          "name": "error_processing",
+          "type": "t"
+        },
+        {
+          "values": {
+            "go_success": 1.0,
+            "stop_success": -1.0,
+            "stop_failure": 0.0
+          },
+          "name": "motor",
+          "type": "t"
+        },
+        {
+          "values": {
+            "go_success": 0,
+            "stop_success": 1,
+            "stop_failure": 0
+          },
+          "name": "stop_success",
+          "type": "t"
+        }
+      ]
+    },
+    {
+      "setting": "stopSignalVar3Setting",
+      "hrf": "dgamma",
+      "name": "stop_signal_var3",
+      "type": "task_based",
+      "high_pass_filter_cutoff": 125.0,
+      "conditions": [
+        "go_success",
+        "stop_success",
+        "stop_failure",
+        "stop_too_early_response",
+        "go_too_late",
+        "go_wrong_key_response"
+      ],
+      "contrasts": [
+        {
+          "values": {
+            "go_success": -0.5,
+            "stop_success": 1.0,
+            "stop_failure": -0.5
+          },
+          "name": "response_inhibition",
+          "type": "t"
+        },
+        {
+          "values": {
+            "go_success": 0.0,
+            "stop_success": -1.0,
+            "stop_failure": 1.0
+          },
+          "name": "error_processing",
+          "type": "t"
+        },
+        {
+          "values": {
+            "go_success": 1.0,
+            "stop_success": -1.0,
+            "stop_failure": 0.0
+          },
+          "name": "motor",
+          "type": "t"
+        },
+        {
+          "values": {
+            "go_success": 0,
+            "stop_success": 1,
+            "stop_failure": 0
+          },
+          "name": "stop_success",
+          "type": "t"
+        }
+      ]
+    }
+  ],
+  "models": [
+    {
+      "name": "model",
+      "inputs": [
+        "faces_var1",
+        "faces_var2",
+        "faces_var3",
+        "mid_var1",
+        "mid_var2",
+        "mid_var3",
+        "stop_signal_var1",
+        "stop_signal_var2",
+        "stop_signal_var3"
+      ],
+      "filters": [
+        {
+          "field": "fd_mean",
+          "type": "cutoff",
+          "action": "exclude",
+          "cutoff": 0.5
+        },
+        {
+          "field": "fd_perc",
+          "type": "cutoff",
+          "action": "exclude",
+          "cutoff": 10
+        }
+      ],
+      "type": "me",
+      "across": "sub",
+      "algorithms": [
+        "flame1",
+        "mcartest",
+        "heterogeneity"
+      ]
+    }
+  ]
+}
